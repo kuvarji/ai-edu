@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User, UserPlus, GraduationCap, Phone, Loader2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { authApi, ApiError } from '../services/api';
+import { useLanguage } from '../i18n/useLanguage';
 
 export default function SignupPage() {
   const [name, setName] = useState('');
@@ -16,6 +17,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useStore();
+  const { t } = useLanguage();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +53,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center pt-20 pb-8 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 flex items-center justify-center pt-20 pb-8 px-4 relative overflow-hidden">
       <div className="absolute inset-0">
         <div className="absolute top-1/4 right-1/3 w-80 h-80 bg-emerald-600/15 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-violet-600/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
@@ -63,7 +65,7 @@ export default function SignupPage() {
         transition={{ duration: 0.6 }}
         className="relative w-full max-w-md"
       >
-        <div className="bg-gray-900/80 backdrop-blur-xl rounded-3xl border border-white/10 p-8 shadow-2xl">
+        <div className="bg-gray-900/80 backdrop-blur-xl rounded-3xl border border-theme-border p-8 shadow-2xl">
           <div className="text-center mb-8">
             <motion.div
               initial={{ scale: 0 }}
@@ -73,8 +75,8 @@ export default function SignupPage() {
             >
               <GraduationCap className="w-8 h-8 text-white" />
             </motion.div>
-            <h1 className="text-2xl font-black text-white mb-2">Join EduAI!</h1>
-            <p className="text-gray-400">Free account banao aur smart padhai shuru karo</p>
+                        <h1 className="text-2xl font-black text-white mb-2">{t.signup_title}</h1>
+                        <p className="text-theme-text-secondary">{t.signup_subtitle}</p>
           </div>
 
           {/* Role Selector */}
@@ -87,7 +89,7 @@ export default function SignupPage() {
                 className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
                   role === r
                     ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25'
-                    : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
+                    : 'bg-theme-input text-theme-text-secondary border border-theme-border hover:bg-theme-card-hover'
                 }`}
               >
                 {r === 'student' ? '🎒 Student' : '👨‍👩‍👧 Parent'}
@@ -107,62 +109,62 @@ export default function SignupPage() {
             )}
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-400">Full Name</label>
+              <label className="text-sm font-medium text-theme-text-secondary">Full Name</label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-text-muted" />
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Apna naam likho"
-                  className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-400">Email Address</label>
+              <label className="text-sm font-medium text-theme-text-secondary">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-text-muted" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="email@example.com"
-                  className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-400">Phone Number</label>
+              <label className="text-sm font-medium text-theme-text-secondary">Phone Number</label>
               <div className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-text-muted" />
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+91 9876543210"
-                  className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-400">Password</label>
+              <label className="text-sm font-medium text-theme-text-secondary">Password</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-text-muted" />
                 <input
                   type={showPass ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Strong password banao"
-                  className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-theme-text-muted hover:text-gray-300"
                 >
                   {showPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -177,15 +179,15 @@ export default function SignupPage() {
               className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-60"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <UserPlus className="w-5 h-5" />}
-              {loading ? 'Signing up...' : 'Sign Up Free'}
+              {loading ? t.loading : t.signup_button}
             </motion.button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-500 text-sm">
-              Already have account?{' '}
-              <Link to="/login" className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
-                Login karo
+            <p className="text-theme-text-muted text-sm">
+                            {t.have_account}{' '}
+                            <Link to="/login" className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
+                              {t.nav_login}
               </Link>
             </p>
           </div>

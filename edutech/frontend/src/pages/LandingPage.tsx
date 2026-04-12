@@ -92,7 +92,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white overflow-hidden">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 text-white overflow-hidden">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center pt-16">
         {/* Animated background */}
@@ -144,7 +144,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed"
+            className="text-lg sm:text-xl text-theme-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed"
           >
             AI teacher jo tumhari language mein samjhaye, quizzes se test kare,
             aur games jaisa fun learning experience de. Class 6-12 CBSE syllabus ready!
@@ -170,7 +170,7 @@ export default function LandingPage() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl text-lg font-medium text-gray-300 bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+              className="flex items-center gap-3 px-8 py-4 rounded-2xl text-lg font-medium text-gray-300 bg-theme-input border border-theme-border hover:bg-theme-card-hover transition-all"
             >
               <Play className="w-5 h-5 text-violet-400" />
               Watch Demo
@@ -185,7 +185,7 @@ export default function LandingPage() {
               transition={{ duration: 1, delay: 0.8 }}
               className="relative"
             >
-              <div className="bg-gray-900/80 backdrop-blur-xl rounded-3xl border border-white/10 p-8 shadow-2xl">
+              <div className="bg-gray-900/80 backdrop-blur-xl rounded-3xl border border-theme-border p-8 shadow-2xl">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   {[
                     { emoji: '📐', label: 'Maths', progress: 75, color: 'violet' },
@@ -199,7 +199,7 @@ export default function LandingPage() {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 1 + i * 0.15 }}
                       whileHover={{ y: -5 }}
-                      className="text-center p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all cursor-pointer"
+                      className="text-center p-4 rounded-2xl bg-theme-input hover:bg-theme-card-hover transition-all cursor-pointer"
                     >
                       <span className="text-4xl mb-2 block">{item.emoji}</span>
                       <p className="text-sm font-medium text-gray-300 mb-2">{item.label}</p>
@@ -263,11 +263,11 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   custom={i}
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="text-center p-6 rounded-2xl bg-gray-900/50 border border-white/5 hover:border-violet-500/20 transition-all"
+                  className="text-center p-6 rounded-2xl bg-theme-card border border-theme-border hover:border-violet-500/20 transition-all"
                 >
                   <Icon className="w-8 h-8 text-violet-400 mx-auto mb-3" />
                   <h3 className="text-3xl font-black text-white mb-1">{stat.value}</h3>
-                  <p className="text-gray-500 text-sm">{stat.label}</p>
+                  <p className="text-theme-text-muted text-sm">{stat.label}</p>
                 </motion.div>
               );
             })}
@@ -298,7 +298,7 @@ export default function LandingPage() {
             <h2 className="text-4xl sm:text-5xl font-black text-white mb-4">
               Kya Milega Tumhe?
             </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            <p className="text-theme-text-secondary text-lg max-w-2xl mx-auto">
               Har wo feature jo tumhari padhai ko next level pe le jaaye
             </p>
           </motion.div>
@@ -315,13 +315,13 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   custom={i}
                   whileHover={{ y: -8, scale: 1.02 }}
-                  className={`group p-6 rounded-2xl bg-gray-900/50 border border-white/5 hover:border-white/10 transition-all cursor-pointer ${feature.shadow}`}
+                  className={`group p-6 rounded-2xl bg-theme-card border border-theme-border hover:border-theme-border transition-all cursor-pointer ${feature.shadow}`}
                 >
                   <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
                     <Icon className="w-7 h-7 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
-                  <p className="text-gray-400 leading-relaxed">{feature.description}</p>
+                  <p className="text-theme-text-secondary leading-relaxed">{feature.description}</p>
                 </motion.div>
               );
             })}
@@ -381,7 +381,7 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 custom={i}
                 whileHover={{ y: -8 }}
-                className="relative p-8 rounded-3xl bg-gray-900/50 border border-white/5 text-center group hover:border-white/10 transition-all"
+                className="relative p-8 rounded-3xl bg-theme-card border border-theme-border text-center group hover:border-theme-border transition-all"
               >
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                   <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center text-white font-bold text-sm shadow-lg`}>
@@ -390,7 +390,7 @@ export default function LandingPage() {
                 </div>
                 <span className="text-5xl mb-4 block mt-4">{item.icon}</span>
                 <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
-                <p className="text-gray-400">{item.desc}</p>
+                <p className="text-theme-text-secondary">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -420,7 +420,7 @@ export default function LandingPage() {
             <h2 className="text-4xl sm:text-5xl font-black text-white mb-4">
               Apna Plan Choose Karo
             </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            <p className="text-theme-text-secondary text-lg max-w-2xl mx-auto">
               Free se start karo, jab mann kare upgrade karo
             </p>
           </motion.div>
@@ -438,7 +438,7 @@ export default function LandingPage() {
                 className={`relative p-8 rounded-3xl border transition-all ${
                   plan.popular
                     ? 'bg-gradient-to-b from-violet-500/10 to-purple-500/5 border-violet-500/30 shadow-xl shadow-violet-500/10'
-                    : 'bg-gray-900/50 border-white/5 hover:border-white/10'
+                    : 'bg-theme-card border-theme-border hover:border-theme-border'
                 }`}
               >
                 {plan.popular && (
@@ -454,9 +454,9 @@ export default function LandingPage() {
                     <span className="text-4xl font-black text-white">Free</span>
                   ) : (
                     <>
-                      <span className="text-lg text-gray-400">&#8377;</span>
+                      <span className="text-lg text-theme-text-secondary">&#8377;</span>
                       <span className="text-4xl font-black text-white">{plan.price}</span>
-                      <span className="text-gray-400">{plan.period}</span>
+                      <span className="text-theme-text-secondary">{plan.period}</span>
                     </>
                   )}
                 </div>
@@ -475,7 +475,7 @@ export default function LandingPage() {
                     className={`w-full py-3 rounded-xl font-bold text-sm transition-all ${
                       plan.popular
                         ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/25'
-                        : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
+                        : 'bg-theme-input text-white hover:bg-theme-card-hover border border-theme-border'
                     }`}
                   >
                     {plan.price === 0 ? 'Start Free' : 'Get Started'}
@@ -510,7 +510,7 @@ export default function LandingPage() {
               <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
                 Aaj Hi Shuru Karo Apni Smart Padhai!
               </h2>
-              <p className="text-gray-400 text-lg mb-8 max-w-xl mx-auto">
+              <p className="text-theme-text-secondary text-lg mb-8 max-w-xl mx-auto">
                 50,000+ students already join kar chuke hai. Ab tumhari baari!
               </p>
               <Link to="/signup">

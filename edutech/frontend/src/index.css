@@ -3,7 +3,40 @@
 @tailwind utilities;
 @layer base {
   :root {
-    --radius: 0.5rem
+    --radius: 0.5rem;
+
+    /* Light mode theme */
+    --color-page: #f1f5f9;
+    --color-card: #ffffff;
+    --color-card-hover: #f8fafc;
+    --color-surface: #e2e8f0;
+    --color-input: #f1f5f9;
+    --color-text: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-muted: #94a3b8;
+    --color-border: #e2e8f0;
+    --color-nav: rgba(255, 255, 255, 0.85);
+    --color-nav-border: #e2e8f0;
+  }
+
+  .dark {
+    --color-page: #030712;
+    --color-card: rgba(17, 24, 39, 0.5);
+    --color-card-hover: rgba(255, 255, 255, 0.05);
+    --color-surface: #1f2937;
+    --color-input: rgba(255, 255, 255, 0.05);
+    --color-text: #ffffff;
+    --color-text-secondary: #9ca3af;
+    --color-text-muted: #6b7280;
+    --color-border: rgba(255, 255, 255, 0.1);
+    --color-nav: rgba(17, 24, 39, 0.8);
+    --color-nav-border: rgba(255, 255, 255, 0.1);
+  }
+
+  body {
+    background-color: var(--color-page);
+    color: var(--color-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 

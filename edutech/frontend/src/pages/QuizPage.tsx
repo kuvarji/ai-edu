@@ -129,10 +129,10 @@ export default function QuizPage() {
 
   if (loadingQuiz) {
     return (
-      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
-          <p className="text-gray-400">Loading quiz...</p>
+          <p className="text-theme-text-secondary">Loading quiz...</p>
         </div>
       </div>
     );
@@ -140,10 +140,10 @@ export default function QuizPage() {
 
   if (quizQuestions.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
         <div className="text-center">
           <Brain className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-          <p className="text-gray-400 mb-4">No quiz questions available right now. Try again later!</p>
+          <p className="text-theme-text-secondary mb-4">No quiz questions available right now. Try again later!</p>
           <Link to="/dashboard">
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -162,13 +162,13 @@ export default function QuizPage() {
     const percentage = Math.round((score / quizQuestions.length) * 100);
     const earnedXP = score * 10 + 50;
     return (
-      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           className="w-full max-w-lg text-center"
         >
-          <div className="p-8 rounded-3xl bg-gray-900/80 border border-white/10 shadow-2xl">
+          <div className="p-8 rounded-3xl bg-gray-900/80 border border-theme-border shadow-2xl">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -179,22 +179,22 @@ export default function QuizPage() {
             </motion.div>
 
             <h1 className="text-3xl font-black text-white mb-2">Quiz Complete!</h1>
-            <p className="text-gray-400 mb-6">
+            <p className="text-theme-text-secondary mb-6">
               {percentage >= 80 ? 'Excellent! Bahut accha kiya!' : percentage >= 60 ? 'Good job! Keep going!' : 'Koi baat nahi, practice karo!'}
             </p>
 
             <div className="grid grid-cols-3 gap-4 mb-8">
               <div className="p-4 rounded-2xl bg-violet-500/10 border border-violet-500/20">
                 <p className="text-2xl font-black text-violet-400">{score}/{quizQuestions.length}</p>
-                <p className="text-xs text-gray-500">Correct</p>
+                <p className="text-xs text-theme-text-muted">Correct</p>
               </div>
               <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20">
                 <p className="text-2xl font-black text-amber-400">{percentage}%</p>
-                <p className="text-xs text-gray-500">Score</p>
+                <p className="text-xs text-theme-text-muted">Score</p>
               </div>
               <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
                 <p className="text-2xl font-black text-emerald-400">+{earnedXP}</p>
-                <p className="text-xs text-gray-500">XP Earned</p>
+                <p className="text-xs text-theme-text-muted">XP Earned</p>
               </div>
             </div>
 
@@ -219,7 +219,7 @@ export default function QuizPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={restart}
-                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-gray-300 bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-gray-300 bg-theme-input border border-theme-border hover:bg-theme-card-hover transition-all"
               >
                 <RotateCcw className="w-4 h-4" />
                 Try Again
@@ -242,7 +242,7 @@ export default function QuizPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <motion.div
@@ -254,7 +254,7 @@ export default function QuizPage() {
             <Brain className="w-6 h-6 text-violet-400" />
             <div>
               <h1 className="text-lg font-bold text-white">Mathematics Quiz</h1>
-              <p className="text-sm text-gray-500">Question {currentQ + 1} of {quizQuestions.length}</p>
+              <p className="text-sm text-theme-text-muted">Question {currentQ + 1} of {quizQuestions.length}</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -286,7 +286,7 @@ export default function QuizPage() {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
-            className="p-8 rounded-3xl bg-gray-900/80 border border-white/10 shadow-xl mb-6"
+            className="p-8 rounded-3xl bg-gray-900/80 border border-theme-border shadow-xl mb-6"
           >
             <div className="flex items-center gap-2 mb-4">
               <span className={`px-3 py-1 rounded-full text-xs font-bold ${
@@ -304,11 +304,11 @@ export default function QuizPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {question.options.map((option, i) => {
-                let style = 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-gray-200';
+                let style = 'bg-theme-input border-theme-border hover:bg-theme-card-hover hover:border-white/20 text-gray-200';
                 if (answered) {
                   if (i === question.correct) style = 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400';
                   else if (i === selected) style = 'bg-red-500/20 border-red-500/30 text-red-400';
-                  else style = 'bg-white/5 border-white/5 text-gray-600';
+                  else style = 'bg-theme-input border-theme-border text-gray-600';
                 }
 
                 return (
@@ -320,7 +320,7 @@ export default function QuizPage() {
                     disabled={answered}
                     className={`flex items-center gap-3 p-4 rounded-xl border text-left transition-all ${style}`}
                   >
-                    <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-sm font-bold flex-shrink-0">
+                    <span className="w-8 h-8 rounded-lg bg-theme-input flex items-center justify-center text-sm font-bold flex-shrink-0">
                       {String.fromCharCode(65 + i)}
                     </span>
                     <span className="text-sm font-medium">{option}</span>

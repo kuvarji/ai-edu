@@ -8,6 +8,7 @@ import {
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useStore } from '../store/useStore';
 import { coursesApi, gamificationApi, analyticsApi, type Course, type GamificationStats, type WeeklyReport } from '../services/api';
+import { useLanguage } from '../i18n/useLanguage';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -19,6 +20,7 @@ const fadeUp = {
 
 export default function DashboardPage() {
   const { user } = useStore();
+  const { t } = useLanguage();
   const [apiCourses, setApiCourses] = useState<Course[]>([]);
   const [stats, setStats] = useState<GamificationStats | null>(null);
   const [, setWeeklyReport] = useState<WeeklyReport | null>(null);
@@ -65,24 +67,24 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
-          <p className="text-gray-400">Loading dashboard...</p>
+          <p className="text-theme-text-secondary">{t.loading}</p>
         </div>
       </div>
     );
   }
 
   const statCards = [
-    { label: 'Current Streak', value: `${streak} Days`, icon: Flame, color: 'from-orange-500 to-red-500', shadow: 'shadow-orange-500/20', bg: 'bg-orange-500/10' },
-    { label: 'Total XP', value: `${xp.toLocaleString()}`, icon: Zap, color: 'from-yellow-500 to-amber-500', shadow: 'shadow-yellow-500/20', bg: 'bg-yellow-500/10' },
-    { label: 'Level', value: `Level ${level}`, icon: Trophy, color: 'from-violet-500 to-purple-500', shadow: 'shadow-violet-500/20', bg: 'bg-violet-500/10' },
-    { label: 'Courses Active', value: String(apiCourses.length), icon: BookOpen, color: 'from-emerald-500 to-teal-500', shadow: 'shadow-emerald-500/20', bg: 'bg-emerald-500/10' },
+    { label: t.streak, value: `${streak} Days`, icon: Flame, color: 'from-orange-500 to-red-500', shadow: 'shadow-orange-500/20', bg: 'bg-orange-500/10' },
+    { label: t.total_xp, value: `${xp.toLocaleString()}`, icon: Zap, color: 'from-yellow-500 to-amber-500', shadow: 'shadow-yellow-500/20', bg: 'bg-yellow-500/10' },
+    { label: t.level, value: `${t.level} ${level}`, icon: Trophy, color: 'from-violet-500 to-purple-500', shadow: 'shadow-violet-500/20', bg: 'bg-violet-500/10' },
+    { label: t.courses_title, value: String(apiCourses.length), icon: BookOpen, color: 'from-emerald-500 to-teal-500', shadow: 'shadow-emerald-500/20', bg: 'bg-emerald-500/10' },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Welcome Header */}
         <motion.div
@@ -93,9 +95,9 @@ export default function DashboardPage() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-3xl font-black text-white mb-1">
-                Namaste, {displayName}! 👋
+                {t.dashboard_welcome}, {displayName}! 👋
               </h1>
-              <p className="text-gray-400">Aaj kya seekhna hai? Let&apos;s go!</p>
+              <p className="text-theme-text-secondary">{t.dashboard_title}</p>
             </div>
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -117,10 +119,10 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-8 p-6 rounded-2xl bg-gray-900/50 border border-white/5"
+          className="mb-8 p-6 rounded-2xl bg-theme-card border border-theme-border"
         >
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-400">Level {level} Progress</span>
+            <span className="text-sm font-medium text-theme-text-secondary">Level {level} Progress</span>
             <span className="text-sm font-bold text-violet-400">{Math.round(xpProgress)}%</span>
           </div>
           <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
@@ -145,13 +147,13 @@ export default function DashboardPage() {
                 animate="visible"
                 custom={i}
                 whileHover={{ y: -5, scale: 1.02 }}
-                className={`p-5 rounded-2xl bg-gray-900/50 border border-white/5 hover:border-white/10 transition-all ${stat.shadow}`}
+                className={`p-5 rounded-2xl bg-theme-card border border-theme-border hover:border-theme-border transition-all ${stat.shadow}`}
               >
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-3 shadow-lg`}>
                   <Icon className="w-6 h-6 text-white" />
                 </div>
                 <p className="text-2xl font-black text-white">{stat.value}</p>
-                <p className="text-sm text-gray-500">{stat.label}</p>
+                <p className="text-sm text-theme-text-muted">{stat.label}</p>
               </motion.div>
             );
           })}
@@ -164,12 +166,12 @@ export default function DashboardPage() {
             initial="hidden"
             animate="visible"
             custom={4}
-            className="lg:col-span-2 p-6 rounded-2xl bg-gray-900/50 border border-white/5"
+            className="lg:col-span-2 p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h3 className="text-lg font-bold text-white">Weekly Progress</h3>
-                <p className="text-sm text-gray-500">XP earned this week</p>
+                <h3 className="text-lg font-bold text-white">{t.weekly_progress}</h3>
+                <p className="text-sm text-theme-text-muted">XP earned this week</p>
               </div>
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 text-sm font-medium">
                 <TrendingUp className="w-4 h-4" />
@@ -211,7 +213,7 @@ export default function DashboardPage() {
             initial="hidden"
             animate="visible"
             custom={5}
-            className="p-6 rounded-2xl bg-gray-900/50 border border-white/5"
+            className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <Target className="w-5 h-5 text-cyan-400" />
@@ -227,7 +229,7 @@ export default function DashboardPage() {
                 <div key={i} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-300">{goal.label}</span>
-                    <span className={`text-xs font-bold ${goal.progress === 100 ? 'text-emerald-400' : 'text-gray-500'}`}>
+                    <span className={`text-xs font-bold ${goal.progress === 100 ? 'text-emerald-400' : 'text-theme-text-muted'}`}>
                       {goal.done}
                     </span>
                   </div>
@@ -255,8 +257,8 @@ export default function DashboardPage() {
         >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-violet-400" />
-              Continue Learning
+                            <Sparkles className="w-5 h-5 text-violet-400" />
+                            {t.continue_learning}
             </h3>
             <Link to="/courses" className="text-violet-400 hover:text-violet-300 text-sm font-medium flex items-center gap-1">
               View All <ArrowRight className="w-4 h-4" />
@@ -273,19 +275,19 @@ export default function DashboardPage() {
                 whileHover={{ y: -5, scale: 1.02 }}
               >
                 <Link to={`/courses/${course.id}`}>
-                  <div className="p-5 rounded-2xl bg-gray-900/50 border border-white/5 hover:border-white/10 transition-all group cursor-pointer">
+                  <div className="p-5 rounded-2xl bg-theme-card border border-theme-border hover:border-theme-border transition-all group cursor-pointer">
                     <div className="flex items-center gap-4 mb-4">
                       <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${course.color} flex items-center justify-center text-2xl shadow-lg`}>
                         {course.icon}
                       </div>
                       <div>
                         <h4 className="font-bold text-white group-hover:text-violet-400 transition-colors">{course.title}</h4>
-                        <p className="text-xs text-gray-500">{course.grade} - {course.board}</p>
+                        <p className="text-xs text-theme-text-muted">{course.grade} - {course.board}</p>
                       </div>
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-400">{course.completedChapters}/{course.chapters} chapters</span>
+                        <span className="text-theme-text-secondary">{course.completedChapters}/{course.chapters} chapters</span>
                         <span className="text-violet-400 font-medium">{course.chapters > 0 ? Math.round((course.completedChapters / course.chapters) * 100) : 0}%</span>
                       </div>
                       <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
@@ -312,14 +314,14 @@ export default function DashboardPage() {
             initial="hidden"
             animate="visible"
             custom={10}
-            className="p-6 rounded-2xl bg-gray-900/50 border border-white/5"
+            className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Award className="w-5 h-5 text-amber-400" />
-              Recent Badges
+                            <Award className="w-5 h-5 text-amber-400" />
+                            {t.badges}
             </h3>
             <div className="grid grid-cols-4 gap-3">
-              <p className="text-gray-500 text-sm col-span-4 text-center py-4">No badges earned yet. Keep learning!</p>
+              <p className="text-theme-text-muted text-sm col-span-4 text-center py-4">{t.no_data}</p>
             </div>
           </motion.div>
 
@@ -329,11 +331,11 @@ export default function DashboardPage() {
             initial="hidden"
             animate="visible"
             custom={11}
-            className="p-6 rounded-2xl bg-gray-900/50 border border-white/5"
+            className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-emerald-400" />
-              Study Streak
+              {t.streak}
             </h3>
             <div className="grid grid-cols-7 gap-2">
               {Array.from({ length: 28 }, (_, i) => {
@@ -350,7 +352,7 @@ export default function DashboardPage() {
                         ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/30'
                         : active
                         ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20'
-                        : 'bg-white/5 text-gray-600'
+                        : 'bg-theme-input text-gray-600'
                     }`}
                   >
                     {i + 1}
@@ -358,13 +360,13 @@ export default function DashboardPage() {
                 );
               })}
             </div>
-            <div className="flex items-center justify-center gap-4 mt-4 text-xs text-gray-500">
+            <div className="flex items-center justify-center gap-4 mt-4 text-xs text-theme-text-muted">
               <div className="flex items-center gap-1">
                 <div className="w-3 h-3 rounded bg-emerald-500/20 border border-emerald-500/20" />
                 <span>Studied</span>
               </div>
               <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded bg-white/5" />
+                <div className="w-3 h-3 rounded bg-theme-input" />
                 <span>Missed</span>
               </div>
               <div className="flex items-center gap-1">

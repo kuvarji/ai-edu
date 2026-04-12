@@ -176,14 +176,14 @@ export default function AdminDashboard() {
   // Auth check - show error if not admin
   if (!loading && authError && user?.role !== 'admin') {
     return (
-      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
         <div className="text-center max-w-md">
           <AlertTriangle className="w-16 h-16 text-amber-400 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-white mb-2">Admin Access Required</h2>
-          <p className="text-gray-400 mb-6">
+          <p className="text-theme-text-secondary mb-6">
             Admin dashboard access karne ke liye admin account se login karo.
             <br /><br />
-            <span className="text-gray-500 text-sm">Admin login: admin@aiedu.com</span>
+            <span className="text-theme-text-muted text-sm">Admin login: admin@aiedu.com</span>
           </p>
         </div>
       </div>
@@ -191,7 +191,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Toast Messages */}
         <AnimatePresence>
@@ -214,14 +214,14 @@ export default function AdminDashboard() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-black text-white mb-1">Admin Dashboard</h1>
-            <p className="text-gray-400">Platform ka overview aur management</p>
+            <p className="text-theme-text-secondary">Platform ka overview aur management</p>
           </div>
           <div className="flex gap-3">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => { setShowUploadSyllabus(true); setAddedChapters([]); setChapterForm({ course_id: '', title: '', content: '', video_url: '', order: 1 }); }}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-300 bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-300 bg-theme-input border border-theme-border hover:bg-theme-card-hover transition-all"
             >
               <Upload className="w-4 h-4" /> Upload Syllabus
             </motion.button>
@@ -239,7 +239,7 @@ export default function AdminDashboard() {
         {loading && (
           <div className="text-center py-12 mb-8">
             <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
-            <p className="text-gray-400">Loading dashboard data...</p>
+            <p className="text-theme-text-secondary">Loading dashboard data...</p>
           </div>
         )}
 
@@ -254,7 +254,7 @@ export default function AdminDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 whileHover={{ y: -5 }}
-                className="p-5 rounded-2xl bg-gray-900/50 border border-white/5"
+                className="p-5 rounded-2xl bg-theme-card border border-theme-border"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg`}>
@@ -266,7 +266,7 @@ export default function AdminDashboard() {
                   </span>
                 </div>
                 <p className="text-2xl font-black text-white">{stat.value}</p>
-                <p className="text-sm text-gray-500">{stat.label}</p>
+                <p className="text-sm text-theme-text-muted">{stat.label}</p>
               </motion.div>
             );
           })}
@@ -278,10 +278,10 @@ export default function AdminDashboard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="lg:col-span-2 p-6 rounded-2xl bg-gray-900/50 border border-white/5"
+            className="lg:col-span-2 p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
             <h3 className="text-lg font-bold text-white mb-1">Revenue Overview</h3>
-            <p className="text-sm text-gray-500 mb-6">Monthly revenue trend</p>
+            <p className="text-sm text-theme-text-muted mb-6">Monthly revenue trend</p>
             {ps?.revenue ? <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={[]}>
                 <defs>
@@ -295,7 +295,7 @@ export default function AdminDashboard() {
                 <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }} />
                 <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} fill="url(#revGrad)" />
               </AreaChart>
-            </ResponsiveContainer> : <div className="flex items-center justify-center h-[280px] text-gray-500">No revenue data available yet</div>}
+            </ResponsiveContainer> : <div className="flex items-center justify-center h-[280px] text-theme-text-muted">No revenue data available yet</div>}
           </motion.div>
 
           {/* User Growth */}
@@ -303,10 +303,10 @@ export default function AdminDashboard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="p-6 rounded-2xl bg-gray-900/50 border border-white/5"
+            className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
             <h3 className="text-lg font-bold text-white mb-1">User Growth</h3>
-            <p className="text-sm text-gray-500 mb-6">New users per month</p>
+            <p className="text-sm text-theme-text-muted mb-6">New users per month</p>
             {ps?.users ? <ResponsiveContainer width="100%" height={280}>
               <BarChart data={[]}>
                 <XAxis dataKey="month" stroke="#4b5563" fontSize={12} />
@@ -314,7 +314,7 @@ export default function AdminDashboard() {
                 <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }} />
                 <Bar dataKey="users" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
               </BarChart>
-            </ResponsiveContainer> : <div className="flex items-center justify-center h-[280px] text-gray-500">No user growth data yet</div>}
+            </ResponsiveContainer> : <div className="flex items-center justify-center h-[280px] text-theme-text-muted">No user growth data yet</div>}
           </motion.div>
         </div>
 
@@ -324,7 +324,7 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="p-6 rounded-2xl bg-gray-900/50 border border-white/5"
+            className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
@@ -332,36 +332,36 @@ export default function AdminDashboard() {
               </h3>
             </div>
             <div className="space-y-3">
-              {courses.length === 0 && <p className="text-gray-500 text-sm text-center py-4">No courses added yet</p>}
+              {courses.length === 0 && <p className="text-theme-text-muted text-sm text-center py-4">No courses added yet</p>}
               {courses.slice(0, 6).map((course, i) => (
                 <motion.div
                   key={course.id}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6 + i * 0.05 }}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all"
+                  className="flex items-center gap-3 p-3 rounded-xl bg-theme-input hover:bg-theme-card-hover transition-all"
                 >
                   <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-lg">
                     {course.icon}
                   </div>
                   <div className="flex-1">
                     <h4 className="text-sm font-bold text-white">{course.title}</h4>
-                    <p className="text-xs text-gray-500">{course.subject}</p>
+                    <p className="text-xs text-theme-text-muted">{course.subject}</p>
                   </div>
                   <div className="flex gap-1">
                     <button
                       onClick={() => window.open(`/courses/${course.id}`, '_blank')}
-                      className="p-1.5 rounded-lg text-gray-500 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
+                      className="p-1.5 rounded-lg text-theme-text-muted hover:text-blue-400 hover:bg-blue-500/10 transition-all"
                       title="View course"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
-                    <button className="p-1.5 rounded-lg text-gray-500 hover:text-amber-400 hover:bg-amber-500/10 transition-all" title="Edit course">
+                    <button className="p-1.5 rounded-lg text-theme-text-muted hover:text-amber-400 hover:bg-amber-500/10 transition-all" title="Edit course">
                       <Edit3 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDeleteCourse(course.id, course.title)}
-                      className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                      className="p-1.5 rounded-lg text-theme-text-muted hover:text-red-400 hover:bg-red-500/10 transition-all"
                       title="Delete course"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -377,39 +377,39 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="p-6 rounded-2xl bg-gray-900/50 border border-white/5"
+            className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <Users className="w-5 h-5 text-cyan-400" /> Recent Users
               </h3>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
                 <input
                   type="text"
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-violet-500/50 w-40"
+                  className="pl-9 pr-4 py-2 rounded-lg bg-theme-input border border-theme-border text-white text-sm placeholder-gray-600 focus:outline-none focus:border-violet-500/50 w-40"
                 />
               </div>
             </div>
             <div className="space-y-3">
-              {displayUsers.length === 0 && <p className="text-gray-500 text-sm text-center py-4">No users registered yet</p>}
+              {displayUsers.length === 0 && <p className="text-theme-text-muted text-sm text-center py-4">No users registered yet</p>}
               {displayUsers.map((u, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.7 + i * 0.05 }}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all"
+                  className="flex items-center gap-3 p-3 rounded-xl bg-theme-input hover:bg-theme-card-hover transition-all"
                 >
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-sm font-bold text-white">
                     {u.name.charAt(0)}
                   </div>
                   <div className="flex-1">
                     <h4 className="text-sm font-bold text-white">{u.name}</h4>
-                    <p className="text-xs text-gray-500">{u.email}</p>
+                    <p className="text-xs text-theme-text-muted">{u.email}</p>
                   </div>
                   <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                     u.role === 'admin' ? 'bg-red-500/20 text-red-400' :
@@ -419,7 +419,7 @@ export default function AdminDashboard() {
                   <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                     u.plan === 'premium' ? 'bg-amber-500/20 text-amber-400' :
                     u.plan === 'pro' ? 'bg-violet-500/20 text-violet-400' :
-                    'bg-gray-500/20 text-gray-400'
+                    'bg-gray-500/20 text-theme-text-secondary'
                   }`}>{u.plan}</span>
                 </motion.div>
               ))}
@@ -438,42 +438,42 @@ export default function AdminDashboard() {
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-lg bg-gray-900 border border-white/10 rounded-2xl p-6 shadow-2xl"
+              className="w-full max-w-lg bg-gray-900 border border-theme-border rounded-2xl p-6 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
                   <PlusCircle className="w-5 h-5 text-violet-400" /> Add New Course
                 </h2>
-                <button onClick={() => setShowAddCourse(false)} className="text-gray-500 hover:text-white transition-colors">
+                <button onClick={() => setShowAddCourse(false)} className="text-theme-text-muted hover:text-white transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Course Title *</label>
+                  <label className="block text-sm font-medium text-theme-text-secondary mb-1">Course Title *</label>
                   <input
                     type="text" placeholder="e.g. Mathematics" value={courseForm.title}
                     onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Subject *</label>
+                    <label className="block text-sm font-medium text-theme-text-secondary mb-1">Subject *</label>
                     <input
                       type="text" placeholder="e.g. math, science" value={courseForm.subject}
                       onChange={(e) => setCourseForm({ ...courseForm, subject: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Grade (6-12)</label>
+                    <label className="block text-sm font-medium text-theme-text-secondary mb-1">Grade (6-12)</label>
                     <select
                       value={courseForm.grade}
                       onChange={(e) => setCourseForm({ ...courseForm, grade: Number(e.target.value) })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white focus:outline-none focus:border-violet-500/50"
                     >
                       {[6, 7, 8, 9, 10, 11, 12].map((g) => (
                         <option key={g} value={g} className="bg-gray-900">Class {g}</option>
@@ -483,11 +483,11 @@ export default function AdminDashboard() {
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Board</label>
+                    <label className="block text-sm font-medium text-theme-text-secondary mb-1">Board</label>
                     <select
                       value={courseForm.board}
                       onChange={(e) => setCourseForm({ ...courseForm, board: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white focus:outline-none focus:border-violet-500/50"
                     >
                       {['CBSE', 'ICSE', 'State Board', 'Other'].map((b) => (
                         <option key={b} value={b} className="bg-gray-900">{b}</option>
@@ -495,19 +495,19 @@ export default function AdminDashboard() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Icon (emoji)</label>
+                    <label className="block text-sm font-medium text-theme-text-secondary mb-1">Icon (emoji)</label>
                     <input
                       type="text" placeholder="e.g. \ud83d\udcda" value={courseForm.icon}
                       onChange={(e) => setCourseForm({ ...courseForm, icon: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Color</label>
+                    <label className="block text-sm font-medium text-theme-text-secondary mb-1">Color</label>
                     <select
                       value={courseForm.color}
                       onChange={(e) => setCourseForm({ ...courseForm, color: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white focus:outline-none focus:border-violet-500/50"
                     >
                       {['violet', 'cyan', 'emerald', 'amber', 'rose', 'indigo', 'blue', 'red'].map((c) => (
                         <option key={c} value={c} className="bg-gray-900">{c}</option>
@@ -516,18 +516,18 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Description</label>
+                  <label className="block text-sm font-medium text-theme-text-secondary mb-1">Description</label>
                   <textarea
                     placeholder="Course ke baare mein likho..." value={courseForm.description}
                     onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
                     rows={3}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 resize-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 resize-none"
                   />
                 </div>
               </div>
 
               <div className="flex gap-3 mt-6">
-                <button onClick={() => setShowAddCourse(false)} className="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-400 bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+                <button onClick={() => setShowAddCourse(false)} className="flex-1 py-2.5 rounded-xl text-sm font-medium text-theme-text-secondary bg-theme-input border border-theme-border hover:bg-theme-card-hover transition-all">
                   Cancel
                 </button>
                 <button
@@ -553,25 +553,25 @@ export default function AdminDashboard() {
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-lg bg-gray-900 border border-white/10 rounded-2xl p-6 shadow-2xl max-h-[85vh] overflow-y-auto"
+              className="w-full max-w-lg bg-gray-900 border border-theme-border rounded-2xl p-6 shadow-2xl max-h-[85vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
                   <Upload className="w-5 h-5 text-cyan-400" /> Upload Syllabus / Add Chapters
                 </h2>
-                <button onClick={() => setShowUploadSyllabus(false)} className="text-gray-500 hover:text-white transition-colors">
+                <button onClick={() => setShowUploadSyllabus(false)} className="text-theme-text-muted hover:text-white transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Select Course *</label>
+                  <label className="block text-sm font-medium text-theme-text-secondary mb-1">Select Course *</label>
                   <select
                     value={chapterForm.course_id}
                     onChange={(e) => setChapterForm({ ...chapterForm, course_id: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500/50"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white focus:outline-none focus:border-violet-500/50"
                   >
                     <option value="" className="bg-gray-900">-- Course select karo --</option>
                     {apiCourses.map((c) => (
@@ -580,37 +580,37 @@ export default function AdminDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Chapter Title *</label>
+                  <label className="block text-sm font-medium text-theme-text-secondary mb-1">Chapter Title *</label>
                   <input
                     type="text" placeholder="e.g. Real Numbers" value={chapterForm.title}
                     onChange={(e) => setChapterForm({ ...chapterForm, title: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Content / Notes</label>
+                  <label className="block text-sm font-medium text-theme-text-secondary mb-1">Content / Notes</label>
                   <textarea
                     placeholder="Chapter ka content / notes likho..." value={chapterForm.content}
                     onChange={(e) => setChapterForm({ ...chapterForm, content: e.target.value })}
                     rows={4}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 resize-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 resize-none"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Video URL</label>
+                    <label className="block text-sm font-medium text-theme-text-secondary mb-1">Video URL</label>
                     <input
                       type="text" placeholder="https://youtube.com/..." value={chapterForm.video_url}
                       onChange={(e) => setChapterForm({ ...chapterForm, video_url: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Order</label>
+                    <label className="block text-sm font-medium text-theme-text-secondary mb-1">Order</label>
                     <input
                       type="number" min={1} value={chapterForm.order}
                       onChange={(e) => setChapterForm({ ...chapterForm, order: Number(e.target.value) })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white focus:outline-none focus:border-violet-500/50"
                     />
                   </div>
                 </div>
@@ -631,7 +631,7 @@ export default function AdminDashboard() {
               )}
 
               <div className="flex gap-3 mt-6">
-                <button onClick={() => setShowUploadSyllabus(false)} className="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-400 bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+                <button onClick={() => setShowUploadSyllabus(false)} className="flex-1 py-2.5 rounded-xl text-sm font-medium text-theme-text-secondary bg-theme-input border border-theme-border hover:bg-theme-card-hover transition-all">
                   {addedChapters.length > 0 ? 'Done' : 'Cancel'}
                 </button>
                 <button
