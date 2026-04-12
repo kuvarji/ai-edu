@@ -17,23 +17,25 @@ import {
   Zap,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { useLanguage } from '../i18n/useLanguage';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const { isLoggedIn, user, logout } = useStore();
+  const { t } = useLanguage();
 
   const publicLinks = [
-    { to: '/', label: 'Home', icon: Home },
-    { to: '/courses', label: 'Courses', icon: BookOpen },
-    { to: '/leaderboard', label: 'Leaderboard', icon: Trophy },
+    { to: '/', label: t.nav_home, icon: Home },
+    { to: '/courses', label: t.nav_courses, icon: BookOpen },
+    { to: '/leaderboard', label: t.nav_leaderboard, icon: Trophy },
   ];
 
   const authLinks = [
-    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/courses', label: 'Courses', icon: BookOpen },
-    { to: '/leaderboard', label: 'Leaderboard', icon: Trophy },
-    { to: '/profile', label: 'Profile', icon: User },
+    { to: '/dashboard', label: t.nav_dashboard, icon: LayoutDashboard },
+    { to: '/courses', label: t.nav_courses, icon: BookOpen },
+    { to: '/leaderboard', label: t.nav_leaderboard, icon: Trophy },
+    { to: '/profile', label: t.nav_profile, icon: User },
   ];
 
   const links = isLoggedIn ? authLinks : publicLinks;
@@ -43,7 +45,7 @@ export default function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-gray-900/80 backdrop-blur-xl border-b border-white/10"
+      className="fixed top-0 left-0 right-0 z-50 bg-theme-nav backdrop-blur-xl border-b border-theme-nav-border transition-colors duration-300"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -71,7 +73,7 @@ export default function Navbar() {
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                       active
                         ? 'bg-violet-500/20 text-violet-400 shadow-lg shadow-violet-500/10'
-                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                        : 'text-theme-text-secondary hover:text-theme-text hover:bg-theme-card-hover'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -106,7 +108,7 @@ export default function Navbar() {
                   className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-all"
                 >
                   <LogOut className="w-4 h-4" />
-                  Logout
+                  {t.nav_logout}
                 </motion.button>
               </div>
             ) : (
@@ -118,7 +120,7 @@ export default function Navbar() {
                     className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all"
                   >
                     <LogIn className="w-4 h-4" />
-                    Login
+                    {t.nav_login}
                   </motion.button>
                 </Link>
                 <Link to="/signup">
@@ -128,7 +130,7 @@ export default function Navbar() {
                     className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 transition-all"
                   >
                     <UserPlus className="w-4 h-4" />
-                    Sign Up Free
+                    {t.nav_signup}
                   </motion.button>
                 </Link>
               </>
@@ -137,7 +139,7 @@ export default function Navbar() {
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/5"
+            className="md:hidden p-2 rounded-xl text-theme-text-secondary hover:text-theme-text hover:bg-theme-card-hover"
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -150,7 +152,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/5"
+            className="md:hidden bg-theme-nav backdrop-blur-xl border-t border-theme-border transition-colors duration-300"
           >
             <div className="px-4 py-4 space-y-2">
               {links.map((link) => {
@@ -160,7 +162,7 @@ export default function Navbar() {
                     key={link.to}
                     to={link.to}
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-theme-text-secondary hover:text-theme-text hover:bg-theme-card-hover transition-all"
                   >
                     <Icon className="w-5 h-5" />
                     {link.label}
@@ -168,17 +170,17 @@ export default function Navbar() {
                 );
               })}
               {!isLoggedIn && (
-                <div className="pt-2 border-t border-white/5 space-y-2">
+                <div className="pt-2 border-t border-theme-border space-y-2">
                   <Link to="/login" onClick={() => setMobileOpen(false)}>
                     <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5">
                       <LogIn className="w-5 h-5" />
-                      Login
+                      {t.nav_login}
                     </div>
                   </Link>
                   <Link to="/signup" onClick={() => setMobileOpen(false)}>
                     <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-white bg-gradient-to-r from-violet-500 to-purple-600">
                       <UserPlus className="w-5 h-5" />
-                      Sign Up Free
+                      {t.nav_signup}
                     </div>
                   </Link>
                 </div>

@@ -119,7 +119,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
       {/* Toast notifications */}
       <AnimatePresence>
         {successMsg && (
@@ -151,7 +151,7 @@ export default function ProfilePage() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative p-8 rounded-3xl bg-gradient-to-br from-violet-600/20 via-purple-600/10 to-cyan-600/20 border border-white/10 mb-8 overflow-hidden"
+          className="relative p-8 rounded-3xl bg-gradient-to-br from-violet-600/20 via-purple-600/10 to-cyan-600/20 border border-theme-border mb-8 overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 to-transparent" />
           <div className="relative flex flex-col sm:flex-row items-center gap-6">
@@ -162,13 +162,13 @@ export default function ProfilePage() {
               >
                 {user?.avatar || '🦁'}
               </motion.div>
-              <button className="absolute -bottom-2 -right-2 p-2 rounded-xl bg-gray-900 border border-white/10 text-gray-400 hover:text-white transition-colors">
+              <button className="absolute -bottom-2 -right-2 p-2 rounded-xl bg-gray-900 border border-theme-border text-theme-text-secondary hover:text-white transition-colors">
                 <Camera className="w-4 h-4" />
               </button>
             </div>
             <div className="text-center sm:text-left flex-1">
               <h1 className="text-3xl font-black text-white mb-1">{user?.name || 'Student'}</h1>
-              <p className="text-gray-400 mb-3">{user?.email || 'student@eduai.com'}</p>
+              <p className="text-theme-text-secondary mb-3">{user?.email || 'student@eduai.com'}</p>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
                 <span className="px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-xs font-bold capitalize">
                   {user?.role || 'student'}
@@ -185,7 +185,7 @@ export default function ProfilePage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setEditing(!editing)}
-              className="px-5 py-2.5 rounded-xl font-medium text-sm text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all flex items-center gap-2"
+              className="px-5 py-2.5 rounded-xl font-medium text-sm text-white bg-white/10 border border-theme-border hover:bg-white/20 transition-all flex items-center gap-2"
             >
               <Edit3 className="w-4 h-4" />
               Edit Profile
@@ -204,11 +204,11 @@ export default function ProfilePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 + i * 0.05 }}
                 whileHover={{ y: -3 }}
-                className="p-4 rounded-2xl bg-gray-900/50 border border-white/5 text-center"
+                className="p-4 rounded-2xl bg-theme-card border border-theme-border text-center"
               >
                 <Icon className={`w-6 h-6 mx-auto mb-2 ${stat.color}`} />
                 <p className="text-xl font-black text-white">{stat.value}</p>
-                <p className="text-xs text-gray-500">{stat.label}</p>
+                <p className="text-xs text-theme-text-muted">{stat.label}</p>
               </motion.div>
             );
           })}
@@ -220,7 +220,7 @@ export default function ProfilePage() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="p-6 rounded-2xl bg-gray-900/50 border border-white/5"
+            className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <User className="w-5 h-5 text-violet-400" />
@@ -228,38 +228,38 @@ export default function ProfilePage() {
             </h3>
             <div className="space-y-4">
               <div>
-                <label className="text-xs text-gray-500 mb-1 block">Full Name</label>
+                <label className="text-xs text-theme-text-muted mb-1 block">Full Name</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   disabled={!editing}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-white disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all"
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-500 mb-1 block">Email</label>
+                <label className="text-xs text-theme-text-muted mb-1 block">Email</label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
                   <input
                     type="email"
                     value={user?.email || 'student@eduai.com'}
                     disabled
-                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white opacity-50"
+                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-white opacity-50"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-xs text-gray-500 mb-1 block">Phone</label>
+                <label className="text-xs text-theme-text-muted mb-1 block">Phone</label>
                 <div className="relative">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+91 9876543210"
                     disabled={!editing}
-                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all"
+                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-white disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all"
                   />
                 </div>
               </div>
@@ -287,13 +287,13 @@ export default function ProfilePage() {
             className="space-y-6"
           >
             {/* Theme */}
-            <div className="p-6 rounded-2xl bg-gray-900/50 border border-white/5">
+            <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
               <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                 <Shield className="w-5 h-5 text-cyan-400" />
                 Settings
               </h3>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-theme-input">
                   <div className="flex items-center gap-3">
                     {darkMode ? <Moon className="w-5 h-5 text-violet-400" /> : <Sun className="w-5 h-5 text-amber-400" />}
                     <span className="text-sm text-gray-300">Dark Mode</span>
@@ -309,7 +309,7 @@ export default function ProfilePage() {
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-theme-input">
                   <div className="flex items-center gap-3">
                     <Globe className="w-5 h-5 text-emerald-400" />
                     <span className="text-sm text-gray-300">Language</span>
@@ -317,7 +317,7 @@ export default function ProfilePage() {
                   <select
                     value={language}
                     onChange={(e) => handleLanguageChange(e.target.value)}
-                    className="bg-gray-800 text-white text-sm rounded-lg px-3 py-1.5 border border-white/10 focus:outline-none"
+                    className="bg-gray-800 text-white text-sm rounded-lg px-3 py-1.5 border border-theme-border focus:outline-none"
                   >
                     <option value="hindi">Hindi</option>
                     <option value="english">English</option>
@@ -325,7 +325,7 @@ export default function ProfilePage() {
                   </select>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-theme-input">
                   <div className="flex items-center gap-3">
                     <Bell className="w-5 h-5 text-amber-400" />
                     <span className="text-sm text-gray-300">Notifications</span>
@@ -341,7 +341,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Badges */}
-            <div className="p-6 rounded-2xl bg-gray-900/50 border border-white/5">
+            <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
               <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                 <Award className="w-5 h-5 text-amber-400" />
                 Badges ({badges.filter((b) => b.unlocked).length}/{badges.length})
@@ -352,12 +352,12 @@ export default function ProfilePage() {
                     key={badge.id}
                     whileHover={{ scale: 1.1 }}
                     className={`text-center p-2 rounded-xl ${
-                      badge.unlocked ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-white/5 opacity-40'
+                      badge.unlocked ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-theme-input opacity-40'
                     }`}
                     title={badge.description}
                   >
                     <span className="text-xl">{badge.icon}</span>
-                    <p className="text-xs text-gray-400 mt-1 truncate">{badge.name}</p>
+                    <p className="text-xs text-theme-text-secondary mt-1 truncate">{badge.name}</p>
                   </motion.div>
                 ))}
               </div>

@@ -34,7 +34,7 @@ interface AppState {
 export const useStore = create<AppState>((set) => ({
   user: null,
   isLoggedIn: false,
-  darkMode: true,
+  darkMode: typeof window !== 'undefined' ? localStorage.getItem('app_darkMode') !== 'false' : true,
   sidebarOpen: true,
   loading: false,
   login: (user, token) => {

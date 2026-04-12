@@ -58,10 +58,10 @@ export default function CourseDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
-          <p className="text-gray-400">Loading course...</p>
+          <p className="text-theme-text-secondary">Loading course...</p>
         </div>
       </div>
     );
@@ -69,10 +69,10 @@ export default function CourseDetailPage() {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
         <div className="text-center">
           <BookOpen className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-          <p className="text-gray-400 mb-4">Course not found</p>
+          <p className="text-theme-text-secondary mb-4">Course not found</p>
           <Link to="/courses" className="text-violet-400 hover:text-violet-300">Back to Courses</Link>
         </div>
       </div>
@@ -80,10 +80,10 @@ export default function CourseDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
       <div className="max-w-5xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <Link to="/courses" className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition-colors">
+          <Link to="/courses" className="inline-flex items-center gap-2 text-theme-text-secondary hover:text-white mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back to Courses
           </Link>
         </motion.div>
@@ -122,10 +122,10 @@ export default function CourseDetailPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mb-8 p-5 rounded-2xl bg-gray-900/50 border border-white/5"
+          className="mb-8 p-5 rounded-2xl bg-theme-card border border-theme-border"
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-400">Overall Progress</span>
+            <span className="text-sm text-theme-text-secondary">Overall Progress</span>
             <span className="text-sm font-bold text-violet-400">{course.completedChapters}/{course.chapters} chapters done</span>
           </div>
           <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
@@ -158,14 +158,14 @@ export default function CourseDetailPage() {
                       ? 'bg-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/30'
                       : chapter.status === 'in-progress'
                       ? 'bg-violet-500/5 border-violet-500/20 hover:border-violet-500/30'
-                      : 'bg-gray-900/30 border-white/5 opacity-60'
+                      : 'bg-gray-900/30 border-theme-border opacity-60'
                   }`}>
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                       chapter.status === 'completed'
                         ? 'bg-emerald-500/20 text-emerald-400'
                         : chapter.status === 'in-progress'
                         ? 'bg-violet-500/20 text-violet-400'
-                        : 'bg-white/5 text-gray-600'
+                        : 'bg-theme-input text-gray-600'
                     }`}>
                       {chapter.status === 'completed' ? (
                         <CheckCircle2 className="w-6 h-6" />
@@ -177,7 +177,7 @@ export default function CourseDetailPage() {
                     </div>
                     <div className="flex-1">
                       <h4 className="font-bold text-white text-sm">{chapter.title}</h4>
-                      <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                      <div className="flex items-center gap-3 text-xs text-theme-text-muted mt-1">
                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {chapter.duration}</span>
                         <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> +{chapter.xp} XP</span>
                       </div>
@@ -205,7 +205,7 @@ export default function CourseDetailPage() {
         >
           <Award className="w-12 h-12 text-amber-400 mx-auto mb-3" />
           <h3 className="text-xl font-bold text-white mb-2">Ready for Quiz?</h3>
-          <p className="text-gray-400 mb-4">Chapter quiz de aur XP kamao!</p>
+          <p className="text-theme-text-secondary mb-4">Chapter quiz de aur XP kamao!</p>
           <Link to="/quiz">
             <motion.button
               whileHover={{ scale: 1.05 }}

@@ -38,10 +38,10 @@ export default function CharacterStorePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
-          <p className="text-gray-400">Loading store...</p>
+          <p className="text-theme-text-secondary">Loading store...</p>
         </div>
       </div>
     );
@@ -88,14 +88,14 @@ export default function CharacterStorePage() {
   const filtered = filter === 'all' ? avatars : avatars.filter((a: typeof avatars[number]) => a.rarity === filter);
 
   return (
-    <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
       <div className="max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium mb-4">
             <ShoppingBag className="w-4 h-4" /> Avatar Store
           </span>
           <h1 className="text-4xl font-black text-white mb-2">Character Store</h1>
-          <p className="text-gray-400">XP se apna favourite avatar unlock karo!</p>
+          <p className="text-theme-text-secondary">XP se apna favourite avatar unlock karo!</p>
           <div className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-full bg-yellow-500/10 border border-yellow-500/20">
             <Zap className="w-5 h-5 text-yellow-400" />
             <span className="text-lg font-bold text-yellow-400">{userXP.toLocaleString()} XP Available</span>
@@ -112,7 +112,7 @@ export default function CharacterStorePage() {
               className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all ${
                 filter === f
                   ? 'bg-violet-500/20 text-violet-400 border border-violet-500/20'
-                  : 'bg-gray-900/50 text-gray-400 border border-white/5 hover:bg-white/5'
+                  : 'bg-theme-card text-theme-text-secondary border border-theme-border hover:bg-theme-input'
               }`}
             >
               {f}
@@ -136,7 +136,7 @@ export default function CharacterStorePage() {
                 className={`relative p-5 rounded-2xl border cursor-pointer transition-all ${
                   isSelected
                     ? `bg-gradient-to-b from-violet-500/20 to-violet-500/5 border-violet-500/40 shadow-lg shadow-violet-500/10`
-                    : `bg-gray-900/50 ${rarityBorder[avatar.rarity]} hover:border-white/20`
+                    : `bg-theme-card ${rarityBorder[avatar.rarity]} hover:border-white/20`
                 }`}
               >
                 {/* Rarity Badge */}
@@ -169,7 +169,7 @@ export default function CharacterStorePage() {
                       <Zap className="w-3 h-3" /> {avatar.cost} XP
                     </motion.button>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/5 text-gray-500 text-xs font-bold">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-theme-input text-theme-text-muted text-xs font-bold">
                       <Lock className="w-3 h-3" /> {avatar.cost} XP
                     </span>
                   )}
@@ -184,12 +184,12 @@ export default function CharacterStorePage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-8 p-6 rounded-2xl bg-gray-900/50 border border-white/10 flex items-center gap-6"
+            className="mt-8 p-6 rounded-2xl bg-theme-card border border-theme-border flex items-center gap-6"
           >
             <span className="text-6xl">{avatars.find((a) => a.id === selected)?.emoji}</span>
             <div className="flex-1">
               <h3 className="text-xl font-bold text-white">{avatars.find((a) => a.id === selected)?.name}</h3>
-              <p className="text-gray-400 text-sm capitalize">Rarity: {avatars.find((a) => a.id === selected)?.rarity}</p>
+              <p className="text-theme-text-secondary text-sm capitalize">Rarity: {avatars.find((a) => a.id === selected)?.rarity}</p>
             </div>
             <motion.button
               whileHover={{ scale: 1.05 }}

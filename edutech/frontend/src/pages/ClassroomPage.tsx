@@ -46,7 +46,7 @@ export default function ClassroomPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-950 pt-20 pb-4 px-4">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-4 px-4">
       <div className="max-w-7xl mx-auto h-[calc(100vh-6rem)] flex flex-col">
         {/* Header */}
         <motion.div
@@ -55,12 +55,12 @@ export default function ClassroomPage() {
           className="flex items-center justify-between mb-4"
         >
           <div className="flex items-center gap-4">
-            <Link to={`/courses/${courseId}`} className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+            <Link to={`/courses/${courseId}`} className="p-2 rounded-xl text-theme-text-secondary hover:text-white hover:bg-theme-input transition-all">
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
               <h1 className="text-xl font-bold text-white">Quadratic Equations</h1>
-              <p className="text-sm text-gray-500">Mathematics - Chapter 4</p>
+              <p className="text-sm text-theme-text-muted">Mathematics - Chapter 4</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -89,7 +89,7 @@ export default function ClassroomPage() {
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                   activeTab === tab.key
                     ? 'bg-violet-500/20 text-violet-400 border border-violet-500/20'
-                    : 'bg-gray-900/50 text-gray-400 border border-white/5 hover:bg-white/5'
+                    : 'bg-theme-card text-theme-text-secondary border border-theme-border hover:bg-theme-input'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -100,7 +100,7 @@ export default function ClassroomPage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-hidden rounded-2xl bg-gray-900/50 border border-white/5">
+        <div className="flex-1 overflow-hidden rounded-2xl bg-theme-card border border-theme-border">
           {activeTab === 'chat' && (
             <div className="flex flex-col h-full">
               {/* Messages */}
@@ -122,19 +122,19 @@ export default function ClassroomPage() {
                     </div>
                     <div className={`max-w-lg p-4 rounded-2xl ${
                       msg.role === 'bot'
-                        ? 'bg-white/5 border border-white/10 text-gray-200'
+                        ? 'bg-theme-input border border-theme-border text-gray-200'
                         : 'bg-violet-500/20 border border-violet-500/20 text-white'
                     }`}>
                       <p className="text-sm leading-relaxed whitespace-pre-line">{msg.text}</p>
                       {msg.role === 'bot' && (
-                        <div className="flex items-center gap-3 mt-3 pt-3 border-t border-white/5">
-                          <button className="text-gray-500 hover:text-violet-400 transition-colors">
+                        <div className="flex items-center gap-3 mt-3 pt-3 border-t border-theme-border">
+                          <button className="text-theme-text-muted hover:text-violet-400 transition-colors">
                             <Volume2 className="w-4 h-4" />
                           </button>
-                          <button className="text-gray-500 hover:text-violet-400 transition-colors">
+                          <button className="text-theme-text-muted hover:text-violet-400 transition-colors">
                             <Copy className="w-4 h-4" />
                           </button>
-                          <button className="text-gray-500 hover:text-emerald-400 transition-colors">
+                          <button className="text-theme-text-muted hover:text-emerald-400 transition-colors">
                             <ThumbsUp className="w-4 h-4" />
                           </button>
                         </div>
@@ -145,7 +145,7 @@ export default function ClassroomPage() {
               </div>
 
               {/* Input */}
-              <div className="p-4 border-t border-white/5">
+              <div className="p-4 border-t border-theme-border">
                 <div className="flex gap-3">
                   <input
                     type="text"
@@ -153,7 +153,7 @@ export default function ClassroomPage() {
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                     placeholder="Apna sawal likho... (Hindi ya English)"
-                    className="flex-1 px-5 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all"
+                    className="flex-1 px-5 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all"
                   />
                   <motion.button
                     whileHover={{ scale: 1.05 }}
@@ -184,7 +184,7 @@ export default function ClassroomPage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="p-5 rounded-xl bg-white/5 border border-white/10"
+                  className="p-5 rounded-xl bg-theme-input border border-theme-border"
                 >
                   <h4 className="font-bold text-violet-400 mb-2">{note.title}</h4>
                   <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">{note.content}</p>
@@ -200,7 +200,7 @@ export default function ClassroomPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center"
               >
-                <div className="w-full max-w-2xl aspect-video rounded-2xl bg-gradient-to-br from-violet-500/10 to-cyan-500/10 border border-white/10 flex items-center justify-center mb-6">
+                <div className="w-full max-w-2xl aspect-video rounded-2xl bg-gradient-to-br from-violet-500/10 to-cyan-500/10 border border-theme-border flex items-center justify-center mb-6">
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -210,7 +210,7 @@ export default function ClassroomPage() {
                   </motion.div>
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">AI Video Lesson</h3>
-                <p className="text-gray-400">AI teacher animated character ke saath seekho</p>
+                <p className="text-theme-text-secondary">AI teacher animated character ke saath seekho</p>
               </motion.div>
             </div>
           )}

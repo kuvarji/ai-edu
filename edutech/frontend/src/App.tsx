@@ -20,14 +20,25 @@ import ParentDashboard from './pages/ParentDashboard';
 
 function App() {
   const initializeAuth = useStore((s) => s.initializeAuth);
+  const darkMode = useStore((s) => s.darkMode);
 
   useEffect(() => {
     initializeAuth();
   }, [initializeAuth]);
 
+  // Apply dark class to html element
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('app_darkMode', darkMode ? 'true' : 'false');
+  }, [darkMode]);
+
   return (
     <Router>
-      <div className="min-h-screen bg-gray-950">
+      <div className="min-h-screen bg-theme-page transition-colors duration-300">
         <Navbar />
         <Routes>
           <Route path="/" element={<><LandingPage /><Footer /></>} />

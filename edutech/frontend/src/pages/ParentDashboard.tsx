@@ -49,24 +49,24 @@ export default function ParentDashboard() {
     : [];
 
   return (
-    <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <h1 className="text-3xl font-black text-white mb-1">Parent Dashboard</h1>
-          <p className="text-gray-400">Apne bachche ki padhai ka pura overview</p>
+          <p className="text-theme-text-secondary">Apne bachche ki padhai ka pura overview</p>
         </motion.div>
 
         {loading && (
           <div className="text-center py-12 mb-8">
             <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
-            <p className="text-gray-400">Loading child data...</p>
+            <p className="text-theme-text-secondary">Loading child data...</p>
           </div>
         )}
 
         {!loading && !cp && (
           <div className="text-center py-16 mb-8">
             <Shield className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-            <p className="text-gray-400">No child data available yet. Link your child's account to see their progress.</p>
+            <p className="text-theme-text-secondary">No child data available yet. Link your child's account to see their progress.</p>
           </div>
         )}
 
@@ -83,7 +83,7 @@ export default function ParentDashboard() {
             </div>
             <div className="flex-1 text-center sm:text-left">
               <h2 className="text-2xl font-bold text-white">{cp.child?.name || 'Student'}</h2>
-              <p className="text-gray-400">Progress Overview</p>
+              <p className="text-theme-text-secondary">Progress Overview</p>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-3">
                 <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 text-xs font-bold">
                   <Flame className="w-3 h-3" /> {cp.child?.streak ?? 0} Day Streak
@@ -98,7 +98,7 @@ export default function ParentDashboard() {
             </div>
             <div className="text-center">
               <div className="text-3xl font-black text-emerald-400">{cp.quiz_stats?.average_score ?? 0}%</div>
-              <p className="text-sm text-gray-400">Overall Score</p>
+              <p className="text-sm text-theme-text-secondary">Overall Score</p>
             </div>
           </div>
         </motion.div>}
@@ -119,13 +119,13 @@ export default function ParentDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 + i * 0.05 }}
                 whileHover={{ y: -5 }}
-                className="p-5 rounded-2xl bg-gray-900/50 border border-white/5"
+                className="p-5 rounded-2xl bg-theme-card border border-theme-border"
               >
                 <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-3 shadow-lg`}>
                   <Icon className="w-5 h-5 text-white" />
                 </div>
                 <p className="text-2xl font-black text-white">{stat.value}</p>
-                <p className="text-sm text-gray-500">{stat.label}</p>
+                <p className="text-sm text-theme-text-muted">{stat.label}</p>
                 <span className={`inline-block mt-2 px-2 py-0.5 rounded-full text-xs font-bold ${
                   stat.badge === 'Needs Help' ? 'bg-red-500/20 text-red-400' : 'bg-emerald-500/20 text-emerald-400'
                 }`}>{stat.badge}</span>
@@ -140,12 +140,12 @@ export default function ParentDashboard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="lg:col-span-2 p-6 rounded-2xl bg-gray-900/50 border border-white/5"
+            className="lg:col-span-2 p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
             <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
               <Clock className="w-5 h-5 text-cyan-400" /> Study Hours (This Week)
             </h3>
-            <p className="text-sm text-gray-500 mb-6">Daily study time vs target</p>
+            <p className="text-sm text-theme-text-muted mb-6">Daily study time vs target</p>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={[]}>
                 <XAxis dataKey="day" stroke="#4b5563" fontSize={12} />
@@ -162,37 +162,37 @@ export default function ParentDashboard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="p-6 rounded-2xl bg-gray-900/50 border border-white/5"
+            className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <Shield className="w-5 h-5 text-emerald-400" /> Study Controls
             </h3>
             <div className="space-y-4">
-              <div className="p-4 rounded-xl bg-white/5">
+              <div className="p-4 rounded-xl bg-theme-input">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm text-gray-300">Daily Limit</span>
                   <span className="text-sm font-bold text-violet-400">4 hours</span>
                 </div>
                 <input type="range" min="1" max="8" defaultValue={4} className="w-full accent-violet-500" />
               </div>
-              <div className="p-4 rounded-xl bg-white/5">
+              <div className="p-4 rounded-xl bg-theme-input">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm text-gray-300">Blocked Hours</span>
                   <span className="text-sm font-bold text-red-400">10 PM - 6 AM</span>
                 </div>
                 <div className="flex gap-2">
-                  <input type="time" defaultValue="22:00" className="flex-1 px-3 py-2 rounded-lg bg-gray-800 border border-white/10 text-white text-sm" />
-                  <input type="time" defaultValue="06:00" className="flex-1 px-3 py-2 rounded-lg bg-gray-800 border border-white/10 text-white text-sm" />
+                  <input type="time" defaultValue="22:00" className="flex-1 px-3 py-2 rounded-lg bg-gray-800 border border-theme-border text-white text-sm" />
+                  <input type="time" defaultValue="06:00" className="flex-1 px-3 py-2 rounded-lg bg-gray-800 border border-theme-border text-white text-sm" />
                 </div>
               </div>
-              <div className="p-4 rounded-xl bg-white/5">
+              <div className="p-4 rounded-xl bg-theme-input">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-300">Break Reminders</span>
                   <button className="w-12 h-7 rounded-full bg-emerald-500 transition-all">
                     <motion.div animate={{ x: 22 }} className="w-5 h-5 rounded-full bg-white shadow-sm" />
                   </button>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">Every 45 minutes ka break reminder</p>
+                <p className="text-xs text-theme-text-muted mt-1">Every 45 minutes ka break reminder</p>
               </div>
             </div>
           </motion.div>
@@ -203,7 +203,7 @@ export default function ParentDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="p-6 rounded-2xl bg-gray-900/50 border border-white/5"
+          className="p-6 rounded-2xl bg-theme-card border border-theme-border"
         >
           <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
             <BarChart3 className="w-5 h-5 text-amber-400" /> Subject-wise Progress
@@ -225,7 +225,7 @@ export default function ParentDashboard() {
                       'bg-red-500/20 text-red-400'
                     }`}>{sub.grade}</span>
                   </div>
-                  <span className="text-sm font-bold text-gray-400">{sub.progress}%</span>
+                  <span className="text-sm font-bold text-theme-text-secondary">{sub.progress}%</span>
                 </div>
                 <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
                   <motion.div
@@ -251,11 +251,11 @@ export default function ParentDashboard() {
             <AlertCircle className="w-5 h-5 text-red-400" /> Weak Topics (Attention Needed)
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {cp?.course_progress?.filter(p => p.percentage < 50).length === 0 && <p className="text-gray-500 text-sm col-span-3 text-center py-4">No weak topics identified yet</p>}
+            {cp?.course_progress?.filter(p => p.percentage < 50).length === 0 && <p className="text-theme-text-muted text-sm col-span-3 text-center py-4">No weak topics identified yet</p>}
             {cp?.course_progress?.filter(p => p.percentage < 50).map((topic, i) => (
               <div key={i} className="p-4 rounded-xl bg-red-500/10 border border-red-500/10">
                 <h4 className="font-bold text-white text-sm">{topic.course_name}</h4>
-                <p className="text-xs text-gray-500">{topic.subject}</p>
+                <p className="text-xs text-theme-text-muted">{topic.subject}</p>
                 <p className="text-lg font-black text-red-400 mt-1">{topic.percentage}%</p>
               </div>
             ))}
