@@ -5,14 +5,13 @@ import {
   ArrowLeft, BookOpen, Clock, Lock, CheckCircle2, Play, Zap,
   Star, Users, Award, ChevronRight,
 } from 'lucide-react';
-import { courses as mockCourses, chapters as mockChapters } from '../data/mockData';
 import { coursesApi, type Course, type Chapter } from '../services/api';
 
 export default function CourseDetailPage() {
   const { id } = useParams();
   const [apiCourse, setApiCourse] = useState<Course | null>(null);
   const [apiChapters, setApiChapters] = useState<Chapter[]>([]);
-  const [, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,29 +32,52 @@ export default function CourseDetailPage() {
     fetchData();
   }, [id]);
 
-  const mockCourse = mockCourses.find((c) => c.id === id) || mockCourses[0];
   const course = apiCourse
     ? {
-        ...mockCourse,
         id: apiCourse.id,
         title: apiCourse.title,
-        description: apiCourse.description,
+        description: apiCourse.description || '',
         grade: `Class ${apiCourse.grade}`,
         board: apiCourse.board,
-        icon: apiCourse.icon || mockCourse.icon,
-        color: apiCourse.color || mockCourse.color,
+        icon: apiCourse.icon || '\ud83d\udcda',
+        color: apiCourse.color || 'from-violet-500 to-purple-600',
+        chapters: 0,
+        completedChapters: 0,
+        students: 0,
+        rating: 0,
       }
-    : mockCourse;
+    : null;
 
-  const chapters = apiChapters.length > 0
-    ? apiChapters.map((ch, i) => ({
-        id: ch.id,
-        title: ch.title,
-        duration: '45 min',
-        status: i === 0 ? 'in-progress' as const : 'locked' as const,
-        xp: 50,
-      }))
-    : mockChapters;
+  const chapters = apiChapters.map((ch, i) => ({
+    id: ch.id,
+    title: ch.title,
+    duration: '45 min',
+    status: (i === 0 ? 'in-progress' : 'locked') as 'completed' | 'in-progress' | 'locked',
+    xp: 50,
+  }));
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
+          <p className="text-gray-400">Loading course...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!course) {
+    return (
+      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+        <div className="text-center">
+          <BookOpen className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+          <p className="text-gray-400 mb-4">Course not found</p>
+          <Link to="/courses" className="text-violet-400 hover:text-violet-300">Back to Courses</Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4">
