@@ -81,10 +81,20 @@ async def start_quiz(
     questions = await questions_coll.aggregate(pipeline).to_list(length=count)
     
     # Agar questions kam hain toh sample questions generate karo
+    # answer_key mein correct answers store karo - submit ke time grading ke liye
+    answer_key = {}  # {question_id: correct_option}
+    
     if len(questions) < count:
         sample_questions = generate_sample_questions(subject, grade, difficulty, count)
-        questions = sample_questions
+        # Sample questions ka answer key banao (kyunki ye DB mein nahi hain)
+        for sq in sample_questions:
+            answer_key[sq["id"]] = sq["_correct_option"]
+        # _correct_option hatao client response se - cheating prevent karo
+        questions = [{k: v for k, v in sq.items() if k != "_correct_option"} for sq in sample_questions]
     else:
+        # DB questions ka answer key banao before hiding answers
+        for q in questions:
+            answer_key[str(q["_id"])] = q.get("correct_option", 0)
         # Questions ko serialize karo (answers hide karo quiz ke time)
         questions = [format_question_for_quiz(q) for q in questions]
     
@@ -101,6 +111,9 @@ async def start_quiz(
         "completed_at": None,
         "score": None,
         "xp_earned": None,
+        # Answer key store karo quiz session mein - submit ke time grading ke liye
+        # Ye client ko nahi jayega, sirf server-side grading ke liye hai
+        "answer_key": answer_key,
     }
     result = await quiz_results_coll.insert_one(quiz_session)
     quiz_id = str(result.inserted_id)
@@ -151,19 +164,24 @@ async def submit_quiz(
     total = len(req.answers)
     answer_details = []
     
+    # Quiz session mein stored answer key se grading karo
+    # Ye sample questions ke liye bhi kaam karega (kyunki answer_key session mein hai)
+    stored_answer_key = quiz.get("answer_key", {})
+    
     for ans in req.answers:
-        # Question dhundho database mein
-        if valid_object_id(ans.question_id):
-            question = await questions_coll.find_one({"_id": ObjectId(ans.question_id)})
-        else:
-            question = None
-        
         is_correct = False
         correct_answer = -1
         
-        if question:
-            correct_answer = question.get("correct_option", 0)
+        # Pehle answer_key se check karo (reliable - sample + DB dono ke liye)
+        if ans.question_id in stored_answer_key:
+            correct_answer = stored_answer_key[ans.question_id]
             is_correct = ans.selected_option == correct_answer
+        elif valid_object_id(ans.question_id):
+            # Fallback: DB se question dhundho (purane quiz sessions ke liye)
+            question = await questions_coll.find_one({"_id": ObjectId(ans.question_id)})
+            if question:
+                correct_answer = question.get("correct_option", 0)
+                is_correct = ans.selected_option == correct_answer
         
         if is_correct:
             correct_count += 1
@@ -298,7 +316,10 @@ async def get_quiz_detail(quiz_id: str, current_user: dict = Depends(get_current
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz result not found.")
     
-    return {"quiz": serialize_doc(quiz)}
+    # answer_key hatao response se - ye internal grading ke liye hai, client ko nahi dikhana
+    quiz_data = serialize_doc(quiz)
+    quiz_data.pop("answer_key", None)
+    return {"quiz": quiz_data}
 
 
 # ============================
@@ -363,6 +384,9 @@ def generate_sample_questions(subject: str, grade: int, difficulty: str, count: 
             "options": q["options"],
             "subject": subject,
             "difficulty": difficulty,
+            # _correct_option server-side answer key ke liye hai
+            # Client ko ye field nahi jayega (underscore prefix = internal)
+            "_correct_option": q["correct_option"],
         })
     
     return result
