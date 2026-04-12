@@ -15,6 +15,7 @@ import asyncio
 import uuid
 from fastapi import APIRouter, HTTPException, Depends, Query
 from fastapi.responses import FileResponse
+from starlette.background import BackgroundTask
 from pydantic import BaseModel, Field
 from bson import ObjectId
 from app.database import get_chat_history_collection, get_activity_log_collection
@@ -313,11 +314,14 @@ async def text_to_speech(req: TTSRequest, current_user: dict = Depends(get_curre
         await communicate.save(filepath)
         
         # Audio file return karo
+        # BackgroundTask se response bhejne ke baad temp file delete hoga (disk leak prevention)
+        cleanup = BackgroundTask(os.remove, filepath)
         return FileResponse(
             filepath,
             media_type="audio/mpeg",
             filename=filename,
-            headers={"Content-Disposition": f"attachment; filename={filename}"}
+            headers={"Content-Disposition": f"attachment; filename={filename}"},
+            background=cleanup
         )
     
     except Exception as e:
