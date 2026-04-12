@@ -95,7 +95,8 @@ async def call_gemini(prompt: str) -> str:
         
         # Gemini configure karo
         genai.configure(api_key=GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-pro")
+        # gemini-2.0-flash use karo (gemini-pro deprecated ho chuka hai)
+        model = genai.GenerativeModel("gemini-2.0-flash")
         
         # Response generate karo
         response = await asyncio.to_thread(
