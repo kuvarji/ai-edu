@@ -86,10 +86,11 @@ async def start_quiz(
     
     if len(questions) < count:
         sample_questions = generate_sample_questions(subject, grade, difficulty, count)
-        questions = sample_questions
         # Sample questions ka answer key banao (kyunki ye DB mein nahi hain)
         for sq in sample_questions:
-            answer_key[sq["id"]] = sq.get("_correct_option", 0)
+            answer_key[sq["id"]] = sq["_correct_option"]
+        # _correct_option hatao client response se - cheating prevent karo
+        questions = [{k: v for k, v in sq.items() if k != "_correct_option"} for sq in sample_questions]
     else:
         # DB questions ka answer key banao before hiding answers
         for q in questions:
@@ -315,7 +316,10 @@ async def get_quiz_detail(quiz_id: str, current_user: dict = Depends(get_current
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz result not found.")
     
-    return {"quiz": serialize_doc(quiz)}
+    # answer_key hatao response se - ye internal grading ke liye hai, client ko nahi dikhana
+    quiz_data = serialize_doc(quiz)
+    quiz_data.pop("answer_key", None)
+    return {"quiz": quiz_data}
 
 
 # ============================
