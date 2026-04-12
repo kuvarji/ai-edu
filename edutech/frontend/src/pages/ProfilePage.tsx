@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, Mail, Phone, Shield, Edit3, Camera, Moon, Sun,
@@ -19,6 +19,8 @@ export default function ProfilePage() {
   const [apiBadges, setApiBadges] = useState<ApiBadge[]>([]);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Sync name/phone when user changes
   useEffect(() => {
@@ -160,11 +162,75 @@ export default function ProfilePage() {
                 whileHover={{ scale: 1.05 }}
                 className="w-28 h-28 rounded-3xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-5xl shadow-xl shadow-violet-500/30"
               >
-                {user?.avatar || '🦁'}
+                {user?.avatar && user.avatar.startsWith('data:') ? (
+                  <img src={user.avatar} alt="Profile" className="w-full h-full object-cover rounded-3xl" />
+                ) : (
+                  user?.avatar || '🦁'
+                )}
               </motion.div>
-              <button className="absolute -bottom-2 -right-2 p-2 rounded-xl bg-gray-900 border border-theme-border text-theme-text-secondary hover:text-white transition-colors">
-                <Camera className="w-4 h-4" />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingPhoto}
+                className="absolute -bottom-2 -right-2 p-2 rounded-xl bg-gray-900 border border-theme-border text-theme-text-secondary hover:text-white transition-colors disabled:opacity-50"
+              >
+                {uploadingPhoto ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Camera className="w-4 h-4" />
+                )}
               </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  if (file.size > 2 * 1024 * 1024) {
+                    setErrorMsg('Photo size 2MB se kam honi chahiye.');
+                    return;
+                  }
+                  setUploadingPhoto(true);
+                  try {
+                    const reader = new FileReader();
+                    const base64 = await new Promise<string>((resolve, reject) => {
+                      reader.onload = () => resolve(reader.result as string);
+                      reader.onerror = reject;
+                      reader.readAsDataURL(file);
+                    });
+                    // Resize image to max 200x200 for storage
+                    const img = new Image();
+                    const resized = await new Promise<string>((resolve, reject) => {
+                      img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const maxSize = 200;
+                        let w = img.width;
+                        let h = img.height;
+                        if (w > h) { h = (h / w) * maxSize; w = maxSize; }
+                        else { w = (w / h) * maxSize; h = maxSize; }
+                        canvas.width = w;
+                        canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx?.drawImage(img, 0, 0, w, h);
+                        resolve(canvas.toDataURL('image/jpeg', 0.8));
+                      };
+                      img.onerror = reject;
+                      img.src = base64;
+                    });
+                    await authApi.updateProfile({ avatar: resized });
+                    if (user) {
+                      setUser({ ...user, avatar: resized });
+                    }
+                    setSuccessMsg('Profile photo updated!');
+                  } catch (err) {
+                    setErrorMsg(err instanceof Error ? err.message : 'Photo upload failed.');
+                  } finally {
+                    setUploadingPhoto(false);
+                    e.target.value = '';
+                  }
+                }}
+              />
             </div>
             <div className="text-center sm:text-left flex-1">
               <h1 className="text-3xl font-black text-white mb-1">{user?.name || 'Student'}</h1>
