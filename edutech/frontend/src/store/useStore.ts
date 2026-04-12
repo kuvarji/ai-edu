@@ -12,6 +12,7 @@ export interface User {
   streak: number;
   badges: string[];
   subscription: 'free' | 'pro' | 'premium';
+  phone?: string;
 }
 
 interface AppState {
@@ -79,6 +80,7 @@ export const useStore = create<AppState>((set) => ({
           streak: profile.streak,
           badges: profile.badges || [],
           subscription: (profile.subscription as 'free' | 'pro' | 'premium') || 'free',
+          phone: profile.phone || '',
         },
         isLoggedIn: true,
         loading: false,
