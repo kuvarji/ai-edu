@@ -1,17 +1,54 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   User, Mail, Phone, Shield, Edit3, Camera, Moon, Sun,
   Globe, Bell, Zap, Flame, Trophy, Award, BookOpen, Star,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { badges } from '../data/mockData';
-import { useState } from 'react';
+import { badges as mockBadges } from '../data/mockData';
+import { authApi, gamificationApi, type Badge as ApiBadge } from '../services/api';
 
 export default function ProfilePage() {
   const { user, darkMode, toggleDarkMode } = useStore();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user?.name || 'Student');
   const [language, setLanguage] = useState('hindi');
+  const [saving, setSaving] = useState(false);
+  const [apiBadges, setApiBadges] = useState<ApiBadge[]>([]);
+
+  useEffect(() => {
+    const fetchBadges = async () => {
+      try {
+        const res = await gamificationApi.getMyBadges();
+        setApiBadges(res.badges);
+      } catch {
+        // fallback to mock
+      }
+    };
+    fetchBadges();
+  }, []);
+
+  const badges = apiBadges.length > 0
+    ? apiBadges.map((b) => ({
+        id: b.id,
+        name: b.name,
+        description: b.description,
+        icon: b.icon || '\u2b50',
+        unlocked: b.unlocked ?? true,
+      }))
+    : mockBadges;
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await authApi.updateProfile({ name });
+      setEditing(false);
+    } catch {
+      // handle error
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const stats = [
     { label: 'Total XP', value: (user?.xp ?? 2450).toLocaleString(), icon: Zap, color: 'text-yellow-400' },
@@ -143,10 +180,11 @@ export default function ProfilePage() {
                   animate={{ opacity: 1 }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setEditing(false)}
-                  className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25"
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25 disabled:opacity-60"
                 >
-                  Save Changes
+                  {saving ? 'Saving...' : 'Save Changes'}
                 </motion.button>
               )}
             </div>

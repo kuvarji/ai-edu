@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, User, UserPlus, GraduationCap, Phone } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, UserPlus, GraduationCap, Phone, Loader2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { authApi, ApiError } from '../services/api';
 
 export default function SignupPage() {
   const [name, setName] = useState('');
@@ -12,28 +13,41 @@ export default function SignupPage() {
   const [role, setRole] = useState<'student' | 'parent'>('student');
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useStore();
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !password) {
       setError('Please fill all required fields');
       return;
     }
-    login({
-      id: '1',
-      name,
-      email,
-      role,
-      avatar: '🦁',
-      xp: 0,
-      level: 1,
-      streak: 0,
-      badges: [],
-      subscription: 'free',
-    });
-    navigate('/dashboard');
+    setError('');
+    setLoading(true);
+    try {
+      const res = await authApi.register({ name, email, password, role, phone: phone || undefined });
+      login(
+        {
+          id: res.user.id,
+          name: res.user.name,
+          email: res.user.email,
+          role: res.user.role,
+          avatar: res.user.avatar || '🦁',
+          xp: res.user.xp ?? 0,
+          level: res.user.level ?? 1,
+          streak: res.user.streak ?? 0,
+          badges: [],
+          subscription: (res.user.subscription as 'free' | 'pro' | 'premium') || 'free',
+        },
+        res.token,
+      );
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Signup failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -159,10 +173,11 @@ export default function SignupPage() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all"
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-60"
             >
-              <UserPlus className="w-5 h-5" />
-              Sign Up Free
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <UserPlus className="w-5 h-5" />}
+              {loading ? 'Signing up...' : 'Sign Up Free'}
             </motion.button>
           </form>
 

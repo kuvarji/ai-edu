@@ -1,8 +1,9 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Star, Users, BookOpen, ArrowRight, Search, Filter, Sparkles } from 'lucide-react';
-import { courses } from '../data/mockData';
-import { useState } from 'react';
+import { courses as mockCourses } from '../data/mockData';
+import { coursesApi, type Course } from '../services/api';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -15,6 +16,39 @@ const fadeUp = {
 export default function CoursesPage() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
+  const [apiCourses, setApiCourses] = useState<Course[]>([]);
+  const [, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await coursesApi.getAll();
+        setApiCourses(res.courses);
+      } catch {
+        // fallback to mock data
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
+
+  const courses = apiCourses.length > 0
+    ? apiCourses.map((c, i) => ({
+        id: c.id,
+        title: c.title,
+        subject: c.subject,
+        grade: `Class ${c.grade}`,
+        board: c.board,
+        chapters: 0,
+        completedChapters: 0,
+        color: c.color || mockCourses[i % mockCourses.length]?.color || 'from-violet-500 to-purple-600',
+        icon: c.icon || mockCourses[i % mockCourses.length]?.icon || '\ud83d\udcda',
+        description: c.description || '',
+        students: 0,
+        rating: 0,
+      }))
+    : mockCourses;
 
   const filtered = courses.filter((c) => {
     const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase());

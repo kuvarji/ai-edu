@@ -1,14 +1,65 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Zap, ShoppingBag, Check } from 'lucide-react';
-import { avatars } from '../data/mockData';
+import { avatars as mockAvatars } from '../data/mockData';
 import { useStore } from '../store/useStore';
-import { useState } from 'react';
+import { storeApi, type Avatar as ApiAvatar } from '../services/api';
 
 export default function CharacterStorePage() {
   const { user } = useStore();
-  const userXP = user?.xp ?? 2450;
+  const userXP = user?.xp ?? 0;
   const [selected, setSelected] = useState<string | null>(null);
   const [filter, setFilter] = useState('all');
+  const [apiAvatars, setApiAvatars] = useState<ApiAvatar[]>([]);
+  const [, setLoading] = useState(true);
+  const [buying, setBuying] = useState(false);
+
+  useEffect(() => {
+    const fetchAvatars = async () => {
+      try {
+        const res = await storeApi.getAvatars();
+        setApiAvatars(res.avatars);
+      } catch {
+        // fallback to mock
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAvatars();
+  }, []);
+
+  const avatars = apiAvatars.length > 0
+    ? apiAvatars.map((a) => ({
+        id: a.id,
+        name: a.name,
+        emoji: a.emoji || '\ud83e\udd81',
+        rarity: a.rarity || 'common',
+        cost: a.price,
+        unlocked: false,
+      }))
+    : mockAvatars;
+
+  const handleBuy = async (avatarId: string) => {
+    setBuying(true);
+    try {
+      await storeApi.buy(avatarId);
+      // Refresh avatars
+      const res = await storeApi.getAvatars();
+      setApiAvatars(res.avatars);
+    } catch {
+      // handle error
+    } finally {
+      setBuying(false);
+    }
+  };
+
+  const handleEquip = async (avatarId: string) => {
+    try {
+      await storeApi.equip(avatarId);
+    } catch {
+      // handle error
+    }
+  };
 
   const rarityColors: Record<string, string> = {
     common: 'from-gray-500 to-gray-600',
@@ -26,7 +77,7 @@ export default function CharacterStorePage() {
     legendary: 'border-amber-500/20',
   };
 
-  const filtered = filter === 'all' ? avatars : avatars.filter((a) => a.rarity === filter);
+  const filtered = filter === 'all' ? avatars : avatars.filter((a: typeof avatars[number]) => a.rarity === filter);
 
   return (
     <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4">
@@ -135,9 +186,15 @@ export default function CharacterStorePage() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25"
+              onClick={() => {
+                const av = avatars.find((a: typeof avatars[number]) => a.id === selected);
+                if (av?.unlocked) handleEquip(selected!);
+                else handleBuy(selected!);
+              }}
+              disabled={buying}
+              className="px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25 disabled:opacity-60"
             >
-              {avatars.find((a) => a.id === selected)?.unlocked ? 'Equip Avatar' : 'Unlock Now'}
+              {buying ? 'Processing...' : avatars.find((a: typeof avatars[number]) => a.id === selected)?.unlocked ? 'Equip Avatar' : 'Unlock Now'}
             </motion.button>
           </motion.div>
         )}

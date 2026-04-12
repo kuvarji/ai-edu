@@ -5,8 +5,9 @@ import {
   Clock, Zap, CheckCircle2, XCircle, ArrowRight, Trophy,
   Brain, Sparkles, RotateCcw,
 } from 'lucide-react';
-import { quizQuestions } from '../data/mockData';
+import { quizQuestions as mockQuizQuestions } from '../data/mockData';
 import { useStore } from '../store/useStore';
+import { quizApi, type QuizQuestion as ApiQuizQuestion } from '../services/api';
 
 export default function QuizPage() {
   const [currentQ, setCurrentQ] = useState(0);
@@ -17,6 +18,36 @@ export default function QuizPage() {
   const [finished, setFinished] = useState(false);
   const [answers, setAnswers] = useState<(number | null)[]>([]);
   const { addXP } = useStore();
+  const [apiQuestions, setApiQuestions] = useState<ApiQuizQuestion[]>([]);
+  const [quizId, setQuizId] = useState<string | null>(null);
+  const [, setLoadingQuiz] = useState(true);
+
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      try {
+        const res = await quizApi.start({ subject: 'Mathematics', count: 5 });
+        setApiQuestions(res.questions);
+        setQuizId(res.quiz_id);
+        if (res.time_per_question) setTimer(res.time_per_question);
+      } catch {
+        // fallback to mock
+      } finally {
+        setLoadingQuiz(false);
+      }
+    };
+    fetchQuiz();
+  }, []);
+
+  const quizQuestions = apiQuestions.length > 0
+    ? apiQuestions.map((q) => ({
+        id: q.id,
+        question: q.question,
+        options: q.options,
+        correct: -1, // server will validate
+        difficulty: q.difficulty as 'easy' | 'medium' | 'hard',
+        explanation: '',
+      }))
+    : mockQuizQuestions;
 
   const question = quizQuestions[currentQ];
 
@@ -53,9 +84,23 @@ export default function QuizPage() {
     setAnswers((prev) => [...prev, idx]);
   };
 
-  const nextQuestion = () => {
+  const nextQuestion = async () => {
     if (currentQ + 1 >= quizQuestions.length) {
       setFinished(true);
+      // Submit to backend if we have a real quiz
+      if (quizId && apiQuestions.length > 0) {
+        try {
+          const submitAnswers = answers.concat(selected !== null ? [] : [null]).map((ans, i) => ({
+            question_id: apiQuestions[i]?.id || '',
+            selected_option: ans ?? -1,
+          }));
+          const res = await quizApi.submit({ quiz_id: quizId, answers: submitAnswers });
+          addXP(res.xp_earned);
+          return;
+        } catch {
+          // fallback
+        }
+      }
       const earnedXP = score * 10 + 50;
       addXP(earnedXP);
       return;
@@ -66,7 +111,7 @@ export default function QuizPage() {
     setTimer(30);
   };
 
-  const restart = () => {
+  const restart = async () => {
     setCurrentQ(0);
     setSelected(null);
     setAnswered(false);
@@ -74,6 +119,15 @@ export default function QuizPage() {
     setTimer(30);
     setFinished(false);
     setAnswers([]);
+    // Fetch new quiz from backend
+    try {
+      const res = await quizApi.start({ subject: 'Mathematics', count: 5 });
+      setApiQuestions(res.questions);
+      setQuizId(res.quiz_id);
+      if (res.time_per_question) setTimer(res.time_per_question);
+    } catch {
+      // keep using existing questions
+    }
   };
 
   if (finished) {

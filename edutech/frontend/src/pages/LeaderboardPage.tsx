@@ -1,10 +1,39 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Flame, Zap, Crown, TrendingUp } from 'lucide-react';
-import { leaderboardData } from '../data/mockData';
-import { useState } from 'react';
+import { leaderboardData as mockLeaderboardData } from '../data/mockData';
+import { gamificationApi, type LeaderboardEntry } from '../services/api';
 
 export default function LeaderboardPage() {
   const [period, setPeriod] = useState<'daily' | 'weekly' | 'alltime'>('weekly');
+  const [apiLeaderboard, setApiLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      setLoading(true);
+      try {
+        const res = await gamificationApi.getLeaderboard({ period, limit: 20 });
+        setApiLeaderboard(res.leaderboard);
+      } catch {
+        // fallback to mock
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLeaderboard();
+  }, [period]);
+
+  const leaderboardData = apiLeaderboard.length > 0
+    ? apiLeaderboard.map((e) => ({
+        rank: e.rank,
+        name: e.name,
+        avatar: e.avatar || '🦁',
+        xp: e.xp,
+        level: e.level,
+        streak: e.streak,
+      }))
+    : mockLeaderboardData;
 
   const top3 = leaderboardData.slice(0, 3);
   const rest = leaderboardData.slice(3);
