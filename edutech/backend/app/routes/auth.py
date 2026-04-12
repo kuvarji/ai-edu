@@ -81,7 +81,9 @@ async def register(req: RegisterRequest):
         )
     
     # Step 2: Validate role
-    valid_roles = ["student", "parent", "admin"]
+    # Admin role sirf existing admin hi assign kar sakta hai (admin panel se)
+    # Public registration mein admin role allow NAHI hai - security ke liye
+    valid_roles = ["student", "parent"]
     if req.role not in valid_roles:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

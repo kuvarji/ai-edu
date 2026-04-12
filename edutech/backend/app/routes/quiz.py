@@ -138,7 +138,8 @@ async def submit_quiz(
     questions_coll = get_quiz_questions_collection()
     
     # Quiz session check karo
-    quiz = await quiz_results_coll.find_one({"_id": ObjectId(req.quiz_id)})
+    # User ownership check - sirf apna quiz submit kar sakte ho, doosre ka nahi
+    quiz = await quiz_results_coll.find_one({"_id": ObjectId(req.quiz_id), "user_id": current_user["user_id"]})
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz session not found.")
     

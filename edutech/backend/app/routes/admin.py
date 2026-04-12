@@ -186,9 +186,12 @@ async def list_users(
         query["role"] = role
     if search:
         # Name ya email mein search karo (case-insensitive)
+        # re.escape se special regex characters sanitize karo (ReDoS prevention)
+        import re
+        escaped_search = re.escape(search)
         query["$or"] = [
-            {"name": {"$regex": search, "$options": "i"}},
-            {"email": {"$regex": search, "$options": "i"}}
+            {"name": {"$regex": escaped_search, "$options": "i"}},
+            {"email": {"$regex": escaped_search, "$options": "i"}}
         ]
     
     total = await users.count_documents(query)
@@ -434,6 +437,10 @@ async def add_quiz_questions(
             "explanation": q.explanation,
             "created_at": get_current_timestamp()
         })
+    
+    # Empty list check - insert_many empty list par crash hota hai
+    if not docs:
+        raise HTTPException(status_code=400, detail="Kam se kam ek question bhejo.")
     
     result = await quiz_coll.insert_many(docs)
     

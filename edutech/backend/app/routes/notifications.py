@@ -13,7 +13,7 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from pydantic import BaseModel, Field
 from bson import ObjectId
 from app.database import get_notifications_collection
-from app.utils.auth import get_current_user
+from app.utils.auth import get_current_user, require_admin
 from app.utils.helpers import serialize_doc, get_current_timestamp, valid_object_id
 
 router = APIRouter(prefix="/notifications", tags=["Notifications"])
@@ -129,10 +129,11 @@ async def mark_all_as_read(current_user: dict = Depends(get_current_user)):
 @router.post("/", status_code=201)
 async def create_notification(
     req: CreateNotificationRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_admin)
 ):
     """
     Notification create karo kisi user ke liye.
+    Sirf admin hi notification bhej sakta hai - security ke liye.
     Ye mainly system/admin use ke liye hai - badges, reminders, alerts ke liye.
     
     Types:
