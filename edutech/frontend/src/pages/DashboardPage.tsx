@@ -9,6 +9,7 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 import { useStore } from '../store/useStore';
 import { coursesApi, gamificationApi, analyticsApi, type Course, type GamificationStats, type WeeklyReport } from '../services/api';
 import { useLanguage } from '../i18n/useLanguage';
+import Avatar from '../components/Avatar';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -103,8 +104,8 @@ export default function DashboardPage() {
               whileHover={{ scale: 1.05 }}
               className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-500/10 to-purple-500/10 border border-violet-500/20"
             >
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-lg">
-                {user?.avatar || '🦁'}
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-lg overflow-hidden">
+                <Avatar avatar={user?.avatar} imgClassName="w-full h-full object-cover rounded-full" />
               </div>
               <div>
                 <p className="text-sm font-bold text-white">Level {level}</p>
