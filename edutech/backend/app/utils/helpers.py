@@ -15,23 +15,24 @@ def serialize_doc(doc: dict) -> dict:
     MongoDB ka ObjectId JSON mein directly nahi jata,
     isliye usse string mein convert karna padta hai.
     
+    IMPORTANT: Ye function original dict ko mutate NAHI karta.
+    Ek nayi copy banaata hai taaki original document safe rahe.
+    
     Args:
         doc: MongoDB document (dict with _id as ObjectId)
     Returns:
-        Dict with _id converted to string "id"
+        New dict with _id converted to string "id", without password_hash
     """
     if doc is None:
         return None
     
+    # Original doc ki copy banao taaki original mutate na ho
+    result = {k: v for k, v in doc.items() if k not in ("_id", "password_hash")}
+    
     # _id ko string mein convert karo aur "id" key mein daalo
-    doc["id"] = str(doc["_id"])
-    del doc["_id"]
+    result["id"] = str(doc["_id"])
     
-    # Agar password_hash hai toh response mein mat bhejo (security)
-    if "password_hash" in doc:
-        del doc["password_hash"]
-    
-    return doc
+    return result
 
 
 def serialize_docs(docs: list) -> list:
