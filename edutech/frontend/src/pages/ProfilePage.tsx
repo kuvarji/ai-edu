@@ -16,7 +16,7 @@ export default function ProfilePage() {
   const stats = [
     { label: 'Total XP', value: (user?.xp ?? 2450).toLocaleString(), icon: Zap, color: 'text-yellow-400' },
     { label: 'Streak', value: `${user?.streak ?? 12} Days`, icon: Flame, color: 'text-orange-400' },
-    { label: 'Level', value: `${user?.level || 5}`, icon: Trophy, color: 'text-violet-400' },
+    { label: 'Level', value: `${user?.level ?? 5}`, icon: Trophy, color: 'text-violet-400' },
     { label: 'Courses', value: '4', icon: BookOpen, color: 'text-emerald-400' },
   ];
 
