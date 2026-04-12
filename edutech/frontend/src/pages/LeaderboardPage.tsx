@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Flame, Zap, Crown, TrendingUp } from 'lucide-react';
 import { gamificationApi, type LeaderboardEntry } from '../services/api';
+import Avatar from '../components/Avatar';
 
 export default function LeaderboardPage() {
   const [period, setPeriod] = useState<'daily' | 'weekly' | 'alltime'>('weekly');
@@ -88,7 +89,7 @@ export default function LeaderboardPage() {
             whileHover={{ y: -5 }}
             className="text-center w-36"
           >
-            <div className="text-4xl mb-2">{top3[1].avatar}</div>
+            <div className="text-4xl mb-2 w-16 h-16 mx-auto flex items-center justify-center overflow-hidden rounded-full"><Avatar avatar={top3[1].avatar} imgClassName="w-full h-full object-cover rounded-full" /></div>
             <div className="p-4 rounded-2xl bg-gray-800/50 border border-theme-border">
               <div className="w-10 h-10 mx-auto rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white font-black text-lg mb-2 shadow-lg">
                 2
@@ -113,7 +114,7 @@ export default function LeaderboardPage() {
             >
               <Crown className="w-8 h-8 text-amber-400 mx-auto mb-1" />
             </motion.div>
-            <div className="text-5xl mb-2">{top3[0].avatar}</div>
+            <div className="text-5xl mb-2 w-20 h-20 mx-auto flex items-center justify-center overflow-hidden rounded-full"><Avatar avatar={top3[0].avatar} imgClassName="w-full h-full object-cover rounded-full" /></div>
             <div className="p-5 rounded-2xl bg-gradient-to-b from-amber-500/10 to-amber-500/5 border border-amber-500/20 shadow-lg shadow-amber-500/10">
               <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-black text-xl mb-2 shadow-lg shadow-amber-500/30">
                 1
@@ -136,7 +137,7 @@ export default function LeaderboardPage() {
             whileHover={{ y: -5 }}
             className="text-center w-36"
           >
-            <div className="text-4xl mb-2">{top3[2].avatar}</div>
+            <div className="text-4xl mb-2 w-16 h-16 mx-auto flex items-center justify-center overflow-hidden rounded-full"><Avatar avatar={top3[2].avatar} imgClassName="w-full h-full object-cover rounded-full" /></div>
             <div className="p-4 rounded-2xl bg-gray-800/50 border border-theme-border">
               <div className="w-10 h-10 mx-auto rounded-full bg-gradient-to-br from-amber-700 to-amber-800 flex items-center justify-center text-white font-black text-lg mb-2 shadow-lg">
                 3
@@ -160,8 +161,8 @@ export default function LeaderboardPage() {
               className="flex items-center gap-4 p-4 rounded-2xl bg-theme-card border border-theme-border hover:border-theme-border transition-all"
             >
               <span className="w-8 text-center font-bold text-theme-text-muted">#{player.rank}</span>
-              <div className="w-12 h-12 rounded-xl bg-theme-input flex items-center justify-center text-2xl">
-                {player.avatar}
+              <div className="w-12 h-12 rounded-xl bg-theme-input flex items-center justify-center text-2xl overflow-hidden">
+                <Avatar avatar={player.avatar} imgClassName="w-full h-full object-cover rounded-xl" />
               </div>
               <div className="flex-1">
                 <h4 className="font-bold text-white text-sm">{player.name}</h4>
