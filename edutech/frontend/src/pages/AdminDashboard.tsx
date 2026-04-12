@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Users, BookOpen, DollarSign, TrendingUp, PlusCircle,
@@ -5,7 +6,8 @@ import {
   ArrowUpRight, ArrowDownRight,
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { courses } from '../data/mockData';
+import { courses as mockCourses } from '../data/mockData';
+import { adminApi, coursesApi, type PlatformStats, type AdminUser, type Course } from '../services/api';
 
 const revenueData = [
   { month: 'Jan', revenue: 45000, users: 320 },
@@ -25,10 +27,57 @@ const recentUsers = [
 ];
 
 export default function AdminDashboard() {
+  const [platformStats, setPlatformStats] = useState<PlatformStats | null>(null);
+  const [apiUsers, setApiUsers] = useState<AdminUser[]>([]);
+  const [apiCourses, setApiCourses] = useState<Course[]>([]);
+  const [, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [statsRes, usersRes, coursesRes] = await Promise.allSettled([
+          adminApi.getStats(),
+          adminApi.getUsers({ limit: 5 }),
+          coursesApi.getAll(),
+        ]);
+        if (statsRes.status === 'fulfilled') setPlatformStats(statsRes.value);
+        if (usersRes.status === 'fulfilled') setApiUsers(usersRes.value.users);
+        if (coursesRes.status === 'fulfilled') setApiCourses(coursesRes.value.courses);
+      } catch {
+        // fallback to mock
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const ps = platformStats?.stats;
+  const courses = apiCourses.length > 0
+    ? apiCourses.map((c, i) => ({
+        id: c.id,
+        title: c.title,
+        icon: c.icon || mockCourses[i % mockCourses.length]?.icon || '\ud83d\udcda',
+        color: c.color || mockCourses[i % mockCourses.length]?.color || 'from-violet-500 to-purple-600',
+        students: 0,
+        chapters: 0,
+      }))
+    : mockCourses;
+
+  const displayUsers = apiUsers.length > 0
+    ? apiUsers.map((u) => ({
+        name: u.name,
+        email: u.email,
+        plan: u.subscription || 'Free',
+        status: 'active' as const,
+        joined: u.created_at ? new Date(u.created_at).toLocaleDateString() : 'Recently',
+      }))
+    : recentUsers;
+
   const stats = [
-    { label: 'Total Users', value: '52,847', change: '+12.5%', up: true, icon: Users, color: 'from-violet-500 to-purple-600' },
-    { label: 'Active Courses', value: '248', change: '+8.2%', up: true, icon: BookOpen, color: 'from-emerald-500 to-teal-600' },
-    { label: 'Revenue (Monthly)', value: '₹8.5L', change: '+23.1%', up: true, icon: DollarSign, color: 'from-amber-500 to-orange-600' },
+    { label: 'Total Users', value: ps ? ps.users.total.toLocaleString() : '52,847', change: '+12.5%', up: true, icon: Users, color: 'from-violet-500 to-purple-600' },
+    { label: 'Active Courses', value: ps ? String(ps.content.total_courses) : '248', change: '+8.2%', up: true, icon: BookOpen, color: 'from-emerald-500 to-teal-600' },
+    { label: 'Revenue (Monthly)', value: ps ? `₹${(ps.revenue.estimated_monthly_revenue / 100000).toFixed(1)}L` : '₹8.5L', change: '+23.1%', up: true, icon: DollarSign, color: 'from-amber-500 to-orange-600' },
     { label: 'Conversion Rate', value: '18.3%', change: '-2.1%', up: false, icon: TrendingUp, color: 'from-cyan-500 to-blue-600' },
   ];
 
@@ -199,7 +248,7 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="space-y-3">
-              {recentUsers.map((u, i) => (
+              {displayUsers.map((u, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, x: 10 }}

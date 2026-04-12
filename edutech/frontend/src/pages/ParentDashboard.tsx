@@ -1,9 +1,11 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Clock, BookOpen, Shield,
   Flame, Zap, Target, AlertCircle, BarChart3,
 } from 'lucide-react';
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { parentApi, type ChildInfo, type ChildProgress } from '../services/api';
 
 const studyData = [
   { day: 'Mon', hours: 2.5, target: 3 },
@@ -15,7 +17,7 @@ const studyData = [
   { day: 'Sun', hours: 2.8, target: 3 },
 ];
 
-const subjectProgress = [
+const defaultSubjectProgress = [
   { subject: 'Maths', progress: 75, grade: 'A', color: 'from-violet-500 to-purple-600' },
   { subject: 'Science', progress: 60, grade: 'B+', color: 'from-emerald-500 to-teal-600' },
   { subject: 'English', progress: 90, grade: 'A+', color: 'from-amber-500 to-orange-600' },
@@ -24,6 +26,45 @@ const subjectProgress = [
 ];
 
 export default function ParentDashboard() {
+  const [, setChildren] = useState<ChildInfo[]>([]);
+  const [childProgress, setChildProgress] = useState<ChildProgress | null>(null);
+  const [, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await parentApi.getChildren();
+        setChildren(res.children);
+        if (res.children.length > 0) {
+          const progress = await parentApi.getChildProgress(res.children[0].id);
+          setChildProgress(progress);
+        }
+      } catch {
+        // fallback to mock
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const cp = childProgress;
+
+  const subjectProgress = cp?.course_progress?.length
+    ? cp.course_progress.map((p, i) => ({
+        subject: p.subject,
+        progress: p.percentage,
+        grade: p.percentage >= 80 ? 'A' : p.percentage >= 60 ? 'B' : 'C',
+        color: [
+          'from-violet-500 to-purple-600',
+          'from-emerald-500 to-teal-600',
+          'from-amber-500 to-orange-600',
+          'from-rose-500 to-pink-600',
+          'from-cyan-500 to-blue-600',
+        ][i % 5],
+      }))
+    : defaultSubjectProgress;
+
   return (
     <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4">
       <div className="max-w-7xl mx-auto">

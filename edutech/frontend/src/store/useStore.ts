@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { getToken, setToken, removeToken, authApi } from '../services/api';
 
 export interface User {
   id: string;
@@ -18,12 +19,15 @@ interface AppState {
   isLoggedIn: boolean;
   darkMode: boolean;
   sidebarOpen: boolean;
-  login: (user: User) => void;
+  loading: boolean;
+  login: (user: User, token?: string) => void;
   logout: () => void;
+  setUser: (user: User) => void;
   toggleDarkMode: () => void;
   toggleSidebar: () => void;
   addXP: (amount: number) => void;
   incrementStreak: () => void;
+  initializeAuth: () => Promise<void>;
 }
 
 export const useStore = create<AppState>((set) => ({
@@ -31,8 +35,18 @@ export const useStore = create<AppState>((set) => ({
   isLoggedIn: false,
   darkMode: true,
   sidebarOpen: true,
-  login: (user) => set({ user, isLoggedIn: true }),
-  logout: () => set({ user: null, isLoggedIn: false }),
+  loading: false,
+  login: (user, token) => {
+    if (token) {
+      setToken(token);
+    }
+    set({ user, isLoggedIn: true });
+  },
+  logout: () => {
+    removeToken();
+    set({ user: null, isLoggedIn: false });
+  },
+  setUser: (user) => set({ user }),
   toggleDarkMode: () => set((s) => ({ darkMode: !s.darkMode })),
   toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
   addXP: (amount) =>
@@ -47,4 +61,31 @@ export const useStore = create<AppState>((set) => ({
       if (!s.user) return s;
       return { user: { ...s.user, streak: s.user.streak + 1 } };
     }),
+  initializeAuth: async () => {
+    const token = getToken();
+    if (!token) return;
+    set({ loading: true });
+    try {
+      const profile = await authApi.getMe();
+      set({
+        user: {
+          id: profile.id,
+          name: profile.name,
+          email: profile.email,
+          role: profile.role,
+          avatar: profile.avatar,
+          xp: profile.xp,
+          level: profile.level,
+          streak: profile.streak,
+          badges: profile.badges || [],
+          subscription: (profile.subscription as 'free' | 'pro' | 'premium') || 'free',
+        },
+        isLoggedIn: true,
+        loading: false,
+      });
+    } catch {
+      removeToken();
+      set({ user: null, isLoggedIn: false, loading: false });
+    }
+  },
 }));

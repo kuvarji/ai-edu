@@ -1,36 +1,50 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, LogIn, GraduationCap, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, LogIn, GraduationCap, Sparkles, Loader2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { authApi, ApiError } from '../services/api';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useStore();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       setError('Please fill all fields');
       return;
     }
-    login({
-      id: '1',
-      name: email.split('@')[0],
-      email,
-      role: email.includes('admin') ? 'admin' : email.includes('parent') ? 'parent' : 'student',
-      avatar: '🦁',
-      xp: 2450,
-      level: 5,
-      streak: 12,
-      badges: ['First Step', 'Quick Learner', 'Streak Master'],
-      subscription: 'pro',
-    });
-    navigate('/dashboard');
+    setError('');
+    setLoading(true);
+    try {
+      const res = await authApi.login({ email, password });
+      login(
+        {
+          id: res.user.id,
+          name: res.user.name,
+          email: res.user.email,
+          role: res.user.role,
+          avatar: res.user.avatar || '🦁',
+          xp: res.user.xp ?? 0,
+          level: res.user.level ?? 1,
+          streak: res.user.streak ?? 0,
+          badges: [],
+          subscription: (res.user.subscription as 'free' | 'pro' | 'premium') || 'free',
+        },
+        res.token,
+      );
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -121,10 +135,11 @@ export default function LoginPage() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all"
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all disabled:opacity-60"
             >
-              <LogIn className="w-5 h-5" />
-              Login
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogIn className="w-5 h-5" />}
+              {loading ? 'Logging in...' : 'Login'}
             </motion.button>
           </form>
 
@@ -149,20 +164,32 @@ export default function LoginPage() {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => {
-                login({
-                  id: '1',
-                  name: 'Demo Student',
-                  email: 'demo@eduai.com',
-                  role: 'student',
-                  avatar: '🦁',
-                  xp: 2450,
-                  level: 5,
-                  streak: 12,
-                  badges: ['First Step', 'Quick Learner', 'Streak Master'],
-                  subscription: 'pro',
-                });
-                navigate('/dashboard');
+              onClick={async () => {
+                setError('');
+                setLoading(true);
+                try {
+                  const res = await authApi.login({ email: 'demo@eduai.com', password: 'demo123456' });
+                  login(
+                    {
+                      id: res.user.id,
+                      name: res.user.name,
+                      email: res.user.email,
+                      role: res.user.role,
+                      avatar: res.user.avatar || '🦁',
+                      xp: res.user.xp ?? 0,
+                      level: res.user.level ?? 1,
+                      streak: res.user.streak ?? 0,
+                      badges: [],
+                      subscription: (res.user.subscription as 'free' | 'pro' | 'premium') || 'free',
+                    },
+                    res.token,
+                  );
+                  navigate('/dashboard');
+                } catch (err) {
+                  setError(err instanceof ApiError ? err.message : 'Demo login failed.');
+                } finally {
+                  setLoading(false);
+                }
               }}
               className="mt-4 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-medium text-gray-300 bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
             >

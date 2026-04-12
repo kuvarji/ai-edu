@@ -1,14 +1,61 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useParams } from 'react-router-dom';
 import {
   ArrowLeft, BookOpen, Clock, Lock, CheckCircle2, Play, Zap,
   Star, Users, Award, ChevronRight,
 } from 'lucide-react';
-import { courses, chapters } from '../data/mockData';
+import { courses as mockCourses, chapters as mockChapters } from '../data/mockData';
+import { coursesApi, type Course, type Chapter } from '../services/api';
 
 export default function CourseDetailPage() {
   const { id } = useParams();
-  const course = courses.find((c) => c.id === id) || courses[0];
+  const [apiCourse, setApiCourse] = useState<Course | null>(null);
+  const [apiChapters, setApiChapters] = useState<Chapter[]>([]);
+  const [, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!id) return;
+      try {
+        const [courseRes, chaptersRes] = await Promise.allSettled([
+          coursesApi.getById(id),
+          coursesApi.getChapters(id),
+        ]);
+        if (courseRes.status === 'fulfilled') setApiCourse(courseRes.value);
+        if (chaptersRes.status === 'fulfilled') setApiChapters(chaptersRes.value.chapters);
+      } catch {
+        // fallback to mock
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [id]);
+
+  const mockCourse = mockCourses.find((c) => c.id === id) || mockCourses[0];
+  const course = apiCourse
+    ? {
+        ...mockCourse,
+        id: apiCourse.id,
+        title: apiCourse.title,
+        description: apiCourse.description,
+        grade: `Class ${apiCourse.grade}`,
+        board: apiCourse.board,
+        icon: apiCourse.icon || mockCourse.icon,
+        color: apiCourse.color || mockCourse.color,
+      }
+    : mockCourse;
+
+  const chapters = apiChapters.length > 0
+    ? apiChapters.map((ch, i) => ({
+        id: ch.id,
+        title: ch.title,
+        duration: '45 min',
+        status: i === 0 ? 'in-progress' as const : 'locked' as const,
+        xp: 50,
+      }))
+    : mockChapters;
 
   return (
     <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4">

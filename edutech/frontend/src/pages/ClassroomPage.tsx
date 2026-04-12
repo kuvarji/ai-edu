@@ -5,6 +5,7 @@ import {
   ArrowLeft, Send, Bot, User, BookOpen, MessageCircle,
   FileText, Play, Volume2, Sparkles, ThumbsUp, Copy,
 } from 'lucide-react';
+import { aiApi } from '../services/api';
 
 export default function ClassroomPage() {
   const { courseId } = useParams();
@@ -16,19 +17,25 @@ export default function ClassroomPage() {
     { role: 'bot' as const, text: 'Bahut accha sawal! 🎯\n\nQuadratic equation ek aisi equation hoti hai jismein variable ki highest power 2 hoti hai.\n\n**General Form:** ax² + bx + c = 0\n\nJahan:\n- a, b, c constants hain\n- a ≠ 0 (agar a = 0, toh yeh linear equation ban jayega)\n- x variable hai\n\n**Example:** x² + 5x + 6 = 0\n\nKya tum iska solution nikalna chahoge? 🤔' },
   ]);
 
-  const handleSend = () => {
-    if (!message.trim()) return;
-    setMessages([...messages, { role: 'user', text: message }]);
+  const [sending, setSending] = useState(false);
+
+  const handleSend = async () => {
+    if (!message.trim() || sending) return;
+    const userMsg = message;
+    setMessages((prev) => [...prev, { role: 'user' as const, text: userMsg }]);
     setMessage('');
-    setTimeout(() => {
+    setSending(true);
+    try {
+      const res = await aiApi.chat({ message: userMsg, subject: 'Mathematics', chapter: 'Quadratic Equations' });
+      setMessages((prev) => [...prev, { role: 'bot' as const, text: res.reply }]);
+    } catch {
       setMessages((prev) => [
         ...prev,
-        {
-          role: 'bot',
-          text: 'Bahut sahi! 👏\n\nIsko solve karne ke liye hum **Factoring Method** use karenge:\n\nx² + 5x + 6 = 0\n\nHumein 2 numbers chahiye jinko multiply karne pe 6 aaye aur add karne pe 5:\n→ 2 × 3 = 6 ✅\n→ 2 + 3 = 5 ✅\n\nToh: (x + 2)(x + 3) = 0\n\nx = -2 ya x = -3\n\nSamajh aaya? Koi aur sawal hai? 🎓',
-        },
+        { role: 'bot' as const, text: 'Sorry, abhi response nahi aa paya. Please dobara try karo.' },
       ]);
-    }, 1500);
+    } finally {
+      setSending(false);
+    }
   };
 
   const notes = [

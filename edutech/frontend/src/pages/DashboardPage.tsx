@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -6,7 +7,8 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useStore } from '../store/useStore';
-import { courses, weeklyProgress, badges } from '../data/mockData';
+import { courses as mockCourses, weeklyProgress as mockWeeklyProgress, badges as mockBadges } from '../data/mockData';
+import { coursesApi, gamificationApi, analyticsApi, type Course, type GamificationStats, type WeeklyReport } from '../services/api';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -18,12 +20,54 @@ const fadeUp = {
 
 export default function DashboardPage() {
   const { user } = useStore();
+  const [apiCourses, setApiCourses] = useState<Course[]>([]);
+  const [stats, setStats] = useState<GamificationStats | null>(null);
+  const [, setWeeklyReport] = useState<WeeklyReport | null>(null);
+  const [, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [coursesRes, statsRes, weeklyRes] = await Promise.allSettled([
+          coursesApi.getAll(),
+          gamificationApi.getStats(),
+          analyticsApi.getWeeklyReport(),
+        ]);
+        if (coursesRes.status === 'fulfilled') setApiCourses(coursesRes.value.courses);
+        if (statsRes.status === 'fulfilled') setStats(statsRes.value);
+        if (weeklyRes.status === 'fulfilled') setWeeklyReport(weeklyRes.value);
+      } catch {
+        // fallback to mock data
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   const displayName = user?.name || 'Student';
-  const xp = user?.xp ?? 2450;
-  const level = user?.level ?? 5;
-  const streak = user?.streak ?? 12;
-  const xpToNext = 500 - (xp % 500);
+  const xp = stats?.xp ?? user?.xp ?? 0;
+  const level = stats?.level ?? user?.level ?? 1;
+  const streak = stats?.streak ?? user?.streak ?? 0;
+  const xpToNext = (stats?.xp_for_next_level ?? 500) - (xp % 500);
   const xpProgress = ((xp % 500) / 500) * 100;
+
+  const displayCourses = apiCourses.length > 0
+    ? apiCourses.map((c, i) => ({
+        id: c.id,
+        title: c.title,
+        icon: c.icon || mockCourses[i % mockCourses.length]?.icon || '📚',
+        color: c.color || mockCourses[i % mockCourses.length]?.color || 'from-violet-500 to-purple-600',
+        grade: `Grade ${c.grade}`,
+        board: c.board,
+        chapters: 0,
+        completedChapters: 0,
+      }))
+    : mockCourses;
+
+  const weeklyProgress = mockWeeklyProgress;
+  const badges = mockBadges;
 
   const statCards = [
     { label: 'Current Streak', value: `${streak} Days`, icon: Flame, color: 'from-orange-500 to-red-500', shadow: 'shadow-orange-500/20', bg: 'bg-orange-500/10' },
@@ -214,7 +258,7 @@ export default function DashboardPage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {courses.slice(0, 3).map((course, i) => (
+            {displayCourses.slice(0, 3).map((course, i) => (
               <motion.div
                 key={course.id}
                 variants={fadeUp}
