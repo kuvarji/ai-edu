@@ -14,9 +14,9 @@ export default function ProfilePage() {
   const [language, setLanguage] = useState('hindi');
 
   const stats = [
-    { label: 'Total XP', value: (user?.xp || 2450).toLocaleString(), icon: Zap, color: 'text-yellow-400' },
-    { label: 'Streak', value: `${user?.streak || 12} Days`, icon: Flame, color: 'text-orange-400' },
-    { label: 'Level', value: `${user?.level || 5}`, icon: Trophy, color: 'text-violet-400' },
+    { label: 'Total XP', value: (user?.xp ?? 2450).toLocaleString(), icon: Zap, color: 'text-yellow-400' },
+    { label: 'Streak', value: `${user?.streak ?? 12} Days`, icon: Flame, color: 'text-orange-400' },
+    { label: 'Level', value: `${user?.level ?? 5}`, icon: Trophy, color: 'text-violet-400' },
     { label: 'Courses', value: '4', icon: BookOpen, color: 'text-emerald-400' },
   ];
 
@@ -53,7 +53,7 @@ export default function ProfilePage() {
                   {user?.subscription || 'pro'} Plan
                 </span>
                 <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">
-                  <Star className="w-3 h-3" /> Level {user?.level || 5}
+                  <Star className="w-3 h-3" /> Level {user?.level ?? 5}
                 </span>
               </div>
             </div>
