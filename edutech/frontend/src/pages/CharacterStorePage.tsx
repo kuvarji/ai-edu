@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 export default function CharacterStorePage() {
   const { user } = useStore();
-  const userXP = user?.xp || 2450;
+  const userXP = user?.xp ?? 2450;
   const [selected, setSelected] = useState<string | null>(null);
   const [filter, setFilter] = useState('all');
 

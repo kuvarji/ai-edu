@@ -19,9 +19,9 @@ const fadeUp = {
 export default function DashboardPage() {
   const { user } = useStore();
   const displayName = user?.name || 'Student';
-  const xp = user?.xp || 2450;
-  const level = user?.level || 5;
-  const streak = user?.streak || 12;
+  const xp = user?.xp ?? 2450;
+  const level = user?.level ?? 5;
+  const streak = user?.streak ?? 12;
   const xpToNext = 500 - (xp % 500);
   const xpProgress = ((xp % 500) / 500) * 100;
 
