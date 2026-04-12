@@ -1,19 +1,56 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, Mail, Phone, Shield, Edit3, Camera, Moon, Sun,
   Globe, Bell, Zap, Flame, Trophy, Award, BookOpen, Star,
+  CheckCircle, AlertTriangle,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { authApi, gamificationApi, type Badge as ApiBadge } from '../services/api';
 
 export default function ProfilePage() {
-  const { user, darkMode, toggleDarkMode } = useStore();
+  const { user, darkMode, toggleDarkMode, setUser } = useStore();
   const [editing, setEditing] = useState(false);
-  const [name, setName] = useState(user?.name || 'Student');
-  const [language, setLanguage] = useState('hindi');
+  const [name, setName] = useState(user?.name || '');
+  const [phone, setPhone] = useState(user?.phone || '');
+  const [language, setLanguage] = useState(() => localStorage.getItem('app_language') || 'hindi');
+  const [notifications, setNotifications] = useState(() => localStorage.getItem('app_notifications') !== 'false');
   const [saving, setSaving] = useState(false);
   const [apiBadges, setApiBadges] = useState<ApiBadge[]>([]);
+  const [successMsg, setSuccessMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  // Sync name/phone when user changes
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setPhone(user.phone || '');
+    }
+  }, [user]);
+
+  // Apply dark mode to document
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('app_darkMode', darkMode ? 'true' : 'false');
+  }, [darkMode]);
+
+  // Auto-dismiss toasts
+  useEffect(() => {
+    if (successMsg) {
+      const t = setTimeout(() => setSuccessMsg(''), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [successMsg]);
+  useEffect(() => {
+    if (errorMsg) {
+      const t = setTimeout(() => setErrorMsg(''), 4000);
+      return () => clearTimeout(t);
+    }
+  }, [errorMsg]);
 
   useEffect(() => {
     const fetchBadges = async () => {
@@ -21,7 +58,7 @@ export default function ProfilePage() {
         const res = await gamificationApi.getMyBadges();
         setApiBadges(res.badges);
       } catch {
-        // fallback to mock
+        // no badges available
       }
     };
     fetchBadges();
@@ -36,15 +73,42 @@ export default function ProfilePage() {
   }));
 
   const handleSave = async () => {
+    if (!name.trim()) {
+      setErrorMsg('Name cannot be empty.');
+      return;
+    }
     setSaving(true);
     try {
-      await authApi.updateProfile({ name });
+      await authApi.updateProfile({ name: name.trim(), phone: phone.trim() || undefined });
+      // Update store with new data
+      if (user) {
+        setUser({ ...user, name: name.trim() });
+      }
       setEditing(false);
-    } catch {
-      // handle error
+      setSuccessMsg('Profile updated successfully!');
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : 'Profile update failed.');
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleDarkModeToggle = () => {
+    toggleDarkMode();
+    setSuccessMsg(darkMode ? 'Light mode enabled!' : 'Dark mode enabled!');
+  };
+
+  const handleLanguageChange = (newLang: string) => {
+    setLanguage(newLang);
+    localStorage.setItem('app_language', newLang);
+    setSuccessMsg(`Language changed to ${newLang === 'hindi' ? 'Hindi' : newLang === 'english' ? 'English' : 'Hinglish'}!`);
+  };
+
+  const handleNotificationsToggle = () => {
+    const newVal = !notifications;
+    setNotifications(newVal);
+    localStorage.setItem('app_notifications', newVal ? 'true' : 'false');
+    setSuccessMsg(newVal ? 'Notifications enabled!' : 'Notifications disabled!');
   };
 
   const stats = [
@@ -56,6 +120,32 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4">
+      {/* Toast notifications */}
+      <AnimatePresence>
+        {successMsg && (
+          <motion.div
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            className="fixed top-4 right-4 z-50 flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-500/30"
+          >
+            <CheckCircle className="w-5 h-5" />
+            {successMsg}
+          </motion.div>
+        )}
+        {errorMsg && (
+          <motion.div
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            className="fixed top-4 right-4 z-50 flex items-center gap-2 px-5 py-3 rounded-xl bg-red-600 text-white shadow-lg shadow-red-500/30"
+          >
+            <AlertTriangle className="w-5 h-5" />
+            {errorMsg}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="max-w-4xl mx-auto">
         {/* Profile Header */}
         <motion.div
@@ -165,7 +255,9 @@ export default function ProfilePage() {
                   <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                   <input
                     type="tel"
-                    value="+91 9876543210"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+91 9876543210"
                     disabled={!editing}
                     className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all"
                   />
@@ -207,7 +299,7 @@ export default function ProfilePage() {
                     <span className="text-sm text-gray-300">Dark Mode</span>
                   </div>
                   <button
-                    onClick={toggleDarkMode}
+                    onClick={handleDarkModeToggle}
                     className={`w-12 h-7 rounded-full transition-all ${darkMode ? 'bg-violet-500' : 'bg-gray-600'}`}
                   >
                     <motion.div
@@ -224,7 +316,7 @@ export default function ProfilePage() {
                   </div>
                   <select
                     value={language}
-                    onChange={(e) => setLanguage(e.target.value)}
+                    onChange={(e) => handleLanguageChange(e.target.value)}
                     className="bg-gray-800 text-white text-sm rounded-lg px-3 py-1.5 border border-white/10 focus:outline-none"
                   >
                     <option value="hindi">Hindi</option>
@@ -238,8 +330,11 @@ export default function ProfilePage() {
                     <Bell className="w-5 h-5 text-amber-400" />
                     <span className="text-sm text-gray-300">Notifications</span>
                   </div>
-                  <button className="w-12 h-7 rounded-full bg-violet-500 transition-all">
-                    <motion.div animate={{ x: 22 }} className="w-5 h-5 rounded-full bg-white shadow-sm" />
+                  <button
+                    onClick={handleNotificationsToggle}
+                    className={`w-12 h-7 rounded-full transition-all ${notifications ? 'bg-violet-500' : 'bg-gray-600'}`}
+                  >
+                    <motion.div animate={{ x: notifications ? 22 : 2 }} className="w-5 h-5 rounded-full bg-white shadow-sm" />
                   </button>
                 </div>
               </div>
