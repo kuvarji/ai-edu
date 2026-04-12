@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Star, Users, BookOpen, ArrowRight, Search, Filter, Sparkles } from 'lucide-react';
-import { courses as mockCourses } from '../data/mockData';
 import { coursesApi, type Course } from '../services/api';
 
 const fadeUp = {
@@ -17,7 +16,7 @@ export default function CoursesPage() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [apiCourses, setApiCourses] = useState<Course[]>([]);
-  const [, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -25,7 +24,7 @@ export default function CoursesPage() {
         const res = await coursesApi.getAll();
         setApiCourses(res.courses);
       } catch {
-        // fallback to mock data
+        // show empty state
       } finally {
         setLoading(false);
       }
@@ -33,22 +32,31 @@ export default function CoursesPage() {
     fetchCourses();
   }, []);
 
-  const courses = apiCourses.length > 0
-    ? apiCourses.map((c, i) => ({
-        id: c.id,
-        title: c.title,
-        subject: c.subject,
-        grade: `Class ${c.grade}`,
-        board: c.board,
-        chapters: 0,
-        completedChapters: 0,
-        color: c.color || mockCourses[i % mockCourses.length]?.color || 'from-violet-500 to-purple-600',
-        icon: c.icon || mockCourses[i % mockCourses.length]?.icon || '\ud83d\udcda',
-        description: c.description || '',
-        students: 0,
-        rating: 0,
-      }))
-    : mockCourses;
+  const courses = apiCourses.map((c) => ({
+    id: c.id,
+    title: c.title,
+    subject: c.subject,
+    grade: `Class ${c.grade}`,
+    board: c.board,
+    chapters: 0,
+    completedChapters: 0,
+    color: c.color || 'from-violet-500 to-purple-600',
+    icon: c.icon || '\ud83d\udcda',
+    description: c.description || '',
+    students: 0,
+    rating: 0,
+  }));
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
+          <p className="text-gray-400">Loading courses...</p>
+        </div>
+      </div>
+    );
+  }
 
   const filtered = courses.filter((c) => {
     const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase());

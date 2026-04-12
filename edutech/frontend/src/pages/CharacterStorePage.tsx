@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Zap, ShoppingBag, Check } from 'lucide-react';
-import { avatars as mockAvatars } from '../data/mockData';
 import { useStore } from '../store/useStore';
 import { storeApi, type Avatar as ApiAvatar } from '../services/api';
 
@@ -11,7 +10,7 @@ export default function CharacterStorePage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [filter, setFilter] = useState('all');
   const [apiAvatars, setApiAvatars] = useState<ApiAvatar[]>([]);
-  const [, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [buying, setBuying] = useState(false);
 
   useEffect(() => {
@@ -28,16 +27,25 @@ export default function CharacterStorePage() {
     fetchAvatars();
   }, []);
 
-  const avatars = apiAvatars.length > 0
-    ? apiAvatars.map((a) => ({
-        id: a.id,
-        name: a.name,
-        emoji: a.emoji || '\ud83e\udd81',
-        rarity: a.rarity || 'common',
-        cost: a.price,
-        unlocked: false,
-      }))
-    : mockAvatars;
+  const avatars = apiAvatars.map((a) => ({
+    id: a.id,
+    name: a.name,
+    emoji: a.emoji || '\ud83e\udd81',
+    rarity: a.rarity || 'common',
+    cost: a.price,
+    unlocked: false,
+  }));
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
+          <p className="text-gray-400">Loading store...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleBuy = async (avatarId: string) => {
     setBuying(true);

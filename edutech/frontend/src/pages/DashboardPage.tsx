@@ -7,7 +7,6 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useStore } from '../store/useStore';
-import { courses as mockCourses, weeklyProgress as mockWeeklyProgress, badges as mockBadges } from '../data/mockData';
 import { coursesApi, gamificationApi, analyticsApi, type Course, type GamificationStats, type WeeklyReport } from '../services/api';
 
 const fadeUp = {
@@ -23,7 +22,7 @@ export default function DashboardPage() {
   const [apiCourses, setApiCourses] = useState<Course[]>([]);
   const [stats, setStats] = useState<GamificationStats | null>(null);
   const [, setWeeklyReport] = useState<WeeklyReport | null>(null);
-  const [, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,27 +52,33 @@ export default function DashboardPage() {
   const xpToNext = (stats?.xp_for_next_level ?? 500) - (xp % 500);
   const xpProgress = ((xp % 500) / 500) * 100;
 
-  const displayCourses = apiCourses.length > 0
-    ? apiCourses.map((c, i) => ({
-        id: c.id,
-        title: c.title,
-        icon: c.icon || mockCourses[i % mockCourses.length]?.icon || '📚',
-        color: c.color || mockCourses[i % mockCourses.length]?.color || 'from-violet-500 to-purple-600',
-        grade: `Grade ${c.grade}`,
-        board: c.board,
-        chapters: 0,
-        completedChapters: 0,
-      }))
-    : mockCourses;
+  const displayCourses = apiCourses.map((c) => ({
+    id: c.id,
+    title: c.title,
+    icon: c.icon || '📚',
+    color: c.color || 'from-violet-500 to-purple-600',
+    grade: `Grade ${c.grade}`,
+    board: c.board,
+    chapters: 0,
+    completedChapters: 0,
+  }));
 
-  const weeklyProgress = mockWeeklyProgress;
-  const badges = mockBadges;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
+          <p className="text-gray-400">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   const statCards = [
     { label: 'Current Streak', value: `${streak} Days`, icon: Flame, color: 'from-orange-500 to-red-500', shadow: 'shadow-orange-500/20', bg: 'bg-orange-500/10' },
     { label: 'Total XP', value: `${xp.toLocaleString()}`, icon: Zap, color: 'from-yellow-500 to-amber-500', shadow: 'shadow-yellow-500/20', bg: 'bg-yellow-500/10' },
     { label: 'Level', value: `Level ${level}`, icon: Trophy, color: 'from-violet-500 to-purple-500', shadow: 'shadow-violet-500/20', bg: 'bg-violet-500/10' },
-    { label: 'Courses Active', value: '4', icon: BookOpen, color: 'from-emerald-500 to-teal-500', shadow: 'shadow-emerald-500/20', bg: 'bg-emerald-500/10' },
+    { label: 'Courses Active', value: String(apiCourses.length), icon: BookOpen, color: 'from-emerald-500 to-teal-500', shadow: 'shadow-emerald-500/20', bg: 'bg-emerald-500/10' },
   ];
 
   return (
@@ -172,7 +177,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <ResponsiveContainer width="100%" height={250}>
-              <AreaChart data={weeklyProgress}>
+              <AreaChart data={[]}>
                 <defs>
                   <linearGradient id="xpGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
@@ -281,12 +286,12 @@ export default function DashboardPage() {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-400">{course.completedChapters}/{course.chapters} chapters</span>
-                        <span className="text-violet-400 font-medium">{Math.round((course.completedChapters / course.chapters) * 100)}%</span>
+                        <span className="text-violet-400 font-medium">{course.chapters > 0 ? Math.round((course.completedChapters / course.chapters) * 100) : 0}%</span>
                       </div>
                       <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
-                          animate={{ width: `${(course.completedChapters / course.chapters) * 100}%` }}
+                          animate={{ width: `${course.chapters > 0 ? (course.completedChapters / course.chapters) * 100 : 0}%` }}
                           transition={{ duration: 0.8, delay: 0.8 + i * 0.1 }}
                           className={`h-full rounded-full bg-gradient-to-r ${course.color}`}
                         />
@@ -314,20 +319,7 @@ export default function DashboardPage() {
               Recent Badges
             </h3>
             <div className="grid grid-cols-4 gap-3">
-              {badges.slice(0, 8).map((badge) => (
-                <motion.div
-                  key={badge.id}
-                  whileHover={{ scale: 1.1, y: -3 }}
-                  className={`text-center p-3 rounded-2xl transition-all ${
-                    badge.unlocked
-                      ? 'bg-amber-500/10 border border-amber-500/20'
-                      : 'bg-white/5 border border-white/5 opacity-40'
-                  }`}
-                >
-                  <span className="text-2xl block mb-1">{badge.icon}</span>
-                  <p className="text-xs text-gray-400 truncate">{badge.name}</p>
-                </motion.div>
-              ))}
+              <p className="text-gray-500 text-sm col-span-4 text-center py-4">No badges earned yet. Keep learning!</p>
             </div>
           </motion.div>
 

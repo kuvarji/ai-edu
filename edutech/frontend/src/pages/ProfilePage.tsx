@@ -5,7 +5,6 @@ import {
   Globe, Bell, Zap, Flame, Trophy, Award, BookOpen, Star,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { badges as mockBadges } from '../data/mockData';
 import { authApi, gamificationApi, type Badge as ApiBadge } from '../services/api';
 
 export default function ProfilePage() {
@@ -28,15 +27,13 @@ export default function ProfilePage() {
     fetchBadges();
   }, []);
 
-  const badges = apiBadges.length > 0
-    ? apiBadges.map((b) => ({
-        id: b.id,
-        name: b.name,
-        description: b.description,
-        icon: b.icon || '\u2b50',
-        unlocked: b.unlocked ?? true,
-      }))
-    : mockBadges;
+  const badges = apiBadges.map((b) => ({
+    id: b.id,
+    name: b.name,
+    description: b.description,
+    icon: b.icon || '\u2b50',
+    unlocked: b.unlocked ?? true,
+  }));
 
   const handleSave = async () => {
     setSaving(true);
@@ -51,10 +48,10 @@ export default function ProfilePage() {
   };
 
   const stats = [
-    { label: 'Total XP', value: (user?.xp ?? 2450).toLocaleString(), icon: Zap, color: 'text-yellow-400' },
-    { label: 'Streak', value: `${user?.streak ?? 12} Days`, icon: Flame, color: 'text-orange-400' },
-    { label: 'Level', value: `${user?.level ?? 5}`, icon: Trophy, color: 'text-violet-400' },
-    { label: 'Courses', value: '4', icon: BookOpen, color: 'text-emerald-400' },
+    { label: 'Total XP', value: (user?.xp ?? 0).toLocaleString(), icon: Zap, color: 'text-yellow-400' },
+    { label: 'Streak', value: `${user?.streak ?? 0} Days`, icon: Flame, color: 'text-orange-400' },
+    { label: 'Level', value: `${user?.level ?? 1}`, icon: Trophy, color: 'text-violet-400' },
+    { label: 'Courses', value: '0', icon: BookOpen, color: 'text-emerald-400' },
   ];
 
   return (

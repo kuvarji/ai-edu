@@ -6,31 +6,13 @@ import {
   ArrowUpRight, ArrowDownRight,
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { courses as mockCourses } from '../data/mockData';
 import { adminApi, coursesApi, type PlatformStats, type AdminUser, type Course } from '../services/api';
-
-const revenueData = [
-  { month: 'Jan', revenue: 45000, users: 320 },
-  { month: 'Feb', revenue: 52000, users: 410 },
-  { month: 'Mar', revenue: 61000, users: 480 },
-  { month: 'Apr', revenue: 58000, users: 520 },
-  { month: 'May', revenue: 72000, users: 610 },
-  { month: 'Jun', revenue: 85000, users: 750 },
-];
-
-const recentUsers = [
-  { name: 'Aarav Sharma', email: 'aarav@gmail.com', plan: 'Pro', status: 'active', joined: '2 hours ago' },
-  { name: 'Priya Patel', email: 'priya@gmail.com', plan: 'Free', status: 'active', joined: '5 hours ago' },
-  { name: 'Rohan Kumar', email: 'rohan@gmail.com', plan: 'Premium', status: 'active', joined: '1 day ago' },
-  { name: 'Sneha Gupta', email: 'sneha@gmail.com', plan: 'Pro', status: 'inactive', joined: '2 days ago' },
-  { name: 'Arjun Singh', email: 'arjun@gmail.com', plan: 'Free', status: 'active', joined: '3 days ago' },
-];
 
 export default function AdminDashboard() {
   const [platformStats, setPlatformStats] = useState<PlatformStats | null>(null);
   const [apiUsers, setApiUsers] = useState<AdminUser[]>([]);
   const [apiCourses, setApiCourses] = useState<Course[]>([]);
-  const [, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,32 +35,28 @@ export default function AdminDashboard() {
   }, []);
 
   const ps = platformStats?.stats;
-  const courses = apiCourses.length > 0
-    ? apiCourses.map((c, i) => ({
-        id: c.id,
-        title: c.title,
-        icon: c.icon || mockCourses[i % mockCourses.length]?.icon || '\ud83d\udcda',
-        color: c.color || mockCourses[i % mockCourses.length]?.color || 'from-violet-500 to-purple-600',
-        students: 0,
-        chapters: 0,
-      }))
-    : mockCourses;
+  const courses = apiCourses.map((c) => ({
+    id: c.id,
+    title: c.title,
+    icon: c.icon || '\ud83d\udcda',
+    color: c.color || 'from-violet-500 to-purple-600',
+    students: 0,
+    chapters: 0,
+  }));
 
-  const displayUsers = apiUsers.length > 0
-    ? apiUsers.map((u) => ({
-        name: u.name,
-        email: u.email,
-        plan: u.subscription || 'Free',
-        status: 'active' as const,
-        joined: u.created_at ? new Date(u.created_at).toLocaleDateString() : 'Recently',
-      }))
-    : recentUsers;
+  const displayUsers = apiUsers.map((u) => ({
+    name: u.name,
+    email: u.email,
+    plan: u.subscription || 'Free',
+    status: 'active' as const,
+    joined: u.created_at ? new Date(u.created_at).toLocaleDateString() : 'Recently',
+  }));
 
   const stats = [
-    { label: 'Total Users', value: ps ? ps.users.total.toLocaleString() : '52,847', change: '+12.5%', up: true, icon: Users, color: 'from-violet-500 to-purple-600' },
-    { label: 'Active Courses', value: ps ? String(ps.content.total_courses) : '248', change: '+8.2%', up: true, icon: BookOpen, color: 'from-emerald-500 to-teal-600' },
-    { label: 'Revenue (Monthly)', value: ps ? `₹${(ps.revenue.estimated_monthly_revenue / 100000).toFixed(1)}L` : '₹8.5L', change: '+23.1%', up: true, icon: DollarSign, color: 'from-amber-500 to-orange-600' },
-    { label: 'Conversion Rate', value: '18.3%', change: '-2.1%', up: false, icon: TrendingUp, color: 'from-cyan-500 to-blue-600' },
+    { label: 'Total Users', value: ps ? ps.users.total.toLocaleString() : '0', change: '', up: true, icon: Users, color: 'from-violet-500 to-purple-600' },
+    { label: 'Active Courses', value: ps ? String(ps.content.total_courses) : String(apiCourses.length), change: '', up: true, icon: BookOpen, color: 'from-emerald-500 to-teal-600' },
+    { label: 'Revenue (Monthly)', value: ps ? `₹${(ps.revenue.estimated_monthly_revenue / 100000).toFixed(1)}L` : '₹0', change: '', up: true, icon: DollarSign, color: 'from-amber-500 to-orange-600' },
+    { label: 'Conversion Rate', value: ps ? `${(((ps.revenue.pro_users + ps.revenue.premium_users) / (ps.users.total || 1)) * 100).toFixed(1)}%` : '0%', change: '', up: true, icon: TrendingUp, color: 'from-cyan-500 to-blue-600' },
   ];
 
   return (
@@ -106,6 +84,13 @@ export default function AdminDashboard() {
             </motion.button>
           </div>
         </motion.div>
+
+        {loading && (
+          <div className="text-center py-12 mb-8">
+            <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
+            <p className="text-gray-400">Loading dashboard data...</p>
+          </div>
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -146,8 +131,8 @@ export default function AdminDashboard() {
           >
             <h3 className="text-lg font-bold text-white mb-1">Revenue Overview</h3>
             <p className="text-sm text-gray-500 mb-6">Monthly revenue trend</p>
-            <ResponsiveContainer width="100%" height={280}>
-              <AreaChart data={revenueData}>
+            {ps?.revenue ? <ResponsiveContainer width="100%" height={280}>
+              <AreaChart data={[]}>
                 <defs>
                   <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
@@ -159,7 +144,7 @@ export default function AdminDashboard() {
                 <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }} />
                 <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} fill="url(#revGrad)" />
               </AreaChart>
-            </ResponsiveContainer>
+            </ResponsiveContainer> : <div className="flex items-center justify-center h-[280px] text-gray-500">No revenue data available yet</div>}
           </motion.div>
 
           {/* User Growth */}
@@ -171,14 +156,14 @@ export default function AdminDashboard() {
           >
             <h3 className="text-lg font-bold text-white mb-1">User Growth</h3>
             <p className="text-sm text-gray-500 mb-6">New users per month</p>
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={revenueData}>
+            {ps?.users ? <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={[]}>
                 <XAxis dataKey="month" stroke="#4b5563" fontSize={12} />
                 <YAxis stroke="#4b5563" fontSize={12} />
                 <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }} />
                 <Bar dataKey="users" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
               </BarChart>
-            </ResponsiveContainer>
+            </ResponsiveContainer> : <div className="flex items-center justify-center h-[280px] text-gray-500">No user growth data yet</div>}
           </motion.div>
         </div>
 
@@ -196,6 +181,7 @@ export default function AdminDashboard() {
               </h3>
             </div>
             <div className="space-y-3">
+              {courses.length === 0 && <p className="text-gray-500 text-sm text-center py-4">No courses added yet</p>}
               {courses.slice(0, 4).map((course, i) => (
                 <motion.div
                   key={course.id}
@@ -248,6 +234,7 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="space-y-3">
+              {displayUsers.length === 0 && <p className="text-gray-500 text-sm text-center py-4">No users registered yet</p>}
               {displayUsers.map((u, i) => (
                 <motion.div
                   key={i}

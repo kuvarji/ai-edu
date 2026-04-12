@@ -7,28 +7,11 @@ import {
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { parentApi, type ChildInfo, type ChildProgress } from '../services/api';
 
-const studyData = [
-  { day: 'Mon', hours: 2.5, target: 3 },
-  { day: 'Tue', hours: 3.2, target: 3 },
-  { day: 'Wed', hours: 1.8, target: 3 },
-  { day: 'Thu', hours: 4.0, target: 3 },
-  { day: 'Fri', hours: 2.0, target: 3 },
-  { day: 'Sat', hours: 3.5, target: 3 },
-  { day: 'Sun', hours: 2.8, target: 3 },
-];
-
-const defaultSubjectProgress = [
-  { subject: 'Maths', progress: 75, grade: 'A', color: 'from-violet-500 to-purple-600' },
-  { subject: 'Science', progress: 60, grade: 'B+', color: 'from-emerald-500 to-teal-600' },
-  { subject: 'English', progress: 90, grade: 'A+', color: 'from-amber-500 to-orange-600' },
-  { subject: 'Hindi', progress: 45, grade: 'B', color: 'from-rose-500 to-pink-600' },
-  { subject: 'SST', progress: 70, grade: 'A-', color: 'from-cyan-500 to-blue-600' },
-];
 
 export default function ParentDashboard() {
   const [, setChildren] = useState<ChildInfo[]>([]);
   const [childProgress, setChildProgress] = useState<ChildProgress | null>(null);
-  const [, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,7 +46,7 @@ export default function ParentDashboard() {
           'from-cyan-500 to-blue-600',
         ][i % 5],
       }))
-    : defaultSubjectProgress;
+    : [];
 
   return (
     <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4">
@@ -73,8 +56,22 @@ export default function ParentDashboard() {
           <p className="text-gray-400">Apne bachche ki padhai ka pura overview</p>
         </motion.div>
 
+        {loading && (
+          <div className="text-center py-12 mb-8">
+            <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
+            <p className="text-gray-400">Loading child data...</p>
+          </div>
+        )}
+
+        {!loading && !cp && (
+          <div className="text-center py-16 mb-8">
+            <Shield className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+            <p className="text-gray-400">No child data available yet. Link your child's account to see their progress.</p>
+          </div>
+        )}
+
         {/* Child Info Card */}
-        <motion.div
+        {cp && <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -82,37 +79,37 @@ export default function ParentDashboard() {
         >
           <div className="flex flex-col sm:flex-row items-center gap-6">
             <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-4xl shadow-xl">
-              🦁
+              {'🦁'}
             </div>
             <div className="flex-1 text-center sm:text-left">
-              <h2 className="text-2xl font-bold text-white">Aarav Sharma</h2>
-              <p className="text-gray-400">Class 10 - CBSE Board</p>
+              <h2 className="text-2xl font-bold text-white">{cp.child?.name || 'Student'}</h2>
+              <p className="text-gray-400">Progress Overview</p>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-3">
                 <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 text-xs font-bold">
-                  <Flame className="w-3 h-3" /> 12 Day Streak
+                  <Flame className="w-3 h-3" /> {cp.child?.streak ?? 0} Day Streak
                 </span>
                 <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold">
-                  <Zap className="w-3 h-3" /> 2,450 XP
+                  <Zap className="w-3 h-3" /> {(cp.child?.xp ?? 0).toLocaleString()} XP
                 </span>
                 <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-xs font-bold">
-                  Level 5
+                  Level {cp.child?.level ?? 1}
                 </span>
               </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-black text-emerald-400">78%</div>
+              <div className="text-3xl font-black text-emerald-400">{cp.quiz_stats?.average_score ?? 0}%</div>
               <p className="text-sm text-gray-400">Overall Score</p>
             </div>
           </div>
-        </motion.div>
+        </motion.div>}
 
         {/* Quick Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
-            { label: 'Study Today', value: '2.5 hrs', icon: Clock, color: 'from-violet-500 to-purple-600', badge: 'On Track' },
-            { label: 'Quizzes Done', value: '8', icon: Target, color: 'from-emerald-500 to-teal-600', badge: 'Good' },
-            { label: 'Weak Topics', value: '3', icon: AlertCircle, color: 'from-red-500 to-rose-600', badge: 'Needs Help' },
-            { label: 'Courses Active', value: '5', icon: BookOpen, color: 'from-amber-500 to-orange-600', badge: 'All Going' },
+            { label: 'Total XP', value: cp ? String(cp.child?.xp ?? 0) : '0', icon: Clock, color: 'from-violet-500 to-purple-600', badge: '' },
+            { label: 'Quizzes Done', value: cp ? String(cp.quiz_stats?.total_quizzes ?? 0) : '0', icon: Target, color: 'from-emerald-500 to-teal-600', badge: '' },
+            { label: 'Avg Score', value: cp ? `${cp.quiz_stats?.average_score ?? 0}%` : '0%', icon: AlertCircle, color: 'from-red-500 to-rose-600', badge: '' },
+            { label: 'Courses Active', value: cp ? String(cp.course_progress?.length ?? 0) : '0', icon: BookOpen, color: 'from-amber-500 to-orange-600', badge: '' },
           ].map((stat, i) => {
             const Icon = stat.icon;
             return (
@@ -150,7 +147,7 @@ export default function ParentDashboard() {
             </h3>
             <p className="text-sm text-gray-500 mb-6">Daily study time vs target</p>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={studyData}>
+              <BarChart data={[]}>
                 <XAxis dataKey="day" stroke="#4b5563" fontSize={12} />
                 <YAxis stroke="#4b5563" fontSize={12} />
                 <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }} />
@@ -254,15 +251,12 @@ export default function ParentDashboard() {
             <AlertCircle className="w-5 h-5 text-red-400" /> Weak Topics (Attention Needed)
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {[
-              { topic: 'Trigonometry', subject: 'Maths', score: '35%' },
-              { topic: 'Chemical Bonding', subject: 'Science', score: '42%' },
-              { topic: 'Hindi Vyakaran', subject: 'Hindi', score: '38%' },
-            ].map((topic, i) => (
+            {cp?.course_progress?.filter(p => p.percentage < 50).length === 0 && <p className="text-gray-500 text-sm col-span-3 text-center py-4">No weak topics identified yet</p>}
+            {cp?.course_progress?.filter(p => p.percentage < 50).map((topic, i) => (
               <div key={i} className="p-4 rounded-xl bg-red-500/10 border border-red-500/10">
-                <h4 className="font-bold text-white text-sm">{topic.topic}</h4>
+                <h4 className="font-bold text-white text-sm">{topic.course_name}</h4>
                 <p className="text-xs text-gray-500">{topic.subject}</p>
-                <p className="text-lg font-black text-red-400 mt-1">{topic.score}</p>
+                <p className="text-lg font-black text-red-400 mt-1">{topic.percentage}%</p>
               </div>
             ))}
           </div>

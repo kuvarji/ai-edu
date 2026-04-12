@@ -5,7 +5,6 @@ import {
   Clock, Zap, CheckCircle2, XCircle, ArrowRight, Trophy,
   Brain, Sparkles, RotateCcw,
 } from 'lucide-react';
-import { quizQuestions as mockQuizQuestions } from '../data/mockData';
 import { useStore } from '../store/useStore';
 import { quizApi, type QuizQuestion as ApiQuizQuestion } from '../services/api';
 
@@ -20,7 +19,7 @@ export default function QuizPage() {
   const { addXP } = useStore();
   const [apiQuestions, setApiQuestions] = useState<ApiQuizQuestion[]>([]);
   const [quizId, setQuizId] = useState<string | null>(null);
-  const [, setLoadingQuiz] = useState(true);
+  const [loadingQuiz, setLoadingQuiz] = useState(true);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -38,16 +37,14 @@ export default function QuizPage() {
     fetchQuiz();
   }, []);
 
-  const quizQuestions = apiQuestions.length > 0
-    ? apiQuestions.map((q) => ({
-        id: q.id,
-        question: q.question,
-        options: q.options,
-        correct: -1, // server will validate
-        difficulty: q.difficulty as 'easy' | 'medium' | 'hard',
-        explanation: '',
-      }))
-    : mockQuizQuestions;
+  const quizQuestions = apiQuestions.map((q) => ({
+    id: q.id,
+    question: q.question,
+    options: q.options,
+    correct: -1, // server will validate
+    difficulty: q.difficulty as 'easy' | 'medium' | 'hard',
+    explanation: '',
+  }));
 
   const question = quizQuestions[currentQ];
 
@@ -129,6 +126,37 @@ export default function QuizPage() {
       // keep using existing questions
     }
   };
+
+  if (loadingQuiz) {
+    return (
+      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
+          <p className="text-gray-400">Loading quiz...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (quizQuestions.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-950 pt-20 pb-12 px-4 flex items-center justify-center">
+        <div className="text-center">
+          <Brain className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+          <p className="text-gray-400 mb-4">No quiz questions available right now. Try again later!</p>
+          <Link to="/dashboard">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600"
+            >
+              Back to Dashboard
+            </motion.button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (finished) {
     const percentage = Math.round((score / quizQuestions.length) * 100);

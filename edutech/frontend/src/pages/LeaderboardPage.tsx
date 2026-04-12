@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Flame, Zap, Crown, TrendingUp } from 'lucide-react';
-import { leaderboardData as mockLeaderboardData } from '../data/mockData';
 import { gamificationApi, type LeaderboardEntry } from '../services/api';
 
 export default function LeaderboardPage() {
   const [period, setPeriod] = useState<'daily' | 'weekly' | 'alltime'>('weekly');
   const [apiLeaderboard, setApiLeaderboard] = useState<LeaderboardEntry[]>([]);
-  const [, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -24,16 +23,14 @@ export default function LeaderboardPage() {
     fetchLeaderboard();
   }, [period]);
 
-  const leaderboardData = apiLeaderboard.length > 0
-    ? apiLeaderboard.map((e) => ({
-        rank: e.rank,
-        name: e.name,
-        avatar: e.avatar || '🦁',
-        xp: e.xp,
-        level: e.level,
-        streak: e.streak,
-      }))
-    : mockLeaderboardData;
+  const leaderboardData = apiLeaderboard.map((e) => ({
+    rank: e.rank,
+    name: e.name,
+    avatar: e.avatar || '🦁',
+    xp: e.xp,
+    level: e.level,
+    streak: e.streak,
+  }));
 
   const top3 = leaderboardData.slice(0, 3);
   const rest = leaderboardData.slice(3);
@@ -67,8 +64,22 @@ export default function LeaderboardPage() {
           ))}
         </div>
 
+        {loading && (
+          <div className="text-center py-12">
+            <div className="animate-spin w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full mx-auto mb-3" />
+            <p className="text-gray-400">Loading leaderboard...</p>
+          </div>
+        )}
+
+        {!loading && leaderboardData.length === 0 && (
+          <div className="text-center py-16">
+            <Trophy className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+            <p className="text-gray-400">Abhi koi leaderboard data nahi hai. Quizzes do aur XP kamao!</p>
+          </div>
+        )}
+
         {/* Top 3 Podium */}
-        <div className="flex items-end justify-center gap-4 mb-12">
+        {top3.length >= 3 && <div className="flex items-end justify-center gap-4 mb-12">
           {/* 2nd Place */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -135,7 +146,7 @@ export default function LeaderboardPage() {
               <p className="text-xs text-gray-500">Level {top3[2].level}</p>
             </div>
           </motion.div>
-        </div>
+        </div>}
 
         {/* Rest of Leaderboard */}
         <div className="space-y-3">
