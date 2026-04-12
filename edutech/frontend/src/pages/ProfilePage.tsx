@@ -53,7 +53,7 @@ export default function ProfilePage() {
                   {user?.subscription || 'pro'} Plan
                 </span>
                 <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">
-                  <Star className="w-3 h-3" /> Level {user?.level || 5}
+                  <Star className="w-3 h-3" /> Level {user?.level ?? 5}
                 </span>
               </div>
             </div>
