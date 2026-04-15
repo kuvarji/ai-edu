@@ -3,13 +3,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, Mail, Phone, Shield, Edit3, Camera, Moon, Sun,
   Globe, Bell, Zap, Flame, Trophy, Award, BookOpen, Star,
-  CheckCircle, AlertTriangle,
+  CheckCircle, AlertTriangle, LogOut,
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { authApi, gamificationApi, type Badge as ApiBadge } from '../services/api';
 
 export default function ProfilePage() {
-  const { user, darkMode, toggleDarkMode, setUser } = useStore();
+  const { user, darkMode, toggleDarkMode, setUser, logout } = useStore();
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.phone || '');
@@ -430,6 +432,23 @@ export default function ProfilePage() {
             </div>
           </motion.div>
         </div>
+
+        {/* Logout Button */}
+        <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => {
+            logout();
+            navigate('/login');
+          }}
+          className="w-full mt-8 py-4 rounded-2xl font-bold text-red-400 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all flex items-center justify-center gap-3"
+        >
+          <LogOut className="w-5 h-5" />
+          Logout
+        </motion.button>
       </div>
     </div>
   );
