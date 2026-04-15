@@ -41,6 +41,7 @@ export default function SignupPage() {
           streak: res.user.streak ?? 0,
           badges: [],
           subscription: (res.user.subscription as 'free' | 'pro' | 'premium') || 'free',
+          phone: res.user.phone || phone || '',
         },
         res.token,
       );

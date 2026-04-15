@@ -38,6 +38,7 @@ export default function LoginPage() {
           streak: res.user.streak ?? 0,
           badges: [],
           subscription: (res.user.subscription as 'free' | 'pro' | 'premium') || 'free',
+          phone: res.user.phone || '',
         },
         res.token,
       );
@@ -183,6 +184,7 @@ export default function LoginPage() {
                       streak: res.user.streak ?? 0,
                       badges: [],
                       subscription: (res.user.subscription as 'free' | 'pro' | 'premium') || 'free',
+                      phone: res.user.phone || '',
                     },
                     res.token,
                   );

@@ -133,6 +133,7 @@ export interface AuthResponse {
     level: number;
     streak: number;
     subscription: string;
+    phone?: string;
   };
 }
 
