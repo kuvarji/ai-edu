@@ -45,7 +45,7 @@ export default function SignupPage() {
         },
         res.token,
       );
-      navigate('/dashboard');
+      navigate(res.user.role === 'admin' ? '/admin' : res.user.role === 'parent' ? '/parent' : '/dashboard');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Signup failed. Please try again.');
     } finally {
