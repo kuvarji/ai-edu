@@ -319,6 +319,14 @@ export interface Badge {
   unlocked?: boolean;
 }
 
+export interface DailyGoal {
+  id: string;
+  label: string;
+  current: number;
+  target: number;
+  color: string;
+}
+
 export const gamificationApi = {
   getStats: () =>
     request<GamificationStats>('/gamification/stats'),
@@ -334,6 +342,9 @@ export const gamificationApi = {
 
   checkBadges: () =>
     request<{ new_badges: Badge[] }>('/gamification/check-badges', { method: 'POST' }),
+
+  getDailyGoals: () =>
+    request<{ goals: DailyGoal[] }>('/gamification/daily-goals'),
 };
 
 // ============================
