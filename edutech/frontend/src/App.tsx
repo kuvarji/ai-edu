@@ -4,6 +4,7 @@ import './App.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { useStore } from './store/useStore';
+import RouteGuard from './components/RouteGuard';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -44,16 +45,16 @@ function App() {
           <Route path="/" element={<><LandingPage /><Footer /></>} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard" element={<RouteGuard><DashboardPage /></RouteGuard>} />
           <Route path="/courses" element={<><CoursesPage /><Footer /></>} />
-          <Route path="/courses/:id" element={<CourseDetailPage />} />
-          <Route path="/classroom/:courseId/:chapterId" element={<ClassroomPage />} />
-          <Route path="/quiz" element={<QuizPage />} />
+          <Route path="/courses/:id" element={<RouteGuard><CourseDetailPage /></RouteGuard>} />
+          <Route path="/classroom/:courseId/:chapterId" element={<RouteGuard><ClassroomPage /></RouteGuard>} />
+          <Route path="/quiz" element={<RouteGuard><QuizPage /></RouteGuard>} />
           <Route path="/leaderboard" element={<><LeaderboardPage /><Footer /></>} />
-          <Route path="/store" element={<><CharacterStorePage /><Footer /></>} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/parent" element={<ParentDashboard />} />
+          <Route path="/store" element={<RouteGuard><CharacterStorePage /><Footer /></RouteGuard>} />
+          <Route path="/profile" element={<RouteGuard><ProfilePage /></RouteGuard>} />
+          <Route path="/admin" element={<RouteGuard requiredRole="admin"><AdminDashboard /></RouteGuard>} />
+          <Route path="/parent" element={<RouteGuard requiredRole="parent"><ParentDashboard /></RouteGuard>} />
         </Routes>
       </div>
     </Router>
