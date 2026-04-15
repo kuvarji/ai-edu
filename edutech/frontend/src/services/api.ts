@@ -159,8 +159,10 @@ export const authApi = {
   register: (data: RegisterRequest) =>
     request<AuthResponse>('/auth/register', { method: 'POST', body: data, auth: false }),
 
-  getMe: () =>
-    request<UserProfile>('/auth/me'),
+  getMe: async () => {
+    const res = await request<{ user: UserProfile }>('/auth/me');
+    return res.user;
+  },
 
   updateProfile: (data: { name?: string; phone?: string; avatar?: string }) =>
     request<{ message: string }>('/auth/me', { method: 'PUT', body: data }),
