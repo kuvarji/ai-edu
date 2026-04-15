@@ -7,14 +7,17 @@ Ye module gamification system handle karta hai:
 - GET  /gamification/badges      → Available badges ki list
 - GET  /gamification/my-badges   → User ke earned badges
 - POST /gamification/check-badges → Naye badges check karo aur award karo
+- GET  /gamification/daily-goals  → Aaj ke goals ka real progress
 """
 
 from fastapi import APIRouter, HTTPException, Depends, Query
 from bson import ObjectId
+from datetime import datetime, timezone
 from app.database import (
     get_users_collection, get_badges_collection,
     get_user_badges_collection, get_quiz_results_collection,
-    get_progress_collection, get_notifications_collection
+    get_progress_collection, get_notifications_collection,
+    get_activity_log_collection
 )
 from app.utils.auth import get_current_user
 from app.utils.helpers import serialize_doc, serialize_docs, get_current_timestamp, valid_object_id
@@ -77,6 +80,88 @@ async def get_gamification_stats(current_user: dict = Depends(get_current_user))
             "name": user.get("name", "Student"),
         }
     }
+
+
+@router.get("/daily-goals")
+async def get_daily_goals(current_user: dict = Depends(get_current_user)):
+    """
+    Aaj ke goals ka real progress return karo.
+    4 goals track karte hain:
+    1. Lessons completed today (target: 3)
+    2. Quiz questions solved today (target: 10)
+    3. XP earned today (target: 200)
+    4. Study time today in minutes (target: 30)
+    """
+    user_id = current_user["user_id"]
+    
+    # Aaj ka date range (UTC midnight se ab tak)
+    now = datetime.now(timezone.utc)
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+    
+    # 1. Lessons (chapters) completed today
+    progress_coll = get_progress_collection()
+    lessons_today = await progress_coll.count_documents({
+        "user_id": user_id,
+        "completed": True,
+        "completed_at": {"$gte": today_start}
+    })
+    
+    # 2. Quiz questions solved today
+    quiz_coll = get_quiz_results_collection()
+    today_quizzes = await quiz_coll.find({
+        "user_id": user_id,
+        "status": "completed",
+        "completed_at": {"$gte": today_start}
+    }).to_list(length=100)
+    
+    questions_today = sum(q.get("total_questions", 0) for q in today_quizzes)
+    
+    # 3. XP earned today (from quizzes + chapter completions)
+    xp_from_quizzes = sum(q.get("xp_earned", 0) for q in today_quizzes)
+    xp_from_chapters = lessons_today * 50  # Each chapter = 50 XP
+    xp_today = xp_from_quizzes + xp_from_chapters
+    
+    # 4. Study time today (activity count × 5 min per activity)
+    activity_coll = get_activity_log_collection()
+    activities_today = await activity_coll.count_documents({
+        "user_id": user_id,
+        "timestamp": {"$gte": today_start}
+    })
+    study_minutes = activities_today * 5
+    
+    # Goals with targets
+    goals = [
+        {
+            "id": "lessons",
+            "label": "Complete 3 lessons",
+            "current": lessons_today,
+            "target": 3,
+            "color": "from-violet-500 to-purple-500",
+        },
+        {
+            "id": "questions",
+            "label": "Solve 10 quiz questions",
+            "current": questions_today,
+            "target": 10,
+            "color": "from-cyan-500 to-blue-500",
+        },
+        {
+            "id": "xp",
+            "label": "Earn 200 XP",
+            "current": xp_today,
+            "target": 200,
+            "color": "from-amber-500 to-orange-500",
+        },
+        {
+            "id": "study_time",
+            "label": "Study for 30 min",
+            "current": study_minutes,
+            "target": 30,
+            "color": "from-emerald-500 to-teal-500",
+        },
+    ]
+    
+    return {"goals": goals}
 
 
 @router.get("/leaderboard")

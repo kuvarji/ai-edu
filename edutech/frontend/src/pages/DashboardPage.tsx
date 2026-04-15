@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useStore } from '../store/useStore';
-import { coursesApi, gamificationApi, analyticsApi, type Course, type GamificationStats, type WeeklyReport } from '../services/api';
+import { coursesApi, gamificationApi, analyticsApi, type Course, type GamificationStats, type WeeklyReport, type DailyGoal } from '../services/api';
 import { useLanguage } from '../i18n/useLanguage';
 import Avatar from '../components/Avatar';
 
@@ -25,22 +25,25 @@ export default function DashboardPage() {
   const [apiCourses, setApiCourses] = useState<Course[]>([]);
   const [stats, setStats] = useState<GamificationStats | null>(null);
   const [, setWeeklyReport] = useState<WeeklyReport | null>(null);
+  const [dailyGoals, setDailyGoals] = useState<DailyGoal[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [coursesRes, statsRes, weeklyRes] = await Promise.allSettled([
+        const [coursesRes, statsRes, weeklyRes, goalsRes] = await Promise.allSettled([
           coursesApi.getAll(),
           gamificationApi.getStats(),
           analyticsApi.getWeeklyReport(),
+          gamificationApi.getDailyGoals(),
         ]);
         if (coursesRes.status === 'fulfilled') setApiCourses(coursesRes.value.courses);
         if (statsRes.status === 'fulfilled') setStats(statsRes.value);
         if (weeklyRes.status === 'fulfilled') setWeeklyReport(weeklyRes.value);
+        if (goalsRes.status === 'fulfilled') setDailyGoals(goalsRes.value.goals);
       } catch {
-        // fallback to mock data
+        // fallback to empty data
       } finally {
         setLoading(false);
       }
@@ -221,29 +224,30 @@ export default function DashboardPage() {
               Aaj Ke Goals
             </h3>
             <div className="space-y-4">
-              {[
-                { label: 'Complete 3 lessons', progress: 66, done: '2/3', color: 'from-violet-500 to-purple-500' },
-                { label: 'Solve 10 quiz questions', progress: 80, done: '8/10', color: 'from-cyan-500 to-blue-500' },
-                { label: 'Earn 200 XP', progress: 45, done: '90/200', color: 'from-amber-500 to-orange-500' },
-                { label: 'Study for 30 min', progress: 100, done: 'Done!', color: 'from-emerald-500 to-teal-500' },
-              ].map((goal, i) => (
-                <div key={i} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-300">{goal.label}</span>
-                    <span className={`text-xs font-bold ${goal.progress === 100 ? 'text-emerald-400' : 'text-theme-text-muted'}`}>
-                      {goal.done}
-                    </span>
+              {dailyGoals.length > 0 ? dailyGoals.map((goal, i) => {
+                const progress = Math.min(Math.round((goal.current / goal.target) * 100), 100);
+                const done = goal.current >= goal.target ? 'Done!' : `${goal.current}/${goal.target}`;
+                return (
+                  <div key={goal.id} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-300">{goal.label}</span>
+                      <span className={`text-xs font-bold ${progress >= 100 ? 'text-emerald-400' : 'text-theme-text-muted'}`}>
+                        {done}
+                      </span>
+                    </div>
+                    <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progress}%` }}
+                        transition={{ duration: 0.8, delay: 0.5 + i * 0.1 }}
+                        className={`h-full rounded-full bg-gradient-to-r ${goal.color}`}
+                      />
+                    </div>
                   </div>
-                  <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${goal.progress}%` }}
-                      transition={{ duration: 0.8, delay: 0.5 + i * 0.1 }}
-                      className={`h-full rounded-full bg-gradient-to-r ${goal.color}`}
-                    />
-                  </div>
-                </div>
-              ))}
+                );
+              }) : (
+                <p className="text-theme-text-muted text-sm text-center py-4">Start learning to track your daily goals!</p>
+              )}
             </div>
           </motion.div>
         </div>
