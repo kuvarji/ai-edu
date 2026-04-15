@@ -32,6 +32,7 @@ class RegisterRequest(BaseModel):
     email: str = Field(..., description="Email address (unique hona chahiye)")
     password: str = Field(..., min_length=6, description="Password (min 6 characters)")
     role: str = Field(default="student", description="Role: student, parent, or admin")
+    phone: str | None = Field(None, description="Phone number (optional)")
 
 
 class LoginRequest(BaseModel):
@@ -102,7 +103,7 @@ async def register(req: RegisterRequest):
         "streak": 0,              # Starting Streak = 0
         "last_active_date": None,  # Streak tracking ke liye
         "language": "hindi",       # Default language
-        "phone": "",
+        "phone": req.phone or "",
         "subscription": "free",    # Free plan by default
         "created_at": get_current_timestamp(),
         "updated_at": get_current_timestamp(),
@@ -127,6 +128,7 @@ async def register(req: RegisterRequest):
             "level": 1,
             "streak": 0,
             "avatar": "🦁",
+            "phone": req.phone or "",
         }
     }
 
@@ -199,6 +201,7 @@ async def login(req: LoginRequest):
             "streak": new_streak,
             "avatar": user.get("avatar", "🦁"),
             "subscription": user.get("subscription", "free"),
+            "phone": user.get("phone", ""),
         }
     }
 
