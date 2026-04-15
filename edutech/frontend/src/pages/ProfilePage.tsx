@@ -84,7 +84,7 @@ export default function ProfilePage() {
       await authApi.updateProfile({ name: name.trim(), phone: phone.trim() || undefined });
       // Update store with new data
       if (user) {
-        setUser({ ...user, name: name.trim() });
+        setUser({ ...user, name: name.trim(), phone: phone.trim() || undefined });
       }
       setEditing(false);
       setSuccessMsg('Profile updated successfully!');
