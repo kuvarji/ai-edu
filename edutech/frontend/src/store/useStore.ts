@@ -36,7 +36,7 @@ export const useStore = create<AppState>((set) => ({
   isLoggedIn: false,
   darkMode: typeof window !== 'undefined' ? localStorage.getItem('app_darkMode') !== 'false' : true,
   sidebarOpen: true,
-  loading: false,
+  loading: typeof window !== 'undefined' ? !!localStorage.getItem('auth_token') : false,
   login: (user, token) => {
     if (token) {
       setToken(token);
