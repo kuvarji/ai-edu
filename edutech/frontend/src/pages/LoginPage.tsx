@@ -42,7 +42,7 @@ export default function LoginPage() {
         },
         res.token,
       );
-      navigate('/dashboard');
+      navigate(res.user.role === 'admin' ? '/admin' : res.user.role === 'parent' ? '/parent' : '/dashboard');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Login failed. Please try again.');
     } finally {
@@ -188,7 +188,7 @@ export default function LoginPage() {
                     },
                     res.token,
                   );
-                  navigate('/dashboard');
+                  navigate(res.user.role === 'admin' ? '/admin' : res.user.role === 'parent' ? '/parent' : '/dashboard');
                 } catch (err) {
                   setError(err instanceof ApiError ? err.message : 'Demo login failed.');
                 } finally {

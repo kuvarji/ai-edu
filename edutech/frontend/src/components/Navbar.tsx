@@ -15,6 +15,8 @@ import {
   LogOut,
   Flame,
   Zap,
+  Shield,
+  Users,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useLanguage } from '../i18n/useLanguage';
@@ -31,13 +33,27 @@ export default function Navbar() {
     { to: '/leaderboard', label: t.nav_leaderboard, icon: Trophy },
   ];
 
-  const authLinks = [
+  const adminLinks = [
+    { to: '/admin', label: 'Admin Panel', icon: Shield },
+    { to: '/dashboard', label: t.nav_dashboard, icon: LayoutDashboard },
+    { to: '/courses', label: t.nav_courses, icon: BookOpen },
+    { to: '/profile', label: t.nav_profile, icon: User },
+  ];
+
+  const parentLinks = [
+    { to: '/parent', label: 'Parent Dashboard', icon: Users },
+    { to: '/courses', label: t.nav_courses, icon: BookOpen },
+    { to: '/profile', label: t.nav_profile, icon: User },
+  ];
+
+  const studentLinks = [
     { to: '/dashboard', label: t.nav_dashboard, icon: LayoutDashboard },
     { to: '/courses', label: t.nav_courses, icon: BookOpen },
     { to: '/leaderboard', label: t.nav_leaderboard, icon: Trophy },
     { to: '/profile', label: t.nav_profile, icon: User },
   ];
 
+  const authLinks = user?.role === 'admin' ? adminLinks : user?.role === 'parent' ? parentLinks : studentLinks;
   const links = isLoggedIn ? authLinks : publicLinks;
 
   return (
