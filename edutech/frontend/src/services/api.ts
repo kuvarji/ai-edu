@@ -118,6 +118,8 @@ export interface RegisterRequest {
   password: string;
   role: 'student' | 'parent';
   phone?: string;
+  grade?: string;
+  board?: string;
 }
 
 export interface AuthResponse {
@@ -134,6 +136,8 @@ export interface AuthResponse {
     streak: number;
     subscription: string;
     phone?: string;
+    grade?: string;
+    board?: string;
   };
 }
 
@@ -149,6 +153,8 @@ export interface UserProfile {
   badges: string[];
   subscription: string;
   phone?: string;
+  grade?: string;
+  board?: string;
   created_at?: string;
 }
 
@@ -164,7 +170,7 @@ export const authApi = {
     return res.user;
   },
 
-  updateProfile: (data: { name?: string; phone?: string; avatar?: string }) =>
+  updateProfile: (data: { name?: string; phone?: string; avatar?: string; grade?: string; board?: string }) =>
     request<{ message: string }>('/auth/me', { method: 'PUT', body: data }),
 
   changePassword: (data: { current_password: string; new_password: string }) =>

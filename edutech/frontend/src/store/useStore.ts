@@ -13,6 +13,8 @@ export interface User {
   badges: string[];
   subscription: 'free' | 'pro' | 'premium';
   phone?: string;
+  grade?: string;
+  board?: string;
 }
 
 interface AppState {
@@ -81,6 +83,8 @@ export const useStore = create<AppState>((set) => ({
           badges: profile.badges || [],
           subscription: (profile.subscription as 'free' | 'pro' | 'premium') || 'free',
           phone: profile.phone || '',
+          grade: profile.grade || '',
+          board: profile.board || '',
         },
         isLoggedIn: true,
         loading: false,
