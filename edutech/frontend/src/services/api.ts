@@ -434,6 +434,7 @@ export interface ChildInfo {
 export interface ChildProgress {
   child: {
     name: string;
+    avatar?: string;
     xp: number;
     level: number;
     streak: number;

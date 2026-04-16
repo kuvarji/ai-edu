@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { parentApi, type ChildInfo, type ChildProgress } from '../services/api';
+import Avatar from '../components/Avatar';
 
 
 export default function ParentDashboard() {
@@ -164,7 +165,7 @@ export default function ParentDashboard() {
                       : 'bg-theme-card border border-theme-border text-theme-text-secondary hover:border-violet-500'
                   }`}
                 >
-                  <span className="text-lg">{child.avatar || '🦁'}</span>
+                  <span className="text-lg"><Avatar avatar={child.avatar} fallback="🦁" className="" imgClassName="w-6 h-6 rounded-full" /></span>
                   <span>{child.name}</span>
                   <span className="text-xs opacity-60">Lv.{child.level}</span>
                 </button>
@@ -188,8 +189,8 @@ export default function ParentDashboard() {
           className="p-6 rounded-2xl bg-gradient-to-r from-violet-500/10 to-cyan-500/10 border border-violet-500/20 mb-8"
         >
           <div className="flex flex-col sm:flex-row items-center gap-6">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-4xl shadow-xl">
-              {'🦁'}
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-4xl shadow-xl overflow-hidden">
+              <Avatar avatar={cp.child?.avatar} fallback="🦁" className="" imgClassName="w-full h-full object-cover" />
             </div>
             <div className="flex-1 text-center sm:text-left">
               <h2 className="text-2xl font-bold text-white">{cp.child?.name || 'Student'}</h2>
