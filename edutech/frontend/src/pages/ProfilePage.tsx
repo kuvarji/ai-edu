@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, Mail, Phone, Shield, Edit3, Camera, Moon, Sun,
   Globe, Bell, Zap, Flame, Trophy, Award, BookOpen, Star,
-  CheckCircle, AlertTriangle, LogOut,
+  CheckCircle, AlertTriangle, LogOut, School,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
@@ -15,6 +15,8 @@ export default function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.phone || '');
+  const [grade, setGrade] = useState(user?.grade || '');
+  const [board, setBoard] = useState(user?.board || '');
   const [language, setLanguage] = useState(() => localStorage.getItem('app_language') || 'hindi');
   const [notifications, setNotifications] = useState(() => localStorage.getItem('app_notifications') !== 'false');
   const [saving, setSaving] = useState(false);
@@ -29,6 +31,8 @@ export default function ProfilePage() {
     if (user) {
       setName(user.name || '');
       setPhone(user.phone || '');
+      setGrade(user.grade || '');
+      setBoard(user.board || '');
     }
   }, [user]);
 
@@ -83,10 +87,19 @@ export default function ProfilePage() {
     }
     setSaving(true);
     try {
-      await authApi.updateProfile({ name: name.trim(), phone: phone.trim() || undefined });
+      await authApi.updateProfile({
+        name: name.trim(),
+        phone: phone.trim() || undefined,
+        ...(user?.role === 'student' ? { grade: grade || undefined, board: board || undefined } : {}),
+      });
       // Update store with new data
       if (user) {
-        setUser({ ...user, name: name.trim(), phone: phone.trim() || undefined });
+        setUser({
+          ...user,
+          name: name.trim(),
+          phone: phone.trim() || undefined,
+          ...(user.role === 'student' ? { grade, board } : {}),
+        });
       }
       setEditing(false);
       setSuccessMsg('Profile updated successfully!');
@@ -331,6 +344,45 @@ export default function ProfilePage() {
                   />
                 </div>
               </div>
+              {/* Grade & Board - only for students */}
+              {user?.role === 'student' && (
+                <>
+                  <div>
+                    <label className="text-xs text-theme-text-muted mb-1 block">Class</label>
+                    <div className="relative">
+                      <BookOpen className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
+                      <select
+                        value={grade}
+                        onChange={(e) => setGrade(e.target.value)}
+                        disabled={!editing}
+                        className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-white disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all appearance-none"
+                      >
+                        <option value="">Select Class</option>
+                        {Array.from({ length: 12 }, (_, i) => i + 1).map((g) => (
+                          <option key={g} value={String(g)}>Class {g}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs text-theme-text-muted mb-1 block">Board</label>
+                    <div className="relative">
+                      <School className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
+                      <select
+                        value={board}
+                        onChange={(e) => setBoard(e.target.value)}
+                        disabled={!editing}
+                        className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-white disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all appearance-none"
+                      >
+                        <option value="">Select Board</option>
+                        <option value="CBSE">CBSE</option>
+                        <option value="ICSE">ICSE</option>
+                        <option value="State Board">State Board</option>
+                      </select>
+                    </div>
+                  </div>
+                </>
+              )}
               {editing && (
                 <motion.button
                   initial={{ opacity: 0 }}

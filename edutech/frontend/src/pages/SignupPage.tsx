@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, User, UserPlus, GraduationCap, Phone, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, UserPlus, GraduationCap, Phone, Loader2, BookOpen, School } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { authApi, ApiError } from '../services/api';
 import { useLanguage } from '../i18n/useLanguage';
@@ -12,6 +12,8 @@ export default function SignupPage() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<'student' | 'parent'>('student');
+  const [grade, setGrade] = useState('');
+  const [board, setBoard] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -28,7 +30,12 @@ export default function SignupPage() {
     setError('');
     setLoading(true);
     try {
-      const res = await authApi.register({ name, email, password, role, phone: phone || undefined });
+      const res = await authApi.register({
+        name, email, password, role,
+        phone: phone || undefined,
+        ...(role === 'student' && grade ? { grade } : {}),
+        ...(role === 'student' && board ? { board } : {}),
+      });
       login(
         {
           id: res.user.id,
@@ -42,6 +49,8 @@ export default function SignupPage() {
           badges: [],
           subscription: (res.user.subscription as 'free' | 'pro' | 'premium') || 'free',
           phone: res.user.phone || phone || '',
+          grade: res.user.grade || grade || '',
+          board: res.user.board || board || '',
         },
         res.token,
       );
@@ -150,6 +159,44 @@ export default function SignupPage() {
                 />
               </div>
             </div>
+
+            {/* Grade & Board - only for students */}
+            {role === 'student' && (
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-theme-text-secondary">Class</label>
+                  <div className="relative">
+                    <BookOpen className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-text-muted" />
+                    <select
+                      value={grade}
+                      onChange={(e) => setGrade(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all appearance-none"
+                    >
+                      <option value="">Select</option>
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map((g) => (
+                        <option key={g} value={String(g)}>Class {g}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-theme-text-secondary">Board</label>
+                  <div className="relative">
+                    <School className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-text-muted" />
+                    <select
+                      value={board}
+                      onChange={(e) => setBoard(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all appearance-none"
+                    >
+                      <option value="">Select</option>
+                      <option value="CBSE">CBSE</option>
+                      <option value="ICSE">ICSE</option>
+                      <option value="State Board">State Board</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-theme-text-secondary">Password</label>

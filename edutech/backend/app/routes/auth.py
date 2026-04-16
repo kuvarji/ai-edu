@@ -33,6 +33,8 @@ class RegisterRequest(BaseModel):
     password: str = Field(..., min_length=6, description="Password (min 6 characters)")
     role: str = Field(default="student", description="Role: student, parent, or admin")
     phone: str | None = Field(None, description="Phone number (optional)")
+    grade: str | None = Field(None, description="Student ki class (1-12)")
+    board: str | None = Field(None, description="Board: CBSE, ICSE, State Board, etc.")
 
 
 class LoginRequest(BaseModel):
@@ -47,6 +49,8 @@ class UpdateProfileRequest(BaseModel):
     avatar: str | None = Field(None, description="Avatar emoji/ID")
     language: str | None = Field(None, description="Preferred language: hindi/english/hinglish")
     phone: str | None = Field(None, description="Phone number")
+    grade: str | None = Field(None, description="Student ki class (1-12)")
+    board: str | None = Field(None, description="Board: CBSE, ICSE, State Board, etc.")
 
 
 class ChangePasswordRequest(BaseModel):
@@ -104,6 +108,8 @@ async def register(req: RegisterRequest):
         "last_active_date": None,  # Streak tracking ke liye
         "language": "hindi",       # Default language
         "phone": req.phone or "",
+        "grade": req.grade or "",          # Student ki class
+        "board": req.board or "",          # Board (CBSE, ICSE, etc.)
         "subscription": "free",    # Free plan by default
         "created_at": get_current_timestamp(),
         "updated_at": get_current_timestamp(),
@@ -129,6 +135,8 @@ async def register(req: RegisterRequest):
             "streak": 0,
             "avatar": "🦁",
             "phone": req.phone or "",
+            "grade": req.grade or "",
+            "board": req.board or "",
         }
     }
 
@@ -202,6 +210,8 @@ async def login(req: LoginRequest):
             "avatar": user.get("avatar", "🦁"),
             "subscription": user.get("subscription", "free"),
             "phone": user.get("phone", ""),
+            "grade": user.get("grade", ""),
+            "board": user.get("board", ""),
         }
     }
 
@@ -243,6 +253,10 @@ async def update_profile(req: UpdateProfileRequest, current_user: dict = Depends
         update_data["language"] = req.language
     if req.phone is not None:
         update_data["phone"] = req.phone
+    if req.grade is not None:
+        update_data["grade"] = req.grade
+    if req.board is not None:
+        update_data["board"] = req.board
     
     if not update_data:
         raise HTTPException(

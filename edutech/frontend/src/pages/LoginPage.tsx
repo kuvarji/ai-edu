@@ -39,6 +39,8 @@ export default function LoginPage() {
           badges: [],
           subscription: (res.user.subscription as 'free' | 'pro' | 'premium') || 'free',
           phone: res.user.phone || '',
+          grade: res.user.grade || '',
+          board: res.user.board || '',
         },
         res.token,
       );
@@ -185,6 +187,8 @@ export default function LoginPage() {
                       badges: [],
                       subscription: (res.user.subscription as 'free' | 'pro' | 'premium') || 'free',
                       phone: res.user.phone || '',
+                      grade: res.user.grade || '',
+                      board: res.user.board || '',
                     },
                     res.token,
                   );
