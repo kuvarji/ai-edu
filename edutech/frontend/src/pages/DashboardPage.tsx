@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useStore } from '../store/useStore';
-import { coursesApi, gamificationApi, analyticsApi, type Course, type GamificationStats, type WeeklyReport, type DailyGoal } from '../services/api';
+import { coursesApi, gamificationApi, analyticsApi, type Course, type GamificationStats, type WeeklyReport, type DailyGoal, type StudyTimeData } from '../services/api';
 import { useLanguage } from '../i18n/useLanguage';
 import Avatar from '../components/Avatar';
 
@@ -26,22 +26,28 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<GamificationStats | null>(null);
   const [, setWeeklyReport] = useState<WeeklyReport | null>(null);
   const [dailyGoals, setDailyGoals] = useState<DailyGoal[]>([]);
+  const [activeDates, setActiveDates] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [coursesRes, statsRes, weeklyRes, goalsRes] = await Promise.allSettled([
+        const [coursesRes, statsRes, weeklyRes, goalsRes, studyTimeRes] = await Promise.allSettled([
           coursesApi.getAll(),
           gamificationApi.getStats(),
           analyticsApi.getWeeklyReport(),
           gamificationApi.getDailyGoals(),
+          analyticsApi.getStudyTime(28),
         ]);
         if (coursesRes.status === 'fulfilled') setApiCourses(coursesRes.value.courses);
         if (statsRes.status === 'fulfilled') setStats(statsRes.value);
         if (weeklyRes.status === 'fulfilled') setWeeklyReport(weeklyRes.value);
         if (goalsRes.status === 'fulfilled') setDailyGoals(goalsRes.value.goals);
+        if (studyTimeRes.status === 'fulfilled') {
+          const dates = new Set(studyTimeRes.value.daily_breakdown.map((d: StudyTimeData['daily_breakdown'][number]) => d.date));
+          setActiveDates(dates);
+        }
       } catch {
         // fallback to empty data
       } finally {
@@ -344,8 +350,13 @@ export default function DashboardPage() {
             </h3>
             <div className="grid grid-cols-7 gap-2">
               {Array.from({ length: 28 }, (_, i) => {
-                const active = i < 20 || (i > 21 && i < 28);
-                const today = i === 27;
+                const date = new Date();
+                date.setDate(date.getDate() - (27 - i));
+                const dateStr = date.toISOString().slice(0, 10);
+                const todayStr = new Date().toISOString().slice(0, 10);
+                const isToday = dateStr === todayStr;
+                const active = activeDates.has(dateStr);
+                const dayNum = date.getDate();
                 return (
                   <motion.div
                     key={i}
@@ -353,14 +364,14 @@ export default function DashboardPage() {
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.5 + i * 0.02 }}
                     className={`aspect-square rounded-lg flex items-center justify-center text-xs font-medium transition-all ${
-                      today
+                      isToday
                         ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/30'
                         : active
                         ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20'
                         : 'bg-theme-input text-gray-600'
                     }`}
                   >
-                    {i + 1}
+                    {dayNum}
                   </motion.div>
                 );
               })}
