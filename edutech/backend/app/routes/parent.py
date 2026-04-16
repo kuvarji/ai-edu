@@ -205,6 +205,7 @@ async def get_child_progress(child_id: str, current_user: dict = Depends(require
     return {
         "child": {
             "name": child.get("name", "") if child else "",
+            "avatar": child.get("avatar", "🦁") if child else "🦁",
             "xp": child.get("xp", 0) if child else 0,
             "level": child.get("level", 1) if child else 1,
             "streak": child.get("streak", 0) if child else 0,
