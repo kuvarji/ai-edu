@@ -356,7 +356,7 @@ export default function DashboardPage() {
                 const todayStr = new Date().toISOString().slice(0, 10);
                 const isToday = dateStr === todayStr;
                 const active = activeDates.has(dateStr);
-                const dayNum = date.getDate();
+                const dayNum = date.getUTCDate();
                 return (
                   <motion.div
                     key={i}
