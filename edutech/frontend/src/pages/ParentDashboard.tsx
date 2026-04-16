@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Clock, BookOpen, Shield,
+  Clock, BookOpen, Shield, UserPlus, Users,
   Flame, Zap, Target, AlertCircle, BarChart3,
 } from 'lucide-react';
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
@@ -9,27 +9,61 @@ import { parentApi, type ChildInfo, type ChildProgress } from '../services/api';
 
 
 export default function ParentDashboard() {
-  const [, setChildren] = useState<ChildInfo[]>([]);
+  const [children, setChildren] = useState<ChildInfo[]>([]);
   const [childProgress, setChildProgress] = useState<ChildProgress | null>(null);
+  const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [childEmail, setChildEmail] = useState('');
+  const [linking, setLinking] = useState(false);
+  const [linkMsg, setLinkMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const fetchChildren = async () => {
+    try {
+      const res = await parentApi.getChildren();
+      setChildren(res.children);
+      if (res.children.length > 0) {
+        const targetId = selectedChildId || res.children[0].id;
+        const progress = await parentApi.getChildProgress(targetId);
+        setChildProgress(progress);
+        setSelectedChildId(targetId);
+      }
+    } catch {
+      // fallback
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await parentApi.getChildren();
-        setChildren(res.children);
-        if (res.children.length > 0) {
-          const progress = await parentApi.getChildProgress(res.children[0].id);
-          setChildProgress(progress);
-        }
-      } catch {
-        // fallback to mock
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    fetchChildren();
   }, []);
+
+  const handleLinkChild = async () => {
+    if (!childEmail.trim()) return;
+    setLinking(true);
+    setLinkMsg(null);
+    try {
+      await parentApi.linkChild(childEmail.trim());
+      setLinkMsg({ type: 'success', text: `Bachcha "${childEmail.trim()}" successfully link ho gaya!` });
+      setChildEmail('');
+      await fetchChildren();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Link karne mein error aaya. Email check karo.';
+      setLinkMsg({ type: 'error', text: msg });
+    } finally {
+      setLinking(false);
+    }
+  };
+
+  const handleSelectChild = async (childId: string) => {
+    setSelectedChildId(childId);
+    try {
+      const progress = await parentApi.getChildProgress(childId);
+      setChildProgress(progress);
+    } catch {
+      setChildProgress(null);
+    }
+  };
 
   const cp = childProgress;
 
@@ -63,10 +97,81 @@ export default function ParentDashboard() {
           </div>
         )}
 
-        {!loading && !cp && (
+        {/* Link Child Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="p-6 rounded-2xl bg-theme-card border border-theme-border mb-8"
+        >
+          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <UserPlus className="w-5 h-5 text-violet-400" /> Link Child Account
+          </h3>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input
+              type="email"
+              value={childEmail}
+              onChange={(e) => setChildEmail(e.target.value)}
+              placeholder="Bachche ka registered email daalo..."
+              className="flex-1 px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-500 text-sm focus:outline-none focus:border-violet-500"
+              onKeyDown={(e) => e.key === 'Enter' && handleLinkChild()}
+            />
+            <button
+              onClick={handleLinkChild}
+              disabled={linking || !childEmail.trim()}
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 justify-center"
+            >
+              {linking ? (
+                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+              ) : (
+                <><UserPlus className="w-4 h-4" /> Link Child</>
+              )}
+            </button>
+          </div>
+          {linkMsg && (
+            <p className={`mt-3 text-sm font-medium ${
+              linkMsg.type === 'success' ? 'text-emerald-400' : 'text-red-400'
+            }`}>
+              {linkMsg.text}
+            </p>
+          )}
+        </motion.div>
+
+        {/* Linked Children List */}
+        {children.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08 }}
+            className="mb-8"
+          >
+            <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <Users className="w-5 h-5 text-cyan-400" /> Linked Children
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              {children.map((child) => (
+                <button
+                  key={child.id}
+                  onClick={() => handleSelectChild(child.id)}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
+                    selectedChildId === child.id
+                      ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg'
+                      : 'bg-theme-card border border-theme-border text-theme-text-secondary hover:border-violet-500'
+                  }`}
+                >
+                  <span className="text-lg">{child.avatar || '🦁'}</span>
+                  <span>{child.name}</span>
+                  <span className="text-xs opacity-60">Lv.{child.level}</span>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {!loading && !cp && children.length === 0 && (
           <div className="text-center py-16 mb-8">
             <Shield className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-            <p className="text-theme-text-secondary">No child data available yet. Link your child's account to see their progress.</p>
+            <p className="text-theme-text-secondary">Koi child link nahi hai. Upar email dalke apne bachche ka account link karo.</p>
           </div>
         )}
 
