@@ -98,7 +98,7 @@ export default function ProfilePage() {
           ...user,
           name: name.trim(),
           phone: phone.trim() || undefined,
-          ...(user.role === 'student' ? { grade, board } : {}),
+          ...(user.role === 'student' ? { grade: grade || undefined, board: board || undefined } : {}),
         });
       }
       setEditing(false);
