@@ -14,7 +14,9 @@ interface AvatarProps {
 export default function Avatar({ avatar, fallback = '🦁', className = '', imgClassName = '' }: AvatarProps) {
   const value = avatar || fallback;
 
-  if (value.startsWith('data:')) {
+  const isImage = value.startsWith('data:') || value.startsWith('http://') || value.startsWith('https://') || value.startsWith('blob:');
+
+  if (isImage) {
     return (
       <img
         src={value}
