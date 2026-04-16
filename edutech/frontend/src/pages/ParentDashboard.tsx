@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   Clock, BookOpen, Shield, UserPlus, Users,
@@ -55,12 +55,17 @@ export default function ParentDashboard() {
     }
   };
 
+  const latestChildIdRef = useRef<string | null>(null);
+
   const handleSelectChild = async (childId: string) => {
     setSelectedChildId(childId);
+    latestChildIdRef.current = childId;
     try {
       const progress = await parentApi.getChildProgress(childId);
+      if (latestChildIdRef.current !== childId) return;
       setChildProgress(progress);
     } catch {
+      if (latestChildIdRef.current !== childId) return;
       setChildProgress(null);
     }
   };
@@ -114,7 +119,7 @@ export default function ParentDashboard() {
               onChange={(e) => setChildEmail(e.target.value)}
               placeholder="Bachche ka registered email daalo..."
               className="flex-1 px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-500 text-sm focus:outline-none focus:border-violet-500"
-              onKeyDown={(e) => e.key === 'Enter' && handleLinkChild()}
+              onKeyDown={(e) => e.key === 'Enter' && !linking && handleLinkChild()}
             />
             <button
               onClick={handleLinkChild}
