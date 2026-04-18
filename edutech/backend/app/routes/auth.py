@@ -221,6 +221,7 @@ async def get_profile(current_user: dict = Depends(get_current_user)):
     """
     Current logged-in user ka profile return karo.
     Authorization header mein Bearer token chahiye.
+    Streak bhi update hoga agar aaj pehli baar visit kiya toh.
     """
     users = get_users_collection()
     
@@ -231,6 +232,32 @@ async def get_profile(current_user: dict = Depends(get_current_user)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found."
         )
+    
+    # Streak update karo agar aaj pehli baar visit kiya
+    from datetime import datetime, timezone, timedelta
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")
+    
+    last_active = user.get("last_active_date")
+    current_streak = user.get("streak", 0)
+    
+    if last_active != today:
+        # Aaj pehli baar active hua
+        if last_active == yesterday:
+            # Kal bhi active tha → streak badha do
+            new_streak = current_streak + 1
+        else:
+            # Streak toot gaya ya pehli baar → reset to 1
+            new_streak = 1
+        
+        # Database update karo
+        await users.update_one(
+            {"_id": user["_id"]},
+            {"$set": {"streak": new_streak, "last_active_date": today, "updated_at": get_current_timestamp()}}
+        )
+        
+        # Updated user fetch karo
+        user = await users.find_one({"_id": ObjectId(current_user["user_id"])})
     
     return {"user": serialize_doc(user)}
 
