@@ -1,23 +1,142 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useParams } from 'react-router-dom';
 import {
   ArrowLeft, Send, Bot, User, BookOpen, MessageCircle,
   FileText, Play, Volume2, Sparkles, ThumbsUp, Copy,
+  Pause, SkipForward, SkipBack, Loader2,
 } from 'lucide-react';
-import { aiApi } from '../services/api';
+import { aiApi, storeApi, type LessonSlide, type Avatar as ApiAvatar } from '../services/api';
+import { useStore } from '../store/useStore';
+
+const CHARACTER_EMOJIS: Record<string, string> = {
+  sheru: '\ud83e\udd81',
+  drago: '\ud83e\udd84',
+  meow: '\ud83d\udc31',
+  foxy: '\ud83e\udd8a',
+  teddy: '\ud83d\udcbb',
+};
 
 export default function ClassroomPage() {
-  const { courseId } = useParams();
+  const { courseId, chapterId } = useParams();
+  const { user } = useStore();
   const [message, setMessage] = useState('');
-  const [activeTab, setActiveTab] = useState<'chat' | 'notes' | 'video'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'notes' | 'video'>('video');
   const [messages, setMessages] = useState([
-    { role: 'bot' as const, text: 'Namaste! Main tumhara AI Teacher hu. Aaj hum Quadratic Equations padhenge. Koi bhi sawal poocho!' },
-    { role: 'user' as const, text: 'Quadratic equation kya hota hai?' },
-    { role: 'bot' as const, text: 'Bahut accha sawal! 🎯\n\nQuadratic equation ek aisi equation hoti hai jismein variable ki highest power 2 hoti hai.\n\n**General Form:** ax² + bx + c = 0\n\nJahan:\n- a, b, c constants hain\n- a ≠ 0 (agar a = 0, toh yeh linear equation ban jayega)\n- x variable hai\n\n**Example:** x² + 5x + 6 = 0\n\nKya tum iska solution nikalna chahoge? 🤔' },
+    { role: 'bot' as const, text: 'Namaste! Main tumhara AI Teacher hu. Koi bhi sawal poocho!' },
   ]);
-
   const [sending, setSending] = useState(false);
+
+  // Video Lesson State
+  const [lessonSlides, setLessonSlides] = useState<LessonSlide[]>([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [lessonLoading, setLessonLoading] = useState(false);
+  const [lessonError, setLessonError] = useState('');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [topicInput, setTopicInput] = useState('');
+  const [selectedCharacter, setSelectedCharacter] = useState<{ name: string; emoji: string }>({ name: 'Sheru', emoji: '\ud83e\udd81' });
+  const [userAvatars, setUserAvatars] = useState<ApiAvatar[]>([]);
+  const [avatarsLoading, setAvatarsLoading] = useState(true);
+  const isPlayingRef = useRef(false);
+  const slidesRef = useRef<LessonSlide[]>([]);
+
+  useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
+  useEffect(() => { slidesRef.current = lessonSlides; }, [lessonSlides]);
+
+  useEffect(() => {
+    const fetchAvatars = async () => {
+      try {
+        const res = await storeApi.getAvatars();
+        setUserAvatars(res.avatars);
+      } catch {
+        // fallback to default characters
+      } finally {
+        setAvatarsLoading(false);
+      }
+    };
+    fetchAvatars();
+  }, []);
+
+  useEffect(() => {
+    return () => { window.speechSynthesis.cancel(); };
+  }, []);
+
+  const speakSlide = useCallback((slideIndex: number, autoAdvance: boolean) => {
+    window.speechSynthesis.cancel();
+    const slides = slidesRef.current;
+    if (slideIndex >= slides.length) return;
+    const utterance = new SpeechSynthesisUtterance(slides[slideIndex].text);
+    utterance.lang = 'hi-IN';
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+    const voices = window.speechSynthesis.getVoices();
+    const hindiVoice = voices.find((v) => v.lang.startsWith('hi'));
+    if (hindiVoice) utterance.voice = hindiVoice;
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      if (autoAdvance && isPlayingRef.current) {
+        const nextIndex = slideIndex + 1;
+        if (nextIndex < slidesRef.current.length) {
+          setCurrentSlide(nextIndex);
+          speakSlide(nextIndex, true);
+        } else {
+          setIsPlaying(false);
+        }
+      }
+    };
+    window.speechSynthesis.speak(utterance);
+  }, []);
+
+  const handleGenerateLesson = async () => {
+    if (!topicInput.trim()) return;
+    setLessonLoading(true);
+    setLessonError('');
+    setLessonSlides([]);
+    setCurrentSlide(0);
+    setIsPlaying(false);
+    window.speechSynthesis.cancel();
+    try {
+      const res = await aiApi.generateLesson({
+        topic: topicInput.trim(),
+        subject: 'science',
+        grade: user?.grade ? parseInt(String(user.grade)) : 8,
+        language: 'hinglish',
+        character_name: selectedCharacter.name,
+      });
+      setLessonSlides(res.slides);
+    } catch {
+      setLessonError('Lesson generate nahi ho paya. Please try again.');
+    } finally {
+      setLessonLoading(false);
+    }
+  };
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      setIsPlaying(false);
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    } else {
+      setIsPlaying(true);
+      speakSlide(currentSlide, true);
+    }
+  };
+
+  const handleNextSlide = () => {
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+    setIsPlaying(false);
+    if (currentSlide < lessonSlides.length - 1) setCurrentSlide((prev) => prev + 1);
+  };
+
+  const handlePrevSlide = () => {
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+    setIsPlaying(false);
+    if (currentSlide > 0) setCurrentSlide((prev) => prev - 1);
+  };
 
   const handleSend = async () => {
     if (!message.trim() || sending) return;
@@ -26,49 +145,31 @@ export default function ClassroomPage() {
     setMessage('');
     setSending(true);
     try {
-      const res = await aiApi.chat({ message: userMsg, subject: 'Mathematics', chapter: 'Quadratic Equations' });
+      const res = await aiApi.chat({ message: userMsg, subject: 'general' });
       setMessages((prev) => [...prev, { role: 'bot' as const, text: res.reply }]);
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: 'bot' as const, text: 'Sorry, abhi response nahi aa paya. Please dobara try karo.' },
-      ]);
+      setMessages((prev) => [...prev, { role: 'bot' as const, text: 'Sorry, abhi response nahi aa paya. Please dobara try karo.' }]);
     } finally {
       setSending(false);
     }
   };
 
-  const notes = [
-    { title: 'Quadratic Equation Definition', content: 'ax² + bx + c = 0, where a ≠ 0' },
-    { title: 'Methods to Solve', content: '1. Factoring\n2. Quadratic Formula\n3. Completing the Square' },
-    { title: 'Quadratic Formula', content: 'x = (-b ± √(b²-4ac)) / 2a' },
-    { title: 'Discriminant', content: 'D = b²-4ac\nD > 0: Two real roots\nD = 0: One root\nD < 0: No real roots' },
-  ];
-
   return (
     <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-4 px-4">
       <div className="max-w-7xl mx-auto h-[calc(100vh-6rem)] flex flex-col">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between mb-4"
-        >
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <Link to={`/courses/${courseId}`} className="p-2 rounded-xl text-theme-text-secondary hover:text-white hover:bg-theme-input transition-all">
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
-              <h1 className="text-xl font-bold text-white">Quadratic Equations</h1>
-              <p className="text-sm text-theme-text-muted">Mathematics - Chapter 4</p>
+              <h1 className="text-xl font-bold text-white">AI Video Classroom</h1>
+              <p className="text-sm text-theme-text-muted">Chapter {chapterId} — AI Character Teaching</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-3 h-3 rounded-full bg-emerald-400"
-            />
+            <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-3 h-3 rounded-full bg-emerald-400" />
             <span className="text-sm text-emerald-400 font-medium">AI Teacher Online</span>
           </div>
         </motion.div>
@@ -76,22 +177,18 @@ export default function ClassroomPage() {
         {/* Tab Buttons */}
         <div className="flex gap-2 mb-4">
           {[
+            { key: 'video' as const, label: 'AI Video', icon: Play },
             { key: 'chat' as const, label: 'AI Chat', icon: MessageCircle },
             { key: 'notes' as const, label: 'Notes', icon: FileText },
-            { key: 'video' as const, label: 'Video', icon: Play },
           ].map((tab) => {
             const Icon = tab.icon;
             return (
-              <motion.button
-                key={tab.key}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveTab(tab.key)}
+              <motion.button key={tab.key} whileTap={{ scale: 0.95 }} onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                   activeTab === tab.key
                     ? 'bg-violet-500/20 text-violet-400 border border-violet-500/20'
                     : 'bg-theme-card text-theme-text-secondary border border-theme-border hover:bg-theme-input'
-                }`}
-              >
+                }`}>
                 <Icon className="w-4 h-4" />
                 {tab.label}
               </motion.button>
@@ -101,18 +198,191 @@ export default function ClassroomPage() {
 
         {/* Main Content */}
         <div className="flex-1 overflow-hidden rounded-2xl bg-theme-card border border-theme-border">
+
+          {/* AI VIDEO LESSON TAB */}
+          {activeTab === 'video' && (
+            <div className="flex flex-col h-full">
+              {/* Topic Input Screen */}
+              {lessonSlides.length === 0 && !lessonLoading && (
+                <div className="flex-1 flex items-center justify-center p-6">
+                  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-xl text-center">
+                    <div className="text-6xl mb-4">{selectedCharacter.emoji}</div>
+                    <h3 className="text-2xl font-bold text-white mb-2">AI Video Lesson</h3>
+                    <p className="text-theme-text-secondary mb-6">Topic likho, character select karo — {selectedCharacter.name} padhayega!</p>
+
+                    {/* Character Selector */}
+                    <div className="mb-6">
+                      <p className="text-xs text-theme-text-muted mb-2">Character select karo:</p>
+                      <div className="flex justify-center gap-3 flex-wrap">
+                        {avatarsLoading ? (
+                          <div className="text-theme-text-muted text-sm">Loading characters...</div>
+                        ) : userAvatars.length > 0 ? (
+                          userAvatars.map((av) => (
+                            <motion.button key={av.id} whileTap={{ scale: 0.9 }}
+                              onClick={() => setSelectedCharacter({ name: av.name, emoji: av.emoji || CHARACTER_EMOJIS[av.name.toLowerCase()] || '\ud83e\udd81' })}
+                              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl border transition-all ${
+                                selectedCharacter.name === av.name
+                                  ? 'bg-violet-500/20 border-violet-500/40 text-violet-400'
+                                  : 'bg-theme-input border-theme-border text-theme-text-secondary hover:border-violet-500/20'
+                              }`}>
+                              <span className="text-2xl">{av.emoji || CHARACTER_EMOJIS[av.name.toLowerCase()] || '\ud83e\udd81'}</span>
+                              <span className="text-xs">{av.name}</span>
+                            </motion.button>
+                          ))
+                        ) : (
+                          Object.entries(CHARACTER_EMOJIS).map(([name, emoji]) => (
+                            <motion.button key={name} whileTap={{ scale: 0.9 }}
+                              onClick={() => setSelectedCharacter({ name: name.charAt(0).toUpperCase() + name.slice(1), emoji })}
+                              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl border transition-all ${
+                                selectedCharacter.name.toLowerCase() === name
+                                  ? 'bg-violet-500/20 border-violet-500/40 text-violet-400'
+                                  : 'bg-theme-input border-theme-border text-theme-text-secondary hover:border-violet-500/20'
+                              }`}>
+                              <span className="text-2xl">{emoji}</span>
+                              <span className="text-xs capitalize">{name}</span>
+                            </motion.button>
+                          ))
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Topic Input */}
+                    <div className="flex gap-3">
+                      <input type="text" value={topicInput} onChange={(e) => setTopicInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleGenerateLesson()}
+                        placeholder="Topic likho... (e.g. Microorganisms, Quadratic Equations)"
+                        className="flex-1 px-5 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
+                      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleGenerateLesson}
+                        className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-bold shadow-lg shadow-violet-500/25">
+                        <Sparkles className="w-5 h-5" />
+                      </motion.button>
+                    </div>
+                    {lessonError && <p className="text-red-400 text-sm mt-3">{lessonError}</p>}
+                  </motion.div>
+                </div>
+              )}
+
+              {/* Loading state */}
+              {lessonLoading && (
+                <div className="flex-1 flex items-center justify-center">
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
+                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: 'linear' }} className="text-6xl mb-4 inline-block">
+                      {selectedCharacter.emoji}
+                    </motion.div>
+                    <div className="flex items-center gap-2 justify-center text-violet-400">
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span className="font-medium">{selectedCharacter.name} lesson tayyar kar raha hai...</span>
+                    </div>
+                    <p className="text-theme-text-muted text-sm mt-2">Gemini AI se script generate ho rahi hai</p>
+                  </motion.div>
+                </div>
+              )}
+
+              {/* Lesson Player */}
+              {lessonSlides.length > 0 && !lessonLoading && (
+                <div className="flex-1 flex flex-col overflow-hidden">
+                  <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+                    {/* Character + Slide Content */}
+                    <div className="flex-1 flex flex-col items-center justify-center p-6 relative overflow-y-auto">
+                      <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-xs font-bold">
+                        Slide {currentSlide + 1} / {lessonSlides.length}
+                      </div>
+
+                      {/* Character with speaking animation */}
+                      <motion.div animate={isSpeaking ? { scale: [1, 1.05, 1] } : {}} transition={{ duration: 0.5, repeat: isSpeaking ? Infinity : 0 }} className="mb-4">
+                        <div className="relative">
+                          <span className="text-8xl block">{selectedCharacter.emoji}</span>
+                          {isSpeaking && (
+                            <motion.div animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1, repeat: Infinity }}
+                              className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
+                              <div className="w-1.5 h-1.5 rounded-full bg-violet-400" />
+                              <div className="w-1.5 h-1.5 rounded-full bg-violet-400" />
+                              <div className="w-1.5 h-1.5 rounded-full bg-violet-400" />
+                            </motion.div>
+                          )}
+                        </div>
+                        <div className="text-center mt-1">
+                          <span className="text-sm font-bold text-white">{selectedCharacter.name}</span>
+                          {isSpeaking && <span className="text-xs text-violet-400 ml-2">Speaking...</span>}
+                        </div>
+                      </motion.div>
+
+                      {/* Slide Content */}
+                      <AnimatePresence mode="wait">
+                        <motion.div key={currentSlide} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="w-full max-w-lg">
+                          <div className="p-5 rounded-2xl bg-gradient-to-br from-violet-500/10 to-cyan-500/10 border border-violet-500/20">
+                            <div className="flex items-center gap-2 mb-3">
+                              <span className="text-xl">{lessonSlides[currentSlide]?.emoji}</span>
+                              <h3 className="text-lg font-bold text-white">{lessonSlides[currentSlide]?.title}</h3>
+                            </div>
+                            <p className="text-gray-200 leading-relaxed text-sm whitespace-pre-line">{lessonSlides[currentSlide]?.text}</p>
+                          </div>
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Slide List Sidebar */}
+                    <div className="w-full md:w-64 border-t md:border-t-0 md:border-l border-theme-border overflow-y-auto p-3">
+                      <h4 className="text-xs text-theme-text-muted font-bold uppercase mb-2 px-1">Slides</h4>
+                      {lessonSlides.map((slide, idx) => (
+                        <button key={idx} onClick={() => { window.speechSynthesis.cancel(); setIsSpeaking(false); setIsPlaying(false); setCurrentSlide(idx); }}
+                          className={`w-full text-left p-2.5 rounded-xl mb-1.5 transition-all text-sm ${
+                            idx === currentSlide
+                              ? 'bg-violet-500/20 border border-violet-500/30 text-white'
+                              : idx < currentSlide
+                                ? 'bg-emerald-500/5 border border-emerald-500/10 text-theme-text-secondary'
+                                : 'bg-theme-input border border-theme-border text-theme-text-muted hover:bg-theme-card'
+                          }`}>
+                          <div className="flex items-center gap-2">
+                            <span className="text-base">{slide.emoji}</span>
+                            <span className="truncate font-medium">{slide.title}</span>
+                          </div>
+                        </button>
+                      ))}
+                      <button onClick={() => { window.speechSynthesis.cancel(); setLessonSlides([]); setCurrentSlide(0); setIsPlaying(false); setIsSpeaking(false); }}
+                        className="w-full mt-3 p-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text-muted text-sm hover:text-violet-400 hover:border-violet-500/20 transition-all">
+                        + Naya Topic
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Playback Controls */}
+                  <div className="p-4 border-t border-theme-border flex items-center justify-center gap-4">
+                    <motion.button whileTap={{ scale: 0.9 }} onClick={handlePrevSlide} disabled={currentSlide === 0}
+                      className="p-2 rounded-xl text-theme-text-secondary hover:text-white disabled:opacity-30 transition-all">
+                      <SkipBack className="w-5 h-5" />
+                    </motion.button>
+                    <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={handlePlayPause}
+                      className="w-14 h-14 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-violet-500/30">
+                      {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-0.5" />}
+                    </motion.button>
+                    <motion.button whileTap={{ scale: 0.9 }} onClick={handleNextSlide} disabled={currentSlide === lessonSlides.length - 1}
+                      className="p-2 rounded-xl text-theme-text-secondary hover:text-white disabled:opacity-30 transition-all">
+                      <SkipForward className="w-5 h-5" />
+                    </motion.button>
+                    <div className="flex-1 max-w-xs mx-4">
+                      <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                        <motion.div animate={{ width: `${((currentSlide + 1) / lessonSlides.length) * 100}%` }}
+                          className="h-full bg-gradient-to-r from-violet-500 to-purple-600 rounded-full" />
+                      </div>
+                    </div>
+                    <motion.button whileTap={{ scale: 0.9 }} onClick={() => speakSlide(currentSlide, false)}
+                      className="p-2 rounded-xl text-theme-text-secondary hover:text-violet-400 transition-all" title="Speak this slide">
+                      <Volume2 className="w-5 h-5" />
+                    </motion.button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* AI CHAT TAB */}
           {activeTab === 'chat' && (
             <div className="flex flex-col h-full">
-              {/* Messages */}
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.map((msg, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
-                  >
+                  <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+                    className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
                       msg.role === 'bot'
                         ? 'bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-500/20'
@@ -143,75 +413,48 @@ export default function ClassroomPage() {
                   </motion.div>
                 ))}
               </div>
-
-              {/* Input */}
               <div className="p-4 border-t border-theme-border">
                 <div className="flex gap-3">
-                  <input
-                    type="text"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                    placeholder="Apna sawal likho... (Hindi ya English)"
-                    className="flex-1 px-5 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all"
-                  />
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleSend}
-                    className="px-5 py-3.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/25"
-                  >
+                  <input type="text" value={message} onChange={(e) => setMessage(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSend()} placeholder="Apna sawal likho... (Hindi ya English)"
+                    className="flex-1 px-5 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
+                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleSend}
+                    className="px-5 py-3.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/25">
                     <Send className="w-5 h-5" />
                   </motion.button>
                 </div>
                 <div className="flex items-center gap-2 mt-2 text-xs text-gray-600">
                   <Sparkles className="w-3 h-3" />
-                  Powered by Gemini AI - Hindi & English supported
+                  Powered by Gemini AI - Hindi &amp; English supported
                 </div>
               </div>
             </div>
           )}
 
+          {/* NOTES TAB */}
           {activeTab === 'notes' && (
             <div className="p-6 space-y-4 overflow-y-auto h-full">
               <div className="flex items-center gap-2 mb-2">
                 <BookOpen className="w-5 h-5 text-violet-400" />
                 <h3 className="text-lg font-bold text-white">Chapter Notes</h3>
               </div>
-              {notes.map((note, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="p-5 rounded-xl bg-theme-input border border-theme-border"
-                >
-                  <h4 className="font-bold text-violet-400 mb-2">{note.title}</h4>
-                  <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">{note.content}</p>
-                </motion.div>
-              ))}
-            </div>
-          )}
-
-          {activeTab === 'video' && (
-            <div className="p-6 flex items-center justify-center h-full">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center"
-              >
-                <div className="w-full max-w-2xl aspect-video rounded-2xl bg-gradient-to-br from-violet-500/10 to-cyan-500/10 border border-theme-border flex items-center justify-center mb-6">
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="w-20 h-20 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-xl shadow-violet-500/30 cursor-pointer"
-                  >
-                    <Play className="w-8 h-8 text-white ml-1" />
+              {lessonSlides.length > 0 ? (
+                lessonSlides.map((slide, i) => (
+                  <motion.div key={i} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
+                    className="p-5 rounded-xl bg-theme-input border border-theme-border">
+                    <h4 className="font-bold text-violet-400 mb-2">{slide.emoji} {slide.title}</h4>
+                    <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">{slide.text}</p>
                   </motion.div>
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2">AI Video Lesson</h3>
-                <p className="text-theme-text-secondary">AI teacher animated character ke saath seekho</p>
-              </motion.div>
+                ))
+              ) : (
+                <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+                  className="p-5 rounded-xl bg-theme-input border border-theme-border">
+                  <h4 className="font-bold text-violet-400 mb-2">AI Generated Notes</h4>
+                  <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
+                    Pehle &quot;AI Video&quot; tab mein ek lesson generate karo — phir notes yahan dikhenge.
+                  </p>
+                </motion.div>
+              )}
             </div>
           )}
         </div>
