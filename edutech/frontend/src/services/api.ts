@@ -376,7 +376,7 @@ export interface InventoryItem {
 
 export const storeApi = {
   getAvatars: () =>
-    request<{ avatars: Avatar[] }>('/store/avatars'),
+    request<{ avatars: Avatar[]; user_xp: number }>('/store/avatars'),
 
   getInventory: () =>
     request<{ inventory: InventoryItem[] }>('/store/inventory'),

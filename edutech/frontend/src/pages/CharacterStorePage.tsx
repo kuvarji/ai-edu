@@ -5,7 +5,7 @@ import { useStore } from '../store/useStore';
 import { storeApi, type Avatar as ApiAvatar } from '../services/api';
 
 export default function CharacterStorePage() {
-  const { user } = useStore();
+  const { user, setUser } = useStore();
   const userXP = user?.xp ?? 0;
   const [selected, setSelected] = useState<string | null>(null);
   const [filter, setFilter] = useState('all');
@@ -51,9 +51,12 @@ export default function CharacterStorePage() {
     setBuying(true);
     try {
       await storeApi.buy(avatarId);
-      // Refresh avatars
+      // Refresh avatars and user XP
       const res = await storeApi.getAvatars();
       setApiAvatars(res.avatars);
+      if (user && typeof res.user_xp === 'number') {
+        setUser({ ...user, xp: res.user_xp });
+      }
     } catch {
       // handle error
     } finally {
