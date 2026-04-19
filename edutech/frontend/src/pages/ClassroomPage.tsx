@@ -22,8 +22,8 @@ export default function ClassroomPage() {
   const { user } = useStore();
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState<'chat' | 'notes' | 'video'>('video');
-  const [messages, setMessages] = useState([
-    { role: 'bot' as const, text: 'Namaste! Main tumhara AI Teacher hu. Koi bhi sawal poocho!' },
+  const [messages, setMessages] = useState<{ role: 'user' | 'bot'; text: string }[]>([
+    { role: 'bot', text: 'Namaste! Main tumhara AI Teacher hu. Koi bhi sawal poocho!' },
   ]);
   const [sending, setSending] = useState(false);
 
