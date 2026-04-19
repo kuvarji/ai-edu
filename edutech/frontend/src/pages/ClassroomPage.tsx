@@ -58,7 +58,7 @@ export default function ClassroomPage() {
     fetchAvatars();
   }, []);
 
-  // Chrome bug workaround: periodic resume() prevents Chrome from pausing long utterances
+  // Chrome bug workarounds for Web Speech API
   const resumeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const speakTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -87,57 +87,73 @@ export default function ClassroomPage() {
     return () => { cancelSpeech(); };
   }, [cancelSpeech]);
 
-  const speakSlide = useCallback((slideIndex: number, autoAdvance: boolean) => {
-    // Chrome bug workaround: cancel + small delay before new speak
-    cancelSpeech();
-
+  /**
+   * Speak a slide immediately (no cancel, no delay).
+   * Used for auto-advance from onend where speech already finished naturally.
+   */
+  const doSpeak = useCallback((slideIndex: number, autoAdvance: boolean) => {
     const slides = slidesRef.current;
     if (slideIndex >= slides.length) return;
 
-    // Small delay to let Chrome reset after cancel()
-    speakTimeoutRef.current = setTimeout(() => {
-      const utterance = new SpeechSynthesisUtterance(slides[slideIndex].text);
-      utterance.lang = 'hi-IN';
-      utterance.rate = 0.9;
-      utterance.pitch = 1.1;
-      const voices = window.speechSynthesis.getVoices();
-      const hindiVoice = voices.find((v) => v.lang.startsWith('hi'));
-      if (hindiVoice) utterance.voice = hindiVoice;
+    const utterance = new SpeechSynthesisUtterance(slides[slideIndex].text);
+    utterance.lang = 'hi-IN';
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+    const voices = window.speechSynthesis.getVoices();
+    const hindiVoice = voices.find((v) => v.lang.startsWith('hi'));
+    if (hindiVoice) utterance.voice = hindiVoice;
 
-      utterance.onstart = () => {
-        setIsSpeaking(true);
-        // Chrome pauses speech after ~15s — periodic resume() prevents this
-        clearResumeInterval();
-        resumeIntervalRef.current = setInterval(() => {
-          if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-            window.speechSynthesis.pause();
-            window.speechSynthesis.resume();
-          }
-        }, 10000);
-      };
-
-      utterance.onend = () => {
-        setIsSpeaking(false);
-        clearResumeInterval();
-        if (autoAdvance && isPlayingRef.current) {
-          const nextIndex = slideIndex + 1;
-          if (nextIndex < slidesRef.current.length) {
-            setCurrentSlide(nextIndex);
-            speakSlide(nextIndex, true);
-          } else {
-            setIsPlaying(false);
-          }
+    utterance.onstart = () => {
+      setIsSpeaking(true);
+      // Chrome pauses speech after ~15s — periodic resume() prevents this
+      clearResumeInterval();
+      resumeIntervalRef.current = setInterval(() => {
+        if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+          window.speechSynthesis.pause();
+          window.speechSynthesis.resume();
         }
-      };
+      }, 10000);
+    };
 
-      utterance.onerror = () => {
-        setIsSpeaking(false);
-        clearResumeInterval();
-      };
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      clearResumeInterval();
+      if (autoAdvance && isPlayingRef.current) {
+        const nextIndex = slideIndex + 1;
+        if (nextIndex < slidesRef.current.length) {
+          setCurrentSlide(nextIndex);
+          // Auto-advance: speak next slide immediately (no cancel needed, speech already ended)
+          doSpeak(nextIndex, true);
+        } else {
+          setIsPlaying(false);
+        }
+      }
+    };
 
-      window.speechSynthesis.speak(utterance);
-    }, 100);
-  }, [cancelSpeech]);
+    utterance.onerror = (e) => {
+      setIsSpeaking(false);
+      clearResumeInterval();
+      // If Chrome blocked speak after cancel(), retry once after a short delay
+      if (e.error === 'interrupted' || e.error === 'canceled') {
+        speakTimeoutRef.current = setTimeout(() => doSpeak(slideIndex, autoAdvance), 150);
+      }
+    };
+
+    window.speechSynthesis.speak(utterance);
+  }, [clearResumeInterval]);
+
+  /**
+   * Interrupt any current speech and start speaking a slide.
+   * Used for user-initiated actions (Play, Next, Prev, sidebar click).
+   * Adds a short delay after cancel() to work around Chrome's cancel bug.
+   */
+  const speakSlide = useCallback((slideIndex: number, autoAdvance: boolean) => {
+    cancelSpeech();
+    const slides = slidesRef.current;
+    if (slideIndex >= slides.length) return;
+    // Small delay to let Chrome reset after cancel()
+    speakTimeoutRef.current = setTimeout(() => doSpeak(slideIndex, autoAdvance), 100);
+  }, [cancelSpeech, doSpeak]);
 
   const handleGenerateLesson = async () => {
     if (!topicInput.trim()) return;
