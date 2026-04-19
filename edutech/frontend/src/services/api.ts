@@ -364,6 +364,9 @@ export interface Avatar {
   description: string;
   rarity: string;
   price: number;
+  owned?: boolean;
+  equipped?: boolean;
+  can_afford?: boolean;
 }
 
 export interface InventoryItem {

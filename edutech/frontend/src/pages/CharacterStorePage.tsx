@@ -33,7 +33,7 @@ export default function CharacterStorePage() {
     emoji: a.emoji || '\ud83e\udd81',
     rarity: a.rarity || 'common',
     cost: a.price,
-    unlocked: false,
+    unlocked: a.owned ?? false,
   }));
 
   if (loading) {
@@ -164,9 +164,11 @@ export default function CharacterStorePage() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-xs font-bold hover:bg-violet-500/30 transition-all"
+                      onClick={(e) => { e.stopPropagation(); handleBuy(avatar.id); }}
+                      disabled={buying}
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-xs font-bold hover:bg-violet-500/30 transition-all disabled:opacity-60"
                     >
-                      <Zap className="w-3 h-3" /> {avatar.cost} XP
+                      <Zap className="w-3 h-3" /> {buying ? '...' : `${avatar.cost} XP`}
                     </motion.button>
                   ) : (
                     <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-theme-input text-theme-text-muted text-xs font-bold">
