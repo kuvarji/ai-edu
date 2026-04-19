@@ -351,6 +351,8 @@ Rules:
             lines = cleaned.split("\n")
             cleaned = "\n".join(lines[1:-1])
         slides = json.loads(cleaned)
+        if not isinstance(slides, list):
+            raise ValueError("Expected a JSON array of slides")
     except (json.JSONDecodeError, ValueError):
         # Fallback: wrap the raw text into a single slide
         slides = [
