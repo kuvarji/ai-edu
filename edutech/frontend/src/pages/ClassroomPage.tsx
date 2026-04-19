@@ -61,6 +61,7 @@ export default function ClassroomPage() {
   // Chrome bug workarounds for Web Speech API
   const resumeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const speakTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const intentionalCancelRef = useRef(false);
 
   const clearResumeInterval = useCallback(() => {
     if (resumeIntervalRef.current) {
@@ -78,6 +79,7 @@ export default function ClassroomPage() {
 
   /** Cancel all speech activity — clears pending timeout, resume interval, and browser speech */
   const cancelSpeech = useCallback(() => {
+    intentionalCancelRef.current = true;
     clearSpeakTimeout();
     clearResumeInterval();
     window.speechSynthesis.cancel();
@@ -92,6 +94,7 @@ export default function ClassroomPage() {
    * Used for auto-advance from onend where speech already finished naturally.
    */
   const doSpeak = useCallback((slideIndex: number, autoAdvance: boolean) => {
+    intentionalCancelRef.current = false;
     const slides = slidesRef.current;
     if (slideIndex >= slides.length) return;
 
@@ -133,8 +136,8 @@ export default function ClassroomPage() {
     utterance.onerror = (e) => {
       setIsSpeaking(false);
       clearResumeInterval();
-      // If Chrome blocked speak after cancel(), retry once after a short delay
-      if (e.error === 'interrupted' || e.error === 'canceled') {
+      // Retry only if Chrome blocked speak after cancel() — NOT if user intentionally cancelled
+      if (!intentionalCancelRef.current && (e.error === 'interrupted' || e.error === 'canceled')) {
         speakTimeoutRef.current = setTimeout(() => doSpeak(slideIndex, autoAdvance), 150);
       }
     };
