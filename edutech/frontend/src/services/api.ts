@@ -400,8 +400,8 @@ export interface AiChatRequest {
 }
 
 export interface AiChatResponse {
-  reply: string;
-  suggestions?: string[];
+  response: string;
+  subject: string;
 }
 
 export interface LessonSlide {
