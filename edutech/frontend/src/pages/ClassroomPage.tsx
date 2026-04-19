@@ -90,7 +90,30 @@ export default function ClassroomPage() {
   }, [cancelSpeech]);
 
   /**
-   * Speak a slide immediately (no cancel, no delay).
+   * Split text into short sentences for mobile Chrome which cuts off long utterances.
+   * Splits on sentence-ending punctuation (. ! ? | ।) keeping chunks under ~120 chars.
+   */
+  const splitIntoChunks = useCallback((text: string): string[] => {
+    const sentences = text.split(/(?<=[।.!?\n])\s*/);
+    const chunks: string[] = [];
+    let current = '';
+    for (const s of sentences) {
+      const trimmed = s.trim();
+      if (!trimmed) continue;
+      if (current && (current + ' ' + trimmed).length > 120) {
+        chunks.push(current);
+        current = trimmed;
+      } else {
+        current = current ? current + ' ' + trimmed : trimmed;
+      }
+    }
+    if (current) chunks.push(current);
+    return chunks.length > 0 ? chunks : [text];
+  }, []);
+
+  /**
+   * Speak a slide by splitting into short chunks (sentences).
+   * Each chunk is spoken as a separate utterance to avoid mobile Chrome cutting off.
    * Used for auto-advance from onend where speech already finished naturally.
    */
   const doSpeak = useCallback((slideIndex: number, autoAdvance: boolean) => {
@@ -98,52 +121,66 @@ export default function ClassroomPage() {
     const slides = slidesRef.current;
     if (slideIndex >= slides.length) return;
 
-    const utterance = new SpeechSynthesisUtterance(slides[slideIndex].text);
-    utterance.lang = 'hi-IN';
-    utterance.rate = 0.9;
-    utterance.pitch = 1.1;
-    const voices = window.speechSynthesis.getVoices();
-    const hindiVoice = voices.find((v) => v.lang.startsWith('hi'));
-    if (hindiVoice) utterance.voice = hindiVoice;
+    const chunks = splitIntoChunks(slides[slideIndex].text);
+    let chunkIndex = 0;
 
-    utterance.onstart = () => {
-      setIsSpeaking(true);
-      // Chrome pauses speech after ~15s — periodic resume() prevents this
-      clearResumeInterval();
-      resumeIntervalRef.current = setInterval(() => {
-        if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-          window.speechSynthesis.pause();
-          window.speechSynthesis.resume();
+    const speakChunk = () => {
+      if (intentionalCancelRef.current) return;
+      if (chunkIndex >= chunks.length) {
+        // All chunks spoken — advance to next slide or stop
+        setIsSpeaking(false);
+        clearResumeInterval();
+        if (autoAdvance && isPlayingRef.current) {
+          const nextIndex = slideIndex + 1;
+          if (nextIndex < slidesRef.current.length) {
+            setCurrentSlide(nextIndex);
+            doSpeak(nextIndex, true);
+          } else {
+            setIsPlaying(false);
+          }
         }
-      }, 10000);
-    };
+        return;
+      }
 
-    utterance.onend = () => {
-      setIsSpeaking(false);
-      clearResumeInterval();
-      if (autoAdvance && isPlayingRef.current) {
-        const nextIndex = slideIndex + 1;
-        if (nextIndex < slidesRef.current.length) {
-          setCurrentSlide(nextIndex);
-          // Auto-advance: speak next slide immediately (no cancel needed, speech already ended)
-          doSpeak(nextIndex, true);
-        } else {
-          setIsPlaying(false);
+      const utterance = new SpeechSynthesisUtterance(chunks[chunkIndex]);
+      utterance.lang = 'hi-IN';
+      utterance.rate = 0.9;
+      utterance.pitch = 1.1;
+      const voices = window.speechSynthesis.getVoices();
+      const hindiVoice = voices.find((v) => v.lang.startsWith('hi'));
+      if (hindiVoice) utterance.voice = hindiVoice;
+
+      utterance.onstart = () => {
+        setIsSpeaking(true);
+        // Mobile Chrome is more aggressive — use 5s pause/resume interval
+        clearResumeInterval();
+        resumeIntervalRef.current = setInterval(() => {
+          if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+            window.speechSynthesis.pause();
+            window.speechSynthesis.resume();
+          }
+        }, 5000);
+      };
+
+      utterance.onend = () => {
+        clearResumeInterval();
+        chunkIndex++;
+        speakChunk();
+      };
+
+      utterance.onerror = (e) => {
+        setIsSpeaking(false);
+        clearResumeInterval();
+        if (!intentionalCancelRef.current && (e.error === 'interrupted' || e.error === 'canceled')) {
+          speakTimeoutRef.current = setTimeout(() => speakChunk(), 150);
         }
-      }
+      };
+
+      window.speechSynthesis.speak(utterance);
     };
 
-    utterance.onerror = (e) => {
-      setIsSpeaking(false);
-      clearResumeInterval();
-      // Retry only if Chrome blocked speak after cancel() — NOT if user intentionally cancelled
-      if (!intentionalCancelRef.current && (e.error === 'interrupted' || e.error === 'canceled')) {
-        speakTimeoutRef.current = setTimeout(() => doSpeak(slideIndex, autoAdvance), 150);
-      }
-    };
-
-    window.speechSynthesis.speak(utterance);
-  }, [clearResumeInterval]);
+    speakChunk();
+  }, [clearResumeInterval, splitIntoChunks]);
 
   /**
    * Interrupt any current speech and start speaking a slide.
