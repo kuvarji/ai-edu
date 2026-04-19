@@ -215,7 +215,7 @@ export default function ClassroomPage() {
     setSending(true);
     try {
       const res = await aiApi.chat({ message: userMsg, subject: 'general' });
-      setMessages((prev) => [...prev, { role: 'bot' as const, text: res.reply }]);
+      setMessages((prev) => [...prev, { role: 'bot' as const, text: res.response }]);
     } catch {
       setMessages((prev) => [...prev, { role: 'bot' as const, text: 'Sorry, abhi response nahi aa paya. Please dobara try karo.' }]);
     } finally {
