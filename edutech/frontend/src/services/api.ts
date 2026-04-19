@@ -401,6 +401,30 @@ export interface AiChatResponse {
   suggestions?: string[];
 }
 
+export interface LessonSlide {
+  slide: number;
+  title: string;
+  text: string;
+  emoji: string;
+}
+
+export interface GenerateLessonRequest {
+  topic: string;
+  subject?: string;
+  grade?: number;
+  language?: string;
+  character_name?: string;
+}
+
+export interface GenerateLessonResponse {
+  topic: string;
+  subject: string;
+  grade: number;
+  character: string;
+  language: string;
+  slides: LessonSlide[];
+}
+
 export const aiApi = {
   chat: (data: AiChatRequest) =>
     request<AiChatResponse>('/ai/chat', { method: 'POST', body: data }),
@@ -413,6 +437,9 @@ export const aiApi = {
 
   generateNotes: (data: { topic: string; subject?: string }) =>
     request<{ notes: string }>('/ai/notes', { method: 'POST', body: data }),
+
+  generateLesson: (data: GenerateLessonRequest) =>
+    request<GenerateLessonResponse>('/ai/generate-lesson', { method: 'POST', body: data }),
 
   tts: (data: { text: string; language?: string }) =>
     request<{ audio_url: string }>('/ai/tts', { method: 'POST', body: data }),

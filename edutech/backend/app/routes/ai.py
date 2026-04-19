@@ -70,6 +70,15 @@ class TTSRequest(BaseModel):
     language: str = Field(default="hi", description="Language code: hi (Hindi), en (English)")
 
 
+class GenerateLessonRequest(BaseModel):
+    """AI Lesson Generate karne ka request — Gemini se script banao"""
+    topic: str = Field(..., min_length=1, max_length=500, description="Chapter/Topic name")
+    subject: str = Field(default="science", description="Subject (science, math, etc.)")
+    grade: int = Field(default=8, ge=1, le=12, description="Student ki class")
+    language: str = Field(default="hinglish", description="hinglish / hindi / english")
+    character_name: str = Field(default="Sheru", description="Character ka naam jo padhayega")
+
+
 # ============================
 # Helper: Gemini API Call
 # ============================
@@ -283,6 +292,93 @@ Use simple language. Mix Hindi and English where it helps understanding."""
         "topic": req.topic,
         "notes": ai_response,
         "subject": req.subject,
+    }
+
+
+@router.post("/generate-lesson")
+async def generate_lesson(req: GenerateLessonRequest, current_user: dict = Depends(get_current_user)):
+    """
+    AI se lesson script generate karo — character ke style mein.
+    Gemini API topic ke hisab se structured lesson likhega
+    jo frontend mein TTS + character image ke saath play hoga.
+    
+    Returns: List of lesson segments (slides) with text for each.
+    """
+    language_instruction = {
+        "hindi": "Respond ONLY in Hindi (Devanagari script).",
+        "english": "Respond ONLY in simple English.",
+        "hinglish": "Respond in Hinglish (Hindi words written in English script, mixed with English technical terms)."
+    }
+    lang_inst = language_instruction.get(req.language, language_instruction["hinglish"])
+
+    prompt = f"""You are {req.character_name}, a fun and friendly animated character teacher for Class {req.grade} Indian students.
+{lang_inst}
+
+Generate a teaching lesson on: "{req.topic}" for {req.subject} Class {req.grade}.
+
+IMPORTANT: Return the lesson as a JSON array of segments. Each segment is a slide that will be shown one at a time.
+Return ONLY valid JSON, no markdown, no code fences, no explanation outside the JSON.
+
+Format:
+[
+  {{"slide": 1, "title": "Introduction", "text": "Namaste bacchon! Main hoon {req.character_name}! Aaj hum padhenge...", "emoji": "👋"}},
+  {{"slide": 2, "title": "...", "text": "...", "emoji": "📚"}},
+  ...
+]
+
+Rules:
+- Create 6-10 slides total
+- Slide 1: Introduction — character greets students, tells topic name
+- Slides 2-4: Main concepts explained simply with examples
+- Slides 5-7: Key points, formulas, important facts
+- Slide 8-9: Real-life examples or fun facts
+- Last slide: Summary + encouragement
+- Each slide text should be 2-4 sentences (not too long, will be spoken aloud)
+- Use fun, encouraging tone. Add emoji naturally.
+- The character ({req.character_name}) should speak in first person
+- Include relevant {req.subject} terminology"""
+
+    ai_response = await call_gemini(prompt)
+
+    # Parse JSON response from Gemini
+    slides = []
+    try:
+        import json
+        # Clean up response — remove markdown code fences if present
+        cleaned = ai_response.strip()
+        if cleaned.startswith("```"):
+            # Remove first line (```json) and last line (```)
+            lines = cleaned.split("\n")
+            cleaned = "\n".join(lines[1:-1])
+        slides = json.loads(cleaned)
+    except (json.JSONDecodeError, ValueError):
+        # Fallback: wrap the raw text into a single slide
+        slides = [
+            {"slide": 1, "title": req.topic, "text": ai_response, "emoji": "📚"}
+        ]
+
+    # Activity log
+    activity = get_activity_log_collection()
+    await activity.insert_one({
+        "user_id": current_user["user_id"],
+        "action": "lesson_generated",
+        "details": {
+            "topic": req.topic,
+            "subject": req.subject,
+            "grade": req.grade,
+            "character": req.character_name,
+            "slides_count": len(slides),
+        },
+        "timestamp": get_current_timestamp()
+    })
+
+    return {
+        "topic": req.topic,
+        "subject": req.subject,
+        "grade": req.grade,
+        "character": req.character_name,
+        "language": req.language,
+        "slides": slides,
     }
 
 
