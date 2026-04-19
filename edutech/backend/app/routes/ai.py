@@ -104,8 +104,8 @@ async def call_gemini(prompt: str) -> str:
         
         # Gemini configure karo
         genai.configure(api_key=GEMINI_API_KEY)
-        # gemini-2.0-flash use karo (gemini-pro deprecated ho chuka hai)
-        model = genai.GenerativeModel("gemini-2.0-flash")
+        # gemini-2.5-flash use karo (2.0-flash free tier quota jaldi khatam hota hai)
+        model = genai.GenerativeModel("gemini-2.5-flash")
         
         # Response generate karo
         response = await asyncio.to_thread(
