@@ -60,6 +60,7 @@ export default function ClassroomPage() {
 
   // Chrome bug workaround: periodic resume() prevents Chrome from pausing long utterances
   const resumeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const speakTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const clearResumeInterval = useCallback(() => {
     if (resumeIntervalRef.current) {
@@ -68,20 +69,33 @@ export default function ClassroomPage() {
     }
   }, []);
 
+  const clearSpeakTimeout = useCallback(() => {
+    if (speakTimeoutRef.current) {
+      clearTimeout(speakTimeoutRef.current);
+      speakTimeoutRef.current = null;
+    }
+  }, []);
+
+  /** Cancel all speech activity — clears pending timeout, resume interval, and browser speech */
+  const cancelSpeech = useCallback(() => {
+    clearSpeakTimeout();
+    clearResumeInterval();
+    window.speechSynthesis.cancel();
+  }, [clearSpeakTimeout, clearResumeInterval]);
+
   useEffect(() => {
-    return () => { window.speechSynthesis.cancel(); clearResumeInterval(); };
-  }, [clearResumeInterval]);
+    return () => { cancelSpeech(); };
+  }, [cancelSpeech]);
 
   const speakSlide = useCallback((slideIndex: number, autoAdvance: boolean) => {
     // Chrome bug workaround: cancel + small delay before new speak
-    window.speechSynthesis.cancel();
-    clearResumeInterval();
+    cancelSpeech();
 
     const slides = slidesRef.current;
     if (slideIndex >= slides.length) return;
 
     // Small delay to let Chrome reset after cancel()
-    setTimeout(() => {
+    speakTimeoutRef.current = setTimeout(() => {
       const utterance = new SpeechSynthesisUtterance(slides[slideIndex].text);
       utterance.lang = 'hi-IN';
       utterance.rate = 0.9;
@@ -123,7 +137,7 @@ export default function ClassroomPage() {
 
       window.speechSynthesis.speak(utterance);
     }, 100);
-  }, [clearResumeInterval]);
+  }, [cancelSpeech]);
 
   const handleGenerateLesson = async () => {
     if (!topicInput.trim()) return;
@@ -132,7 +146,7 @@ export default function ClassroomPage() {
     setLessonSlides([]);
     setCurrentSlide(0);
     setIsPlaying(false);
-    window.speechSynthesis.cancel();
+    cancelSpeech();
     try {
       const res = await aiApi.generateLesson({
         topic: topicInput.trim(),
@@ -152,7 +166,7 @@ export default function ClassroomPage() {
   const handlePlayPause = () => {
     if (isPlaying) {
       setIsPlaying(false);
-      window.speechSynthesis.cancel();
+      cancelSpeech();
       setIsSpeaking(false);
     } else {
       setIsPlaying(true);
@@ -161,14 +175,14 @@ export default function ClassroomPage() {
   };
 
   const handleNextSlide = () => {
-    window.speechSynthesis.cancel();
+    cancelSpeech();
     setIsSpeaking(false);
     setIsPlaying(false);
     if (currentSlide < lessonSlides.length - 1) setCurrentSlide((prev) => prev + 1);
   };
 
   const handlePrevSlide = () => {
-    window.speechSynthesis.cancel();
+    cancelSpeech();
     setIsSpeaking(false);
     setIsPlaying(false);
     if (currentSlide > 0) setCurrentSlide((prev) => prev - 1);
@@ -361,7 +375,7 @@ export default function ClassroomPage() {
                     <div className="w-full md:w-64 border-t md:border-t-0 md:border-l border-theme-border overflow-y-auto p-3">
                       <h4 className="text-xs text-theme-text-muted font-bold uppercase mb-2 px-1">Slides</h4>
                       {lessonSlides.map((slide, idx) => (
-                        <button key={idx} onClick={() => { window.speechSynthesis.cancel(); setIsSpeaking(false); setIsPlaying(false); setCurrentSlide(idx); }}
+                        <button key={idx} onClick={() => { cancelSpeech(); setIsSpeaking(false); setIsPlaying(false); setCurrentSlide(idx); }}
                           className={`w-full text-left p-2.5 rounded-xl mb-1.5 transition-all text-sm ${
                             idx === currentSlide
                               ? 'bg-violet-500/20 border border-violet-500/30 text-white'
@@ -375,7 +389,7 @@ export default function ClassroomPage() {
                           </div>
                         </button>
                       ))}
-                      <button onClick={() => { window.speechSynthesis.cancel(); setLessonSlides([]); setCurrentSlide(0); setIsPlaying(false); setIsSpeaking(false); }}
+                      <button onClick={() => { cancelSpeech(); setLessonSlides([]); setCurrentSlide(0); setIsPlaying(false); setIsSpeaking(false); }}
                         className="w-full mt-3 p-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text-muted text-sm hover:text-violet-400 hover:border-violet-500/20 transition-all">
                         + Naya Topic
                       </button>
