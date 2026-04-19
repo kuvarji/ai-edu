@@ -58,36 +58,72 @@ export default function ClassroomPage() {
     fetchAvatars();
   }, []);
 
-  useEffect(() => {
-    return () => { window.speechSynthesis.cancel(); };
+  // Chrome bug workaround: periodic resume() prevents Chrome from pausing long utterances
+  const resumeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const clearResumeInterval = useCallback(() => {
+    if (resumeIntervalRef.current) {
+      clearInterval(resumeIntervalRef.current);
+      resumeIntervalRef.current = null;
+    }
   }, []);
 
+  useEffect(() => {
+    return () => { window.speechSynthesis.cancel(); clearResumeInterval(); };
+  }, [clearResumeInterval]);
+
   const speakSlide = useCallback((slideIndex: number, autoAdvance: boolean) => {
+    // Chrome bug workaround: cancel + small delay before new speak
     window.speechSynthesis.cancel();
+    clearResumeInterval();
+
     const slides = slidesRef.current;
     if (slideIndex >= slides.length) return;
-    const utterance = new SpeechSynthesisUtterance(slides[slideIndex].text);
-    utterance.lang = 'hi-IN';
-    utterance.rate = 0.9;
-    utterance.pitch = 1.1;
-    const voices = window.speechSynthesis.getVoices();
-    const hindiVoice = voices.find((v) => v.lang.startsWith('hi'));
-    if (hindiVoice) utterance.voice = hindiVoice;
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => {
-      setIsSpeaking(false);
-      if (autoAdvance && isPlayingRef.current) {
-        const nextIndex = slideIndex + 1;
-        if (nextIndex < slidesRef.current.length) {
-          setCurrentSlide(nextIndex);
-          speakSlide(nextIndex, true);
-        } else {
-          setIsPlaying(false);
+
+    // Small delay to let Chrome reset after cancel()
+    setTimeout(() => {
+      const utterance = new SpeechSynthesisUtterance(slides[slideIndex].text);
+      utterance.lang = 'hi-IN';
+      utterance.rate = 0.9;
+      utterance.pitch = 1.1;
+      const voices = window.speechSynthesis.getVoices();
+      const hindiVoice = voices.find((v) => v.lang.startsWith('hi'));
+      if (hindiVoice) utterance.voice = hindiVoice;
+
+      utterance.onstart = () => {
+        setIsSpeaking(true);
+        // Chrome pauses speech after ~15s — periodic resume() prevents this
+        clearResumeInterval();
+        resumeIntervalRef.current = setInterval(() => {
+          if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+            window.speechSynthesis.pause();
+            window.speechSynthesis.resume();
+          }
+        }, 10000);
+      };
+
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        clearResumeInterval();
+        if (autoAdvance && isPlayingRef.current) {
+          const nextIndex = slideIndex + 1;
+          if (nextIndex < slidesRef.current.length) {
+            setCurrentSlide(nextIndex);
+            speakSlide(nextIndex, true);
+          } else {
+            setIsPlaying(false);
+          }
         }
-      }
-    };
-    window.speechSynthesis.speak(utterance);
-  }, []);
+      };
+
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        clearResumeInterval();
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }, 100);
+  }, [clearResumeInterval]);
 
   const handleGenerateLesson = async () => {
     if (!topicInput.trim()) return;
