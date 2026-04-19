@@ -224,27 +224,28 @@ export default function ClassroomPage() {
   };
 
   return (
-    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-4 px-4">
-      <div className="max-w-7xl mx-auto h-[calc(100vh-6rem)] flex flex-col">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-16 sm:pt-20 pb-4 px-2 sm:px-4">
+      <div className="max-w-7xl mx-auto h-[calc(100vh-5rem)] sm:h-[calc(100vh-6rem)] flex flex-col">
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-4">
-            <Link to={`/courses/${courseId}`} className="p-2 rounded-xl text-theme-text-secondary hover:text-white hover:bg-theme-input transition-all">
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-2 sm:mb-4 gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            <Link to={`/courses/${courseId}`} className="p-2 rounded-xl text-theme-text-secondary hover:text-white hover:bg-theme-input transition-all flex-shrink-0">
               <ArrowLeft className="w-5 h-5" />
             </Link>
-            <div>
-              <h1 className="text-xl font-bold text-white">AI Video Classroom</h1>
-              <p className="text-sm text-theme-text-muted">Chapter {chapterId} — AI Character Teaching</p>
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-xl font-bold text-white truncate">AI Video Classroom</h1>
+              <p className="text-xs sm:text-sm text-theme-text-muted truncate">Chapter {chapterId} — AI Character Teaching</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-3 h-3 rounded-full bg-emerald-400" />
-            <span className="text-sm text-emerald-400 font-medium">AI Teacher Online</span>
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full bg-emerald-400" />
+            <span className="text-xs sm:text-sm text-emerald-400 font-medium hidden sm:inline">AI Teacher Online</span>
+            <span className="text-xs text-emerald-400 font-medium sm:hidden">Online</span>
           </div>
         </motion.div>
 
         {/* Tab Buttons */}
-        <div className="flex gap-2 mb-4">
+        <div className="flex gap-1.5 sm:gap-2 mb-2 sm:mb-4">
           {[
             { key: 'video' as const, label: 'AI Video', icon: Play },
             { key: 'chat' as const, label: 'AI Chat', icon: MessageCircle },
@@ -253,12 +254,12 @@ export default function ClassroomPage() {
             const Icon = tab.icon;
             return (
               <motion.button key={tab.key} whileTap={{ scale: 0.95 }} onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all ${
                   activeTab === tab.key
                     ? 'bg-violet-500/20 text-violet-400 border border-violet-500/20'
                     : 'bg-theme-card text-theme-text-secondary border border-theme-border hover:bg-theme-input'
                 }`}>
-                <Icon className="w-4 h-4" />
+                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 {tab.label}
               </motion.button>
             );
@@ -275,9 +276,9 @@ export default function ClassroomPage() {
               {lessonSlides.length === 0 && !lessonLoading && (
                 <div className="flex-1 flex items-center justify-center p-6">
                   <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-xl text-center">
-                    <div className="text-6xl mb-4">{selectedCharacter.emoji}</div>
-                    <h3 className="text-2xl font-bold text-white mb-2">AI Video Lesson</h3>
-                    <p className="text-theme-text-secondary mb-6">Topic likho, character select karo — {selectedCharacter.name} padhayega!</p>
+                    <div className="text-5xl sm:text-6xl mb-3 sm:mb-4">{selectedCharacter.emoji}</div>
+                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">AI Video Lesson</h3>
+                    <p className="text-sm sm:text-base text-theme-text-secondary mb-4 sm:mb-6">Topic likho, character select karo — {selectedCharacter.name} padhayega!</p>
 
                     {/* Character Selector */}
                     <div className="mb-6">
@@ -316,13 +317,13 @@ export default function ClassroomPage() {
                     </div>
 
                     {/* Topic Input */}
-                    <div className="flex gap-3">
+                    <div className="flex gap-2 sm:gap-3">
                       <input type="text" value={topicInput} onChange={(e) => setTopicInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleGenerateLesson()}
-                        placeholder="Topic likho... (e.g. Microorganisms, Quadratic Equations)"
-                        className="flex-1 px-5 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
+                        placeholder="Topic likho... (e.g. Microorganisms)"
+                        className="flex-1 min-w-0 px-3 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-white text-sm sm:text-base placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
                       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleGenerateLesson}
-                        className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-bold shadow-lg shadow-violet-500/25">
+                        className="px-4 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-bold shadow-lg shadow-violet-500/25 flex-shrink-0">
                         <Sparkles className="w-5 h-5" />
                       </motion.button>
                     </div>
@@ -352,15 +353,15 @@ export default function ClassroomPage() {
                 <div className="flex-1 flex flex-col overflow-hidden">
                   <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
                     {/* Character + Slide Content */}
-                    <div className="flex-1 flex flex-col items-center justify-center p-6 relative overflow-y-auto">
-                      <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-xs font-bold">
+                    <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-6 relative overflow-y-auto">
+                      <div className="absolute top-2 sm:top-4 right-2 sm:right-4 px-2 sm:px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-[10px] sm:text-xs font-bold">
                         Slide {currentSlide + 1} / {lessonSlides.length}
                       </div>
 
                       {/* Character with speaking animation */}
                       <motion.div animate={isSpeaking ? { scale: [1, 1.05, 1] } : {}} transition={{ duration: 0.5, repeat: isSpeaking ? Infinity : 0 }} className="mb-4">
                         <div className="relative">
-                          <span className="text-8xl block">{selectedCharacter.emoji}</span>
+                          <span className="text-6xl sm:text-8xl block">{selectedCharacter.emoji}</span>
                           {isSpeaking && (
                             <motion.div animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1, repeat: Infinity }}
                               className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
@@ -379,19 +380,19 @@ export default function ClassroomPage() {
                       {/* Slide Content */}
                       <AnimatePresence mode="wait">
                         <motion.div key={currentSlide} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="w-full max-w-lg">
-                          <div className="p-5 rounded-2xl bg-gradient-to-br from-violet-500/10 to-cyan-500/10 border border-violet-500/20">
-                            <div className="flex items-center gap-2 mb-3">
-                              <span className="text-xl">{lessonSlides[currentSlide]?.emoji}</span>
-                              <h3 className="text-lg font-bold text-white">{lessonSlides[currentSlide]?.title}</h3>
+                          <div className="p-3 sm:p-5 rounded-2xl bg-gradient-to-br from-violet-500/10 to-cyan-500/10 border border-violet-500/20">
+                            <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                              <span className="text-lg sm:text-xl">{lessonSlides[currentSlide]?.emoji}</span>
+                              <h3 className="text-base sm:text-lg font-bold text-white">{lessonSlides[currentSlide]?.title}</h3>
                             </div>
-                            <p className="text-gray-200 leading-relaxed text-sm whitespace-pre-line">{lessonSlides[currentSlide]?.text}</p>
+                            <p className="text-gray-200 leading-relaxed text-xs sm:text-sm whitespace-pre-line">{lessonSlides[currentSlide]?.text}</p>
                           </div>
                         </motion.div>
                       </AnimatePresence>
                     </div>
 
                     {/* Slide List Sidebar */}
-                    <div className="w-full md:w-64 border-t md:border-t-0 md:border-l border-theme-border overflow-y-auto p-3">
+                    <div className="w-full md:w-64 border-t md:border-t-0 md:border-l border-theme-border overflow-y-auto p-2 sm:p-3 max-h-32 md:max-h-none">
                       <h4 className="text-xs text-theme-text-muted font-bold uppercase mb-2 px-1">Slides</h4>
                       {lessonSlides.map((slide, idx) => (
                         <button key={idx} onClick={() => { cancelSpeech(); setIsSpeaking(false); setIsPlaying(false); setCurrentSlide(idx); }}
@@ -416,28 +417,28 @@ export default function ClassroomPage() {
                   </div>
 
                   {/* Playback Controls */}
-                  <div className="p-4 border-t border-theme-border flex items-center justify-center gap-4">
+                  <div className="p-2 sm:p-4 border-t border-theme-border flex items-center justify-center gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
                     <motion.button whileTap={{ scale: 0.9 }} onClick={handlePrevSlide} disabled={currentSlide === 0}
-                      className="p-2 rounded-xl text-theme-text-secondary hover:text-white disabled:opacity-30 transition-all">
-                      <SkipBack className="w-5 h-5" />
+                      className="p-1.5 sm:p-2 rounded-xl text-theme-text-secondary hover:text-white disabled:opacity-30 transition-all">
+                      <SkipBack className="w-4 h-4 sm:w-5 sm:h-5" />
                     </motion.button>
                     <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={handlePlayPause}
-                      className="w-14 h-14 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-violet-500/30">
-                      {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-0.5" />}
+                      className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-violet-500/30">
+                      {isPlaying ? <Pause className="w-5 h-5 sm:w-6 sm:h-6" /> : <Play className="w-5 h-5 sm:w-6 sm:h-6 ml-0.5" />}
                     </motion.button>
                     <motion.button whileTap={{ scale: 0.9 }} onClick={handleNextSlide} disabled={currentSlide === lessonSlides.length - 1}
-                      className="p-2 rounded-xl text-theme-text-secondary hover:text-white disabled:opacity-30 transition-all">
-                      <SkipForward className="w-5 h-5" />
+                      className="p-1.5 sm:p-2 rounded-xl text-theme-text-secondary hover:text-white disabled:opacity-30 transition-all">
+                      <SkipForward className="w-4 h-4 sm:w-5 sm:h-5" />
                     </motion.button>
-                    <div className="flex-1 max-w-xs mx-4">
+                    <div className="flex-1 max-w-[8rem] sm:max-w-xs mx-2 sm:mx-4">
                       <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
                         <motion.div animate={{ width: `${((currentSlide + 1) / lessonSlides.length) * 100}%` }}
                           className="h-full bg-gradient-to-r from-violet-500 to-purple-600 rounded-full" />
                       </div>
                     </div>
                     <motion.button whileTap={{ scale: 0.9 }} onClick={() => speakSlide(currentSlide, false)}
-                      className="p-2 rounded-xl text-theme-text-secondary hover:text-violet-400 transition-all" title="Speak this slide">
-                      <Volume2 className="w-5 h-5" />
+                      className="p-1.5 sm:p-2 rounded-xl text-theme-text-secondary hover:text-violet-400 transition-all" title="Speak this slide">
+                      <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
                     </motion.button>
                   </div>
                 </div>
@@ -448,7 +449,7 @@ export default function ClassroomPage() {
           {/* AI CHAT TAB */}
           {activeTab === 'chat' && (
             <div className="flex flex-col h-full">
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-4">
                 {messages.map((msg, i) => (
                   <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
                     className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
@@ -459,7 +460,7 @@ export default function ClassroomPage() {
                     }`}>
                       {msg.role === 'bot' ? <Bot className="w-5 h-5 text-white" /> : <User className="w-5 h-5 text-white" />}
                     </div>
-                    <div className={`max-w-lg p-4 rounded-2xl ${
+                    <div className={`max-w-[85%] sm:max-w-lg p-3 sm:p-4 rounded-2xl ${
                       msg.role === 'bot'
                         ? 'bg-theme-input border border-theme-border text-gray-200'
                         : 'bg-violet-500/20 border border-violet-500/20 text-white'
@@ -482,14 +483,14 @@ export default function ClassroomPage() {
                   </motion.div>
                 ))}
               </div>
-              <div className="p-4 border-t border-theme-border">
-                <div className="flex gap-3">
+              <div className="p-2 sm:p-4 border-t border-theme-border">
+                <div className="flex gap-2 sm:gap-3">
                   <input type="text" value={message} onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSend()} placeholder="Apna sawal likho... (Hindi ya English)"
-                    className="flex-1 px-5 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
+                    onKeyDown={(e) => e.key === 'Enter' && handleSend()} placeholder="Apna sawal likho..."
+                    className="flex-1 min-w-0 px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-white text-sm sm:text-base placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleSend}
-                    className="px-5 py-3.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/25">
-                    <Send className="w-5 h-5" />
+                    className="px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/25 flex-shrink-0">
+                    <Send className="w-4 h-4 sm:w-5 sm:h-5" />
                   </motion.button>
                 </div>
                 <div className="flex items-center gap-2 mt-2 text-xs text-gray-600">
