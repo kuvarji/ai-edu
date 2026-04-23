@@ -2441,20 +2441,6 @@ files = [
 ]
 
 [[package]]
-name = "razorpay"
-version = "1.4.2"
-description = "Razorpay Python Client"
-optional = false
-python-versions = "*"
-files = [
-    {file = "razorpay-1.4.2-py3-none-any.whl", hash = "sha256:aaf525baebc5001e5c54ae317a372c3c17c81314cedcbbf71aa0a2d3419a9757"},
-    {file = "razorpay-1.4.2.tar.gz", hash = "sha256:0d812030ba29e776e66d1ceaacc31635810fde18b66ff2591e582eb651bb5131"},
-]
-
-[package.dependencies]
-requests = "*"
-
-[[package]]
 name = "requests"
 version = "2.33.1"
 description = "Python HTTP for Humans."
@@ -2734,26 +2720,6 @@ starlite = ["starlite (>=1.48)"]
 statsig = ["statsig (>=0.55.3)"]
 tornado = ["tornado (>=6)"]
 unleash = ["UnleashClient (>=6.0.1)"]
-
-[[package]]
-name = "setuptools"
-version = "82.0.1"
-description = "Most extensible Python build backend with support for C/C++ extension modules"
-optional = false
-python-versions = ">=3.9"
-files = [
-    {file = "setuptools-82.0.1-py3-none-any.whl", hash = "sha256:a59e362652f08dcd477c78bb6e7bd9d80a7995bc73ce773050228a348ce2e5bb"},
-    {file = "setuptools-82.0.1.tar.gz", hash = "sha256:7d872682c5d01cfde07da7bccc7b65469d3dca203318515ada1de5eda35efbf9"},
-]
-
-[package.extras]
-check = ["pytest-checkdocs (>=2.4)", "pytest-ruff (>=0.2.1)", "ruff (>=0.13.0)"]
-core = ["importlib_metadata (>=6)", "jaraco.functools (>=4)", "jaraco.text (>=3.7)", "more_itertools", "more_itertools (>=8.8)", "packaging (>=24.2)", "tomli (>=2.0.1)", "wheel (>=0.43.0)"]
-cover = ["pytest-cov"]
-doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "pyproject-hooks (!=1.1)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-inline-tabs", "sphinx-lint", "sphinx-notfound-page (>=1,<2)", "sphinx-reredirects", "sphinxcontrib-towncrier", "towncrier (<24.7)"]
-enabler = ["pytest-enabler (>=2.2)"]
-test = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "ini2toml[lite] (>=0.14)", "jaraco.develop (>=7.21)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.7.2)", "jaraco.test (>=5.5)", "packaging (>=24.2)", "pip (>=19.1)", "pyproject-hooks (!=1.1)", "pytest (>=6,!=8.1.*)", "pytest-home (>=0.5)", "pytest-perf", "pytest-subprocess", "pytest-timeout", "pytest-xdist (>=3)", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel (>=0.44.0)"]
-type = ["importlib_metadata (>=7.0.2)", "jaraco.develop (>=7.21)", "mypy (==1.18.*)", "pytest-mypy"]
 
 [[package]]
 name = "shellingham"
@@ -3313,4 +3279,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "67971a658e4efb7ff57040bfb95535cf91c3f42f5e168a3d817bb907c024ff1d"
+content-hash = "744ae688bf0094638499020c04f0c3b86ccbfbf878a01d1a06ab968daa1e4101"
