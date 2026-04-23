@@ -72,15 +72,27 @@ class VerifyPaymentRequest(BaseModel):
 # Helper Functions
 # ============================
 
-def get_razorpay_client():
-    """Razorpay client instance banao"""
+async def create_razorpay_order(order_data: dict) -> dict:
+    """Razorpay REST API se order create karo (no razorpay library needed)"""
+    import httpx
     if not RAZORPAY_KEY_ID or not RAZORPAY_KEY_SECRET:
         raise HTTPException(
             status_code=500,
             detail="Razorpay API keys configured nahi hain. Admin se contact karo."
         )
-    import razorpay
-    return razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(
+            "https://api.razorpay.com/v1/orders",
+            json=order_data,
+            auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET),
+            timeout=30.0,
+        )
+        if resp.status_code != 200:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Razorpay order create failed: {resp.text}"
+            )
+        return resp.json()
 
 
 def verify_razorpay_signature(order_id: str, payment_id: str, signature: str) -> bool:
@@ -160,13 +172,11 @@ async def create_order(req: CreateOrderRequest, current_user: dict = Depends(get
             except (ValueError, TypeError):
                 pass
     
-    # Razorpay order create karo
-    client = get_razorpay_client()
-    
+    # Razorpay order create karo (direct REST API call)
     order_data = {
         "amount": plan["amount"],
         "currency": plan["currency"],
-        "receipt": f"order_{current_user['user_id']}_{int(datetime.now(timezone.utc).timestamp())}",
+        "receipt": f"ord_{int(datetime.now(timezone.utc).timestamp())}",
         "notes": {
             "user_id": current_user["user_id"],
             "plan_id": req.plan_id,
@@ -174,13 +184,7 @@ async def create_order(req: CreateOrderRequest, current_user: dict = Depends(get
         }
     }
     
-    try:
-        order = client.order.create(data=order_data)
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Order create karne mein error aaya: {str(e)}"
-        )
+    order = await create_razorpay_order(order_data)
     
     # Order database mein save karo
     payments = get_payments_collection()
