@@ -61,6 +61,7 @@ export default function DashboardPage() {
   const xp = stats?.xp ?? user?.xp ?? 0;
   const level = stats?.level ?? user?.level ?? 1;
   const streak = stats?.streak ?? user?.streak ?? 0;
+  const isPremium = user?.subscription === 'pro' || user?.subscription === 'premium';
   const xpToNext = (stats?.xp_for_next_level ?? 500) - (xp % 500);
   const xpProgress = ((xp % 500) / 500) * 100;
 
@@ -88,7 +89,7 @@ export default function DashboardPage() {
 
   const statCards = [
     { label: t.streak, value: `${streak} Days`, icon: Flame, color: 'from-orange-500 to-red-500', shadow: 'shadow-orange-500/20', bg: 'bg-orange-500/10' },
-    { label: t.total_xp, value: `${xp.toLocaleString()}`, icon: Zap, color: 'from-yellow-500 to-amber-500', shadow: 'shadow-yellow-500/20', bg: 'bg-yellow-500/10' },
+    { label: t.total_xp, value: isPremium ? '∞ Unlimited' : `${xp.toLocaleString()}`, icon: Zap, color: 'from-yellow-500 to-amber-500', shadow: 'shadow-yellow-500/20', bg: 'bg-yellow-500/10' },
     { label: t.level, value: `${t.level} ${level}`, icon: Trophy, color: 'from-violet-500 to-purple-500', shadow: 'shadow-violet-500/20', bg: 'bg-violet-500/10' },
     { label: t.courses_title, value: String(apiCourses.length), icon: BookOpen, color: 'from-emerald-500 to-teal-500', shadow: 'shadow-emerald-500/20', bg: 'bg-emerald-500/10' },
   ];
@@ -118,7 +119,7 @@ export default function DashboardPage() {
               </div>
               <div>
                 <p className="text-sm font-bold text-white">Level {level}</p>
-                <p className="text-xs text-violet-400">{xpToNext} XP to next level</p>
+                <p className="text-xs text-violet-400">{isPremium ? 'Pro Member ∞' : `${xpToNext} XP to next level`}</p>
               </div>
             </motion.div>
           </div>

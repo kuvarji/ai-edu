@@ -129,7 +129,7 @@ export default function ProfilePage() {
   };
 
   const stats = [
-    { label: 'Total XP', value: (user?.xp ?? 0).toLocaleString(), icon: Zap, color: 'text-yellow-400' },
+    { label: 'Total XP', value: user?.subscription === 'pro' || user?.subscription === 'premium' ? '∞ Unlimited' : (user?.xp ?? 0).toLocaleString(), icon: Zap, color: 'text-yellow-400' },
     { label: 'Streak', value: `${user?.streak ?? 0} Days`, icon: Flame, color: 'text-orange-400' },
     { label: 'Level', value: `${user?.level ?? 1}`, icon: Trophy, color: 'text-violet-400' },
     { label: 'Courses', value: '0', icon: BookOpen, color: 'text-emerald-400' },
