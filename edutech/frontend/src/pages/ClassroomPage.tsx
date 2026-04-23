@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { aiApi, storeApi, type LessonSlide, type Avatar as ApiAvatar } from '../services/api';
 import { useStore } from '../store/useStore';
+import MembershipPrompt from '../components/MembershipPrompt';
 
 const CHARACTER_EMOJIS: Record<string, string> = {
   sheru: '\ud83e\udd81',
@@ -38,6 +39,8 @@ export default function ClassroomPage() {
   const [selectedCharacter, setSelectedCharacter] = useState<{ name: string; emoji: string }>({ name: 'Sheru', emoji: '\ud83e\udd81' });
   const [userAvatars, setUserAvatars] = useState<ApiAvatar[]>([]);
   const [avatarsLoading, setAvatarsLoading] = useState(true);
+  const [showMembershipPrompt, setShowMembershipPrompt] = useState(false);
+  const [membershipPromptInfo, setMembershipPromptInfo] = useState({ requiredXP: 0, feature: '' });
   const isPlayingRef = useRef(false);
   const slidesRef = useRef<LessonSlide[]>([]);
 
@@ -197,9 +200,10 @@ export default function ClassroomPage() {
 
   const handleGenerateLesson = async () => {
     if (!topicInput.trim()) return;
-    // XP check (10 XP per lesson)
-    if ((user?.xp ?? 0) < 10) {
-      setLessonError(`XP kam hai! Tumhare paas ${user?.xp ?? 0} XP hai, AI Video ke liye 10 XP chahiye.`);
+    // XP check (10 XP per lesson) — skip for pro members
+    if (user?.subscription !== 'pro' && (user?.xp ?? 0) < 10) {
+      setMembershipPromptInfo({ requiredXP: 10, feature: 'AI Video Lesson' });
+      setShowMembershipPrompt(true);
       return;
     }
     setLessonLoading(true);
@@ -260,9 +264,10 @@ export default function ClassroomPage() {
 
   const handleSend = async () => {
     if (!message.trim() || sending) return;
-    // XP check (5 XP per chat message)
-    if ((user?.xp ?? 0) < 5) {
-      setMessages((prev) => [...prev, { role: 'bot' as const, text: `XP kam hai! Tumhare paas ${user?.xp ?? 0} XP hai, AI Chat ke liye 5 XP chahiye. Quizzes solve karke XP earn karo!` }]);
+    // XP check (5 XP per chat message) — skip for pro members
+    if (user?.subscription !== 'pro' && (user?.xp ?? 0) < 5) {
+      setMembershipPromptInfo({ requiredXP: 5, feature: 'AI Chat' });
+      setShowMembershipPrompt(true);
       return;
     }
     const userMsg = message;
@@ -613,6 +618,15 @@ export default function ClassroomPage() {
           )}
         </div>
       </div>
+
+      {/* Membership Prompt Modal */}
+      <MembershipPrompt
+        show={showMembershipPrompt}
+        onClose={() => setShowMembershipPrompt(false)}
+        currentXP={user?.xp ?? 0}
+        requiredXP={membershipPromptInfo.requiredXP}
+        feature={membershipPromptInfo.feature}
+      />
     </div>
   );
 }
