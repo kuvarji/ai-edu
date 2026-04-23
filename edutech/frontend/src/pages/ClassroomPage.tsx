@@ -398,9 +398,9 @@ export default function ClassroomPage() {
                         placeholder="Topic likho... (e.g. Microorganisms)"
                         className="flex-1 min-w-0 px-3 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-white text-sm sm:text-base placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
                       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleGenerateLesson}
-                        disabled={(user?.xp ?? 0) < 10}
+                        disabled={user?.subscription !== 'pro' && (user?.xp ?? 0) < 10}
                         className={`px-4 sm:px-6 py-3 sm:py-3.5 rounded-xl font-bold shadow-lg flex-shrink-0 ${
-                          (user?.xp ?? 0) < 10
+                          user?.subscription !== 'pro' && (user?.xp ?? 0) < 10
                             ? 'bg-gray-600 text-gray-400 cursor-not-allowed shadow-none'
                             : 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-violet-500/25'
                         }`}>
@@ -570,9 +570,9 @@ export default function ClassroomPage() {
                     onKeyDown={(e) => e.key === 'Enter' && handleSend()} placeholder="Apna sawal likho..."
                     className="flex-1 min-w-0 px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-white text-sm sm:text-base placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleSend}
-                    disabled={(user?.xp ?? 0) < 5}
+                    disabled={user?.subscription !== 'pro' && (user?.xp ?? 0) < 5}
                     className={`px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl shadow-lg flex-shrink-0 ${
-                      (user?.xp ?? 0) < 5
+                      user?.subscription !== 'pro' && (user?.xp ?? 0) < 5
                         ? 'bg-gray-600 text-gray-400 cursor-not-allowed shadow-none'
                         : 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-violet-500/25'
                     }`}>
