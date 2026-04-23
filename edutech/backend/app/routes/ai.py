@@ -18,6 +18,7 @@ from fastapi.responses import FileResponse
 from starlette.background import BackgroundTask
 from pydantic import BaseModel, Field
 from bson import ObjectId
+from pymongo import ReturnDocument
 from app.database import get_chat_history_collection, get_activity_log_collection, get_users_collection
 from app.utils.auth import get_current_user
 from app.utils.helpers import get_current_timestamp
@@ -87,21 +88,28 @@ class GenerateLessonRequest(BaseModel):
 # Helper: Gemini API Call
 # ============================
 
+class GeminiError(Exception):
+    """Raised when Gemini API call fails."""
+    pass
+
+
 async def call_gemini(prompt: str) -> str:
     """
     Google Gemini API ko call karo response lene ke liye.
-    Agar API key nahi hai toh fallback response dega.
+    Agar API key nahi hai ya error aaye toh GeminiError raise hoga.
     
     Args:
         prompt: Full prompt jo Gemini ko bhejna hai
     Returns:
         AI ka response text
+    Raises:
+        GeminiError: Jab API key missing ho ya API call fail ho
     """
     if not GEMINI_API_KEY:
-        # API key nahi hai - fallback response do
-        return ("AI tutor abhi available nahi hai kyunki Gemini API key set nahi hai. "
-                "Admin se contact karo API key set karwane ke liye. "
-                "Agar aap admin hain toh .env file mein GEMINI_API_KEY set karo.")
+        raise GeminiError(
+            "AI tutor abhi available nahi hai kyunki Gemini API key set nahi hai. "
+            "Admin se contact karo API key set karwane ke liye."
+        )
     
     try:
         import google.generativeai as genai
@@ -117,8 +125,10 @@ async def call_gemini(prompt: str) -> str:
         )
         
         return response.text
+    except GeminiError:
+        raise
     except Exception as e:
-        return f"AI response generate karne mein error aaya: {str(e)}. Please try again."
+        raise GeminiError(f"AI response generate karne mein error aaya: {str(e)}. Please try again.")
 
 
 # ============================
@@ -131,9 +141,9 @@ async def chat_with_ai(req: ChatRequest, current_user: dict = Depends(get_curren
     AI tutor se chat karo.
     User ka message Gemini API ko jayega aur intelligent response aayega.
     Chat history save hoti hai future reference ke liye.
-    XP_COST_CHAT XP kharcha hogi har message pe.
+    XP_COST_CHAT XP kharcha hogi har message pe — sirf successful response pe.
     """
-    # XP check aur deduct karo
+    # Atomic XP check — ensure user has enough XP
     users = get_users_collection()
     user = await users.find_one({"_id": ObjectId(current_user["user_id"])})
     user_xp = user.get("xp", 0) if user else 0
@@ -153,16 +163,24 @@ Student's question: {req.message}
 
 Provide a clear, concise answer with examples if needed."""
 
-    # AI se response lo
-    ai_response = await call_gemini(prompt)
+    # AI se response lo — GeminiError raise hoga agar fail hua
+    try:
+        ai_response = await call_gemini(prompt)
+    except GeminiError as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
-    # XP deduct karo
-    new_xp = user_xp - XP_COST_CHAT
-    new_level = max(1, new_xp // 500 + 1)
-    await users.update_one(
-        {"_id": ObjectId(current_user["user_id"])},
-        {"$set": {"xp": new_xp, "level": new_level, "updated_at": get_current_timestamp()}}
+    # Atomic XP deduct karo using $inc (race-condition safe)
+    result = await users.find_one_and_update(
+        {"_id": ObjectId(current_user["user_id"]), "xp": {"$gte": XP_COST_CHAT}},
+        {"$inc": {"xp": -XP_COST_CHAT}, "$set": {"updated_at": get_current_timestamp()}},
+        return_document=ReturnDocument.AFTER
     )
+    if not result:
+        raise HTTPException(status_code=400, detail="XP deduction failed — XP already spent.")
+    new_xp = result.get("xp", 0)
+    # Level recalculate karo
+    new_level = max(1, new_xp // 500 + 1)
+    await users.update_one({"_id": ObjectId(current_user["user_id"])}, {"$set": {"level": new_level}})
     
     # Chat history save karo
     chat_coll = get_chat_history_collection()
@@ -377,7 +395,11 @@ Rules:
 - The character ({req.character_name}) should speak in first person
 - Include relevant {req.subject} terminology"""
 
-    ai_response = await call_gemini(prompt)
+    # AI se response lo — GeminiError raise hoga agar fail hua
+    try:
+        ai_response = await call_gemini(prompt)
+    except GeminiError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
     # Parse JSON response from Gemini
     slides = []
@@ -398,13 +420,18 @@ Rules:
             {"slide": 1, "title": req.topic, "text": ai_response, "emoji": "📚"}
         ]
 
-    # XP deduct karo (lesson successfully generated)
-    new_xp = user_xp - XP_COST_LESSON
-    new_level = max(1, new_xp // 500 + 1)
-    await users.update_one(
-        {"_id": ObjectId(current_user["user_id"])},
-        {"$set": {"xp": new_xp, "level": new_level, "updated_at": get_current_timestamp()}}
+    # Atomic XP deduct karo using $inc (race-condition safe)
+    result = await users.find_one_and_update(
+        {"_id": ObjectId(current_user["user_id"]), "xp": {"$gte": XP_COST_LESSON}},
+        {"$inc": {"xp": -XP_COST_LESSON}, "$set": {"updated_at": get_current_timestamp()}},
+        return_document=ReturnDocument.AFTER
     )
+    if not result:
+        raise HTTPException(status_code=400, detail="XP deduction failed — XP already spent.")
+    new_xp = result.get("xp", 0)
+    # Level recalculate karo
+    new_level = max(1, new_xp // 500 + 1)
+    await users.update_one({"_id": ObjectId(current_user["user_id"])}, {"$set": {"level": new_level}})
 
     # Activity log
     activity = get_activity_log_collection()
