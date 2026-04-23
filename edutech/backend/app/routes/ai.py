@@ -230,7 +230,11 @@ Include:
 
 Make it easy to understand for a Class {req.grade} student."""
 
-    ai_response = await call_gemini(prompt)
+    # AI se response lo — GeminiError raise hoga agar fail hua
+    try:
+        ai_response = await call_gemini(prompt)
+    except GeminiError as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
     # Chat history save karo
     chat_coll = get_chat_history_collection()
@@ -270,7 +274,11 @@ Provide:
 3. Why this approach works
 4. Similar practice question at the end"""
 
-    ai_response = await call_gemini(prompt)
+    # AI se response lo — GeminiError raise hoga agar fail hua
+    try:
+        ai_response = await call_gemini(prompt)
+    except GeminiError as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
     # Chat history save karo
     chat_coll = get_chat_history_collection()
@@ -310,7 +318,11 @@ Format the notes with:
 
 Use simple language. Mix Hindi and English where it helps understanding."""
 
-    ai_response = await call_gemini(prompt)
+    # AI se response lo — GeminiError raise hoga agar fail hua
+    try:
+        ai_response = await call_gemini(prompt)
+    except GeminiError as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
     # Chat history save karo
     chat_coll = get_chat_history_collection()
