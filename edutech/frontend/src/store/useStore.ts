@@ -29,6 +29,8 @@ interface AppState {
   toggleDarkMode: () => void;
   toggleSidebar: () => void;
   addXP: (amount: number) => void;
+  spendXP: (amount: number) => void;
+  setXP: (xp: number) => void;
   incrementStreak: () => void;
   initializeAuth: () => Promise<void>;
 }
@@ -58,6 +60,19 @@ export const useStore = create<AppState>((set) => ({
       const newXP = s.user.xp + amount;
       const newLevel = Math.floor(newXP / 500) + 1;
       return { user: { ...s.user, xp: newXP, level: newLevel } };
+    }),
+  spendXP: (amount) =>
+    set((s) => {
+      if (!s.user) return s;
+      const newXP = Math.max(0, s.user.xp - amount);
+      const newLevel = Math.max(1, Math.floor(newXP / 500) + 1);
+      return { user: { ...s.user, xp: newXP, level: newLevel } };
+    }),
+  setXP: (xp) =>
+    set((s) => {
+      if (!s.user) return s;
+      const newLevel = Math.max(1, Math.floor(xp / 500) + 1);
+      return { user: { ...s.user, xp, level: newLevel } };
     }),
   incrementStreak: () =>
     set((s) => {

@@ -402,6 +402,8 @@ export interface AiChatRequest {
 export interface AiChatResponse {
   response: string;
   subject: string;
+  xp_spent?: number;
+  remaining_xp?: number;
 }
 
 export interface LessonSlide {
@@ -426,6 +428,8 @@ export interface GenerateLessonResponse {
   character: string;
   language: string;
   slides: LessonSlide[];
+  xp_spent?: number;
+  remaining_xp?: number;
 }
 
 export const aiApi = {

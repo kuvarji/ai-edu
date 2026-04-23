@@ -18,7 +18,7 @@ from fastapi.responses import FileResponse
 from starlette.background import BackgroundTask
 from pydantic import BaseModel, Field
 from bson import ObjectId
-from app.database import get_chat_history_collection, get_activity_log_collection
+from app.database import get_chat_history_collection, get_activity_log_collection, get_users_collection
 from app.utils.auth import get_current_user
 from app.utils.helpers import get_current_timestamp
 from dotenv import load_dotenv
@@ -29,6 +29,10 @@ router = APIRouter(prefix="/ai", tags=["AI Tutor"])
 
 # Gemini API key (.env file se)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+
+# XP costs for AI features
+XP_COST_CHAT = 5       # AI Chat per message
+XP_COST_LESSON = 10    # AI Video Lesson generation
 
 
 # ============================
@@ -127,7 +131,19 @@ async def chat_with_ai(req: ChatRequest, current_user: dict = Depends(get_curren
     AI tutor se chat karo.
     User ka message Gemini API ko jayega aur intelligent response aayega.
     Chat history save hoti hai future reference ke liye.
+    XP_COST_CHAT XP kharcha hogi har message pe.
     """
+    # XP check aur deduct karo
+    users = get_users_collection()
+    user = await users.find_one({"_id": ObjectId(current_user["user_id"])})
+    user_xp = user.get("xp", 0) if user else 0
+    
+    if user_xp < XP_COST_CHAT:
+        raise HTTPException(
+            status_code=400,
+            detail=f"XP kam hai! Tumhare paas {user_xp} XP hai, lekin AI Chat ke liye {XP_COST_CHAT} XP chahiye."
+        )
+    
     # Prompt banao with context
     prompt = f"""You are an AI tutor for Indian students studying {req.subject} in Class {req.grade}.
 Respond in a friendly, encouraging way. Use simple language.
@@ -140,6 +156,14 @@ Provide a clear, concise answer with examples if needed."""
     # AI se response lo
     ai_response = await call_gemini(prompt)
     
+    # XP deduct karo
+    new_xp = user_xp - XP_COST_CHAT
+    new_level = max(1, new_xp // 500 + 1)
+    await users.update_one(
+        {"_id": ObjectId(current_user["user_id"])},
+        {"$set": {"xp": new_xp, "level": new_level, "updated_at": get_current_timestamp()}}
+    )
+    
     # Chat history save karo
     chat_coll = get_chat_history_collection()
     await chat_coll.insert_one({
@@ -148,12 +172,15 @@ Provide a clear, concise answer with examples if needed."""
         "subject": req.subject,
         "user_message": req.message,
         "ai_response": ai_response,
+        "xp_spent": XP_COST_CHAT,
         "timestamp": get_current_timestamp()
     })
     
     return {
         "response": ai_response,
         "subject": req.subject,
+        "xp_spent": XP_COST_CHAT,
+        "remaining_xp": new_xp,
     }
 
 
@@ -301,9 +328,21 @@ async def generate_lesson(req: GenerateLessonRequest, current_user: dict = Depen
     AI se lesson script generate karo — character ke style mein.
     Gemini API topic ke hisab se structured lesson likhega
     jo frontend mein TTS + character image ke saath play hoga.
+    XP_COST_LESSON XP kharcha hogi har lesson pe.
     
     Returns: List of lesson segments (slides) with text for each.
     """
+    # XP check aur deduct karo
+    users = get_users_collection()
+    user = await users.find_one({"_id": ObjectId(current_user["user_id"])})
+    user_xp = user.get("xp", 0) if user else 0
+    
+    if user_xp < XP_COST_LESSON:
+        raise HTTPException(
+            status_code=400,
+            detail=f"XP kam hai! Tumhare paas {user_xp} XP hai, lekin AI Video Lesson ke liye {XP_COST_LESSON} XP chahiye."
+        )
+    
     language_instruction = {
         "hindi": "Respond ONLY in Hindi (Devanagari script).",
         "english": "Respond ONLY in simple English.",
@@ -359,6 +398,14 @@ Rules:
             {"slide": 1, "title": req.topic, "text": ai_response, "emoji": "📚"}
         ]
 
+    # XP deduct karo (lesson successfully generated)
+    new_xp = user_xp - XP_COST_LESSON
+    new_level = max(1, new_xp // 500 + 1)
+    await users.update_one(
+        {"_id": ObjectId(current_user["user_id"])},
+        {"$set": {"xp": new_xp, "level": new_level, "updated_at": get_current_timestamp()}}
+    )
+
     # Activity log
     activity = get_activity_log_collection()
     await activity.insert_one({
@@ -370,6 +417,7 @@ Rules:
             "grade": req.grade,
             "character": req.character_name,
             "slides_count": len(slides),
+            "xp_spent": XP_COST_LESSON,
         },
         "timestamp": get_current_timestamp()
     })
@@ -381,6 +429,8 @@ Rules:
         "character": req.character_name,
         "language": req.language,
         "slides": slides,
+        "xp_spent": XP_COST_LESSON,
+        "remaining_xp": new_xp,
     }
 
 

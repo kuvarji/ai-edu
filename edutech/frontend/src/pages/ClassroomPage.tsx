@@ -19,7 +19,7 @@ const CHARACTER_EMOJIS: Record<string, string> = {
 
 export default function ClassroomPage() {
   const { courseId, chapterId } = useParams();
-  const { user } = useStore();
+  const { user, setXP } = useStore();
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState<'chat' | 'notes' | 'video'>('video');
   const [messages, setMessages] = useState<{ role: 'user' | 'bot'; text: string }[]>([
@@ -197,6 +197,11 @@ export default function ClassroomPage() {
 
   const handleGenerateLesson = async () => {
     if (!topicInput.trim()) return;
+    // XP check (10 XP per lesson)
+    if ((user?.xp ?? 0) < 10) {
+      setLessonError(`XP kam hai! Tumhare paas ${user?.xp ?? 0} XP hai, AI Video ke liye 10 XP chahiye.`);
+      return;
+    }
     setLessonLoading(true);
     setLessonError('');
     setLessonSlides([]);
@@ -212,8 +217,17 @@ export default function ClassroomPage() {
         character_name: selectedCharacter.name,
       });
       setLessonSlides(res.slides);
-    } catch {
-      setLessonError('Lesson generate nahi ho paya. Please try again.');
+      // Update XP in store from backend response
+      if (res.remaining_xp !== undefined) {
+        setXP(res.remaining_xp);
+      }
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      if (errMsg.includes('XP kam hai')) {
+        setLessonError(errMsg);
+      } else {
+        setLessonError('Lesson generate nahi ho paya. Please try again.');
+      }
     } finally {
       setLessonLoading(false);
     }
@@ -246,6 +260,11 @@ export default function ClassroomPage() {
 
   const handleSend = async () => {
     if (!message.trim() || sending) return;
+    // XP check (5 XP per chat message)
+    if ((user?.xp ?? 0) < 5) {
+      setMessages((prev) => [...prev, { role: 'bot' as const, text: `XP kam hai! Tumhare paas ${user?.xp ?? 0} XP hai, AI Chat ke liye 5 XP chahiye. Quizzes solve karke XP earn karo!` }]);
+      return;
+    }
     const userMsg = message;
     setMessages((prev) => [...prev, { role: 'user' as const, text: userMsg }]);
     setMessage('');
@@ -253,8 +272,17 @@ export default function ClassroomPage() {
     try {
       const res = await aiApi.chat({ message: userMsg, subject: 'general' });
       setMessages((prev) => [...prev, { role: 'bot' as const, text: res.response }]);
-    } catch {
-      setMessages((prev) => [...prev, { role: 'bot' as const, text: 'Sorry, abhi response nahi aa paya. Please dobara try karo.' }]);
+      // Update XP in store from backend response
+      if (res.remaining_xp !== undefined) {
+        setXP(res.remaining_xp);
+      }
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      if (errMsg.includes('XP kam hai')) {
+        setMessages((prev) => [...prev, { role: 'bot' as const, text: errMsg }]);
+      } else {
+        setMessages((prev) => [...prev, { role: 'bot' as const, text: 'Sorry, abhi response nahi aa paya. Please dobara try karo.' }]);
+      }
     } finally {
       setSending(false);
     }
@@ -274,7 +302,12 @@ export default function ClassroomPage() {
               <p className="text-xs sm:text-sm text-theme-text-muted truncate">Chapter {chapterId} — AI Character Teaching</p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            {/* XP Balance Badge */}
+            <div className="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-amber-500/20 border border-amber-500/30">
+              <span className="text-xs sm:text-sm">⚡</span>
+              <span className="text-xs sm:text-sm font-bold text-amber-400">{user?.xp ?? 0} XP</span>
+            </div>
             <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full bg-emerald-400" />
             <span className="text-xs sm:text-sm text-emerald-400 font-medium hidden sm:inline">AI Teacher Online</span>
             <span className="text-xs text-emerald-400 font-medium sm:hidden">Online</span>
@@ -360,11 +393,17 @@ export default function ClassroomPage() {
                         placeholder="Topic likho... (e.g. Microorganisms)"
                         className="flex-1 min-w-0 px-3 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-white text-sm sm:text-base placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
                       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleGenerateLesson}
-                        className="px-4 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-bold shadow-lg shadow-violet-500/25 flex-shrink-0">
+                        disabled={(user?.xp ?? 0) < 10}
+                        className={`px-4 sm:px-6 py-3 sm:py-3.5 rounded-xl font-bold shadow-lg flex-shrink-0 ${
+                          (user?.xp ?? 0) < 10
+                            ? 'bg-gray-600 text-gray-400 cursor-not-allowed shadow-none'
+                            : 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-violet-500/25'
+                        }`}>
                         <Sparkles className="w-5 h-5" />
                       </motion.button>
                     </div>
-                    {lessonError && <p className="text-red-400 text-sm mt-3">{lessonError}</p>}
+                    <p className="text-xs text-amber-400/70 mt-2">⚡ 10 XP per lesson</p>
+                    {lessonError && <p className="text-red-400 text-sm mt-1">{lessonError}</p>}
                   </motion.div>
                 </div>
               )}
@@ -526,13 +565,21 @@ export default function ClassroomPage() {
                     onKeyDown={(e) => e.key === 'Enter' && handleSend()} placeholder="Apna sawal likho..."
                     className="flex-1 min-w-0 px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-white text-sm sm:text-base placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleSend}
-                    className="px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/25 flex-shrink-0">
+                    disabled={(user?.xp ?? 0) < 5}
+                    className={`px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl shadow-lg flex-shrink-0 ${
+                      (user?.xp ?? 0) < 5
+                        ? 'bg-gray-600 text-gray-400 cursor-not-allowed shadow-none'
+                        : 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-violet-500/25'
+                    }`}>
                     <Send className="w-4 h-4 sm:w-5 sm:h-5" />
                   </motion.button>
                 </div>
-                <div className="flex items-center gap-2 mt-2 text-xs text-gray-600">
-                  <Sparkles className="w-3 h-3" />
-                  Powered by Gemini AI - Hindi &amp; English supported
+                <div className="flex items-center justify-between mt-2 text-xs text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-3 h-3" />
+                    Powered by Gemini AI - Hindi &amp; English supported
+                  </div>
+                  <span className="text-amber-400/70">⚡ 5 XP per message</span>
                 </div>
               </div>
             </div>
