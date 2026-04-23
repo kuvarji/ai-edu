@@ -311,7 +311,9 @@ export default function ClassroomPage() {
             {/* XP Balance Badge */}
             <div className="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-amber-500/20 border border-amber-500/30">
               <span className="text-xs sm:text-sm">⚡</span>
-              <span className="text-xs sm:text-sm font-bold text-amber-400">{user?.xp ?? 0} XP</span>
+              <span className="text-xs sm:text-sm font-bold text-amber-400">
+                {user?.subscription === 'pro' || user?.subscription === 'premium' ? '∞' : `${user?.xp ?? 0} XP`}
+              </span>
             </div>
             <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full bg-emerald-400" />
             <span className="text-xs sm:text-sm text-emerald-400 font-medium hidden sm:inline">AI Teacher Online</span>
