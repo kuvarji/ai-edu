@@ -176,7 +176,7 @@ async def create_order(req: CreateOrderRequest, current_user: dict = Depends(get
     order_data = {
         "amount": plan["amount"],
         "currency": plan["currency"],
-        "receipt": f"order_{current_user['user_id']}_{int(datetime.now(timezone.utc).timestamp())}",
+        "receipt": f"ord_{int(datetime.now(timezone.utc).timestamp())}",
         "notes": {
             "user_id": current_user["user_id"],
             "plan_id": req.plan_id,
