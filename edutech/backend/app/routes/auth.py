@@ -102,7 +102,7 @@ async def register(req: RegisterRequest):
         "password_hash": hash_password(req.password),  # Hash store karo, plain text NAHI
         "role": req.role,
         "avatar": "🦁",           # Default avatar
-        "xp": 0,                  # Starting XP = 0
+        "xp": 50,                 # Starting XP = 50 (welcome bonus)
         "level": 1,               # Starting Level = 1
         "streak": 0,              # Starting Streak = 0
         "last_active_date": None,  # Streak tracking ke liye
@@ -130,7 +130,7 @@ async def register(req: RegisterRequest):
             "name": req.name,
             "email": req.email.lower(),
             "role": req.role,
-            "xp": 0,
+            "xp": 50,
             "level": 1,
             "streak": 0,
             "avatar": "🦁",
