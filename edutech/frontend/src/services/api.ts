@@ -689,3 +689,80 @@ export const notificationsApi = {
   markAllAsRead: () =>
     request<{ message: string; updated_count: number }>('/notifications/read-all', { method: 'PUT' }),
 };
+
+
+// ============================
+// Payment & Membership API
+// ============================
+
+export interface MembershipPlan {
+  id: string;
+  name: string;
+  amount: number;
+  amount_display: string;
+  currency: string;
+  duration_days: number;
+  features: string[];
+  description: string;
+}
+
+export interface CreateOrderResponse {
+  order_id: string;
+  amount: number;
+  currency: string;
+  key_id: string;
+  name: string;
+  description: string;
+  prefill: {
+    name: string;
+    email: string;
+    contact: string;
+  };
+}
+
+export interface MembershipStatus {
+  subscription: string;
+  membership: {
+    plan_id: string;
+    status: string;
+    started_at: string;
+    expires_at: string;
+  };
+  is_premium: boolean;
+  features: string[];
+  xp: number;
+}
+
+export interface PaymentHistoryItem {
+  id: string;
+  plan: string;
+  plan_name: string;
+  amount: number;
+  amount_display: string;
+  status: string;
+  created_at: string;
+  paid_at: string;
+}
+
+export const paymentApi = {
+  getPlans: () =>
+    request<{ plans: MembershipPlan[] }>('/payment/plans', { auth: false }),
+
+  createOrder: (plan_id: string = 'pro') =>
+    request<CreateOrderResponse>('/payment/create-order', {
+      method: 'POST',
+      body: { plan_id },
+    }),
+
+  verifyPayment: (data: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) =>
+    request<{ message: string; membership: { plan: string; status: string; started_at: string; expires_at: string; features: string[] } }>(
+      '/payment/verify',
+      { method: 'POST', body: data }
+    ),
+
+  getStatus: () =>
+    request<MembershipStatus>('/payment/status'),
+
+  getHistory: () =>
+    request<{ payments: PaymentHistoryItem[]; total: number }>('/payment/history'),
+};

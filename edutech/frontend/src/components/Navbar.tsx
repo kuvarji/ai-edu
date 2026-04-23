@@ -17,6 +17,7 @@ import {
   Zap,
   Shield,
   Users,
+  Crown,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useLanguage } from '../i18n/useLanguage';
@@ -50,6 +51,7 @@ export default function Navbar() {
     { to: '/dashboard', label: t.nav_dashboard, icon: LayoutDashboard },
     { to: '/courses', label: t.nav_courses, icon: BookOpen },
     { to: '/leaderboard', label: t.nav_leaderboard, icon: Trophy },
+    { to: '/membership', label: 'Pro', icon: Crown },
     { to: '/profile', label: t.nav_profile, icon: User },
   ];
 

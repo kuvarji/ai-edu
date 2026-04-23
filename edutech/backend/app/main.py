@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import connect_to_mongodb, close_mongodb_connection
 
 # Saare route modules import karo
-from app.routes import auth, courses, quiz, gamification, store, ai, parent, admin, analytics, notifications
+from app.routes import auth, courses, quiz, gamification, store, ai, parent, admin, analytics, notifications, payment
 
 
 # ============================
@@ -92,6 +92,9 @@ app.include_router(analytics.router)
 
 # Notifications routes: /notifications/, /notifications/unread-count, /notifications/read-all
 app.include_router(notifications.router)
+
+# Payment & Membership routes: /payment/create-order, /payment/verify, /payment/status, /payment/history
+app.include_router(payment.router)
 
 
 # ============================

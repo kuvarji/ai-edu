@@ -36,6 +36,22 @@ XP_COST_CHAT = 5       # AI Chat per message
 XP_COST_LESSON = 10    # AI Video Lesson generation
 
 
+def is_premium_member(user: dict) -> bool:
+    """Check if user has active pro membership"""
+    from datetime import datetime, timezone
+    membership = user.get("membership", {})
+    if membership.get("status") != "active":
+        return False
+    expires_at = membership.get("expires_at", "")
+    if not expires_at:
+        return False
+    try:
+        exp_date = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+        return exp_date > datetime.now(timezone.utc)
+    except (ValueError, TypeError):
+        return False
+
+
 # ============================
 # Request Models
 # ============================
@@ -143,15 +159,16 @@ async def chat_with_ai(req: ChatRequest, current_user: dict = Depends(get_curren
     Chat history save hoti hai future reference ke liye.
     XP_COST_CHAT XP kharcha hogi har message pe — sirf successful response pe.
     """
-    # Atomic XP check — ensure user has enough XP
+    # User fetch karo aur premium check karo
     users = get_users_collection()
     user = await users.find_one({"_id": ObjectId(current_user["user_id"])})
     user_xp = user.get("xp", 0) if user else 0
+    premium = is_premium_member(user) if user else False
     
-    if user_xp < XP_COST_CHAT:
+    if not premium and user_xp < XP_COST_CHAT:
         raise HTTPException(
             status_code=400,
-            detail=f"XP kam hai! Tumhare paas {user_xp} XP hai, lekin AI Chat ke liye {XP_COST_CHAT} XP chahiye."
+            detail=f"XP kam hai! Tumhare paas {user_xp} XP hai, lekin AI Chat ke liye {XP_COST_CHAT} XP chahiye. Pro membership lo unlimited access ke liye!"
         )
     
     # Prompt banao with context
@@ -169,18 +186,23 @@ Provide a clear, concise answer with examples if needed."""
     except GeminiError as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-    # Atomic XP deduct karo using $inc (race-condition safe)
-    result = await users.find_one_and_update(
-        {"_id": ObjectId(current_user["user_id"]), "xp": {"$gte": XP_COST_CHAT}},
-        {"$inc": {"xp": -XP_COST_CHAT}, "$set": {"updated_at": get_current_timestamp()}},
-        return_document=ReturnDocument.AFTER
-    )
-    if not result:
-        raise HTTPException(status_code=400, detail="XP deduction failed — XP already spent.")
-    new_xp = result.get("xp", 0)
-    # Level recalculate karo
-    new_level = max(1, new_xp // 500 + 1)
-    await users.update_one({"_id": ObjectId(current_user["user_id"])}, {"$set": {"level": new_level}})
+    # Premium members ko XP deduct nahi hogi
+    xp_spent = 0
+    new_xp = user_xp
+    if not premium:
+        # Atomic XP deduct karo using $inc (race-condition safe)
+        result = await users.find_one_and_update(
+            {"_id": ObjectId(current_user["user_id"]), "xp": {"$gte": XP_COST_CHAT}},
+            {"$inc": {"xp": -XP_COST_CHAT}, "$set": {"updated_at": get_current_timestamp()}},
+            return_document=ReturnDocument.AFTER
+        )
+        if not result:
+            raise HTTPException(status_code=400, detail="XP deduction failed — XP already spent.")
+        new_xp = result.get("xp", 0)
+        xp_spent = XP_COST_CHAT
+        # Level recalculate karo
+        new_level = max(1, new_xp // 500 + 1)
+        await users.update_one({"_id": ObjectId(current_user["user_id"])}, {"$set": {"level": new_level}})
     
     # Chat history save karo
     chat_coll = get_chat_history_collection()
@@ -190,15 +212,16 @@ Provide a clear, concise answer with examples if needed."""
         "subject": req.subject,
         "user_message": req.message,
         "ai_response": ai_response,
-        "xp_spent": XP_COST_CHAT,
+        "xp_spent": xp_spent,
         "timestamp": get_current_timestamp()
     })
     
     return {
         "response": ai_response,
         "subject": req.subject,
-        "xp_spent": XP_COST_CHAT,
+        "xp_spent": xp_spent,
         "remaining_xp": new_xp,
+        "is_premium": premium,
     }
 
 
@@ -362,15 +385,16 @@ async def generate_lesson(req: GenerateLessonRequest, current_user: dict = Depen
     
     Returns: List of lesson segments (slides) with text for each.
     """
-    # XP check aur deduct karo
+    # User fetch karo aur premium check karo
     users = get_users_collection()
     user = await users.find_one({"_id": ObjectId(current_user["user_id"])})
     user_xp = user.get("xp", 0) if user else 0
+    premium = is_premium_member(user) if user else False
     
-    if user_xp < XP_COST_LESSON:
+    if not premium and user_xp < XP_COST_LESSON:
         raise HTTPException(
             status_code=400,
-            detail=f"XP kam hai! Tumhare paas {user_xp} XP hai, lekin AI Video Lesson ke liye {XP_COST_LESSON} XP chahiye."
+            detail=f"XP kam hai! Tumhare paas {user_xp} XP hai, lekin AI Video Lesson ke liye {XP_COST_LESSON} XP chahiye. Pro membership lo unlimited access ke liye!"
         )
     
     language_instruction = {
@@ -432,18 +456,23 @@ Rules:
             {"slide": 1, "title": req.topic, "text": ai_response, "emoji": "📚"}
         ]
 
-    # Atomic XP deduct karo using $inc (race-condition safe)
-    result = await users.find_one_and_update(
-        {"_id": ObjectId(current_user["user_id"]), "xp": {"$gte": XP_COST_LESSON}},
-        {"$inc": {"xp": -XP_COST_LESSON}, "$set": {"updated_at": get_current_timestamp()}},
-        return_document=ReturnDocument.AFTER
-    )
-    if not result:
-        raise HTTPException(status_code=400, detail="XP deduction failed — XP already spent.")
-    new_xp = result.get("xp", 0)
-    # Level recalculate karo
-    new_level = max(1, new_xp // 500 + 1)
-    await users.update_one({"_id": ObjectId(current_user["user_id"])}, {"$set": {"level": new_level}})
+    # Premium members ko XP deduct nahi hogi
+    xp_spent = 0
+    new_xp = user_xp
+    if not premium:
+        # Atomic XP deduct karo using $inc (race-condition safe)
+        result = await users.find_one_and_update(
+            {"_id": ObjectId(current_user["user_id"]), "xp": {"$gte": XP_COST_LESSON}},
+            {"$inc": {"xp": -XP_COST_LESSON}, "$set": {"updated_at": get_current_timestamp()}},
+            return_document=ReturnDocument.AFTER
+        )
+        if not result:
+            raise HTTPException(status_code=400, detail="XP deduction failed — XP already spent.")
+        new_xp = result.get("xp", 0)
+        xp_spent = XP_COST_LESSON
+        # Level recalculate karo
+        new_level = max(1, new_xp // 500 + 1)
+        await users.update_one({"_id": ObjectId(current_user["user_id"])}, {"$set": {"level": new_level}})
 
     # Activity log
     activity = get_activity_log_collection()
@@ -456,7 +485,7 @@ Rules:
             "grade": req.grade,
             "character": req.character_name,
             "slides_count": len(slides),
-            "xp_spent": XP_COST_LESSON,
+            "xp_spent": xp_spent,
         },
         "timestamp": get_current_timestamp()
     })
@@ -468,8 +497,9 @@ Rules:
         "character": req.character_name,
         "language": req.language,
         "slides": slides,
-        "xp_spent": XP_COST_LESSON,
+        "xp_spent": xp_spent,
         "remaining_xp": new_xp,
+        "is_premium": premium,
     }
 
 

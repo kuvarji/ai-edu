@@ -18,6 +18,7 @@ import CharacterStorePage from './pages/CharacterStorePage';
 import ProfilePage from './pages/ProfilePage';
 import AdminDashboard from './pages/AdminDashboard';
 import ParentDashboard from './pages/ParentDashboard';
+import MembershipPage from './pages/MembershipPage';
 
 function App() {
   const initializeAuth = useStore((s) => s.initializeAuth);
@@ -52,6 +53,7 @@ function App() {
           <Route path="/quiz" element={<RouteGuard><QuizPage /></RouteGuard>} />
           <Route path="/leaderboard" element={<><LeaderboardPage /><Footer /></>} />
           <Route path="/store" element={<RouteGuard><CharacterStorePage /><Footer /></RouteGuard>} />
+          <Route path="/membership" element={<RouteGuard><MembershipPage /></RouteGuard>} />
           <Route path="/profile" element={<RouteGuard><ProfilePage /></RouteGuard>} />
           <Route path="/admin" element={<RouteGuard requiredRole="admin"><AdminDashboard /></RouteGuard>} />
           <Route path="/parent" element={<RouteGuard requiredRole="parent"><ParentDashboard /></RouteGuard>} />
