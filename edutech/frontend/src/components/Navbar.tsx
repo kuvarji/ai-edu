@@ -117,7 +117,9 @@ export default function Navbar() {
                   className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20"
                 >
                   <Zap className="w-4 h-4 text-yellow-400" />
-                  <span className="text-sm font-bold text-yellow-400">{user.xp} XP</span>
+                  <span className="text-sm font-bold text-yellow-400">
+                    {user.subscription === 'pro' || user.subscription === 'premium' ? '∞ Unlimited' : `${user.xp} XP`}
+                  </span>
                 </motion.div>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
