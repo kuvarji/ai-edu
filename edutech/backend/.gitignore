@@ -32,4 +32,4 @@ Thumbs.db
 *.mp3
 
 # Poetry
-poetry.lock
+# poetry.lock - included in repo for consistent deployments
