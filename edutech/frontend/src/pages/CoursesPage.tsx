@@ -25,6 +25,11 @@ export default function CoursesPage() {
   const [apiCourses, setApiCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Sync showMyClass when user data loads asynchronously
+  useEffect(() => {
+    if (hasClassInfo) setShowMyClass(true);
+  }, [hasClassInfo]);
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {

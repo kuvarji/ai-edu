@@ -35,7 +35,7 @@ export default function DashboardPage() {
       try {
         const [coursesRes, statsRes, weeklyRes, goalsRes, studyTimeRes] = await Promise.allSettled([
           coursesApi.getAll(
-            user?.grade
+            user?.grade && !isNaN(parseInt(user.grade, 10))
               ? { grade: parseInt(user.grade, 10), ...(user.board ? { board: user.board } : {}) }
               : undefined
           ),
