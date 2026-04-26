@@ -348,8 +348,11 @@ export const quizApi = {
   start: (params?: { subject?: string; difficulty?: string; count?: number }) =>
     request<QuizStart>('/quiz/start', { params }),
 
-  submit: (data: QuizSubmitRequest) =>
-    request<QuizResult>('/quiz/submit', { method: 'POST', body: data }),
+  submit: (data: QuizSubmitRequest) => {
+    invalidateCache(dashboardCache);
+    invalidateCache(leaderboardCache);
+    return request<QuizResult>('/quiz/submit', { method: 'POST', body: data });
+  },
 
   getHistory: (params?: { limit?: number }) =>
     request<{ history: QuizHistory[]; total: number }>('/quiz/history', { params }),
