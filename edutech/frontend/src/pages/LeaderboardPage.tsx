@@ -66,9 +66,49 @@ export default function LeaderboardPage() {
         </div>
 
         {loading && (
-          <div className="text-center py-12">
-            <div className="animate-spin w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full mx-auto mb-3" />
-            <p className="text-theme-text-secondary">Loading leaderboard...</p>
+          <div className="space-y-4">
+            {/* Top 3 podium skeleton */}
+            <div className="flex items-end justify-center gap-4 mb-8">
+              <div className="text-center w-36">
+                <div className="w-16 h-16 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-2" />
+                <div className="p-4 rounded-2xl bg-gray-800/50 border border-theme-border">
+                  <div className="w-10 h-10 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-2" />
+                  <div className="h-4 w-20 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-3 w-16 mx-auto bg-gray-700/50 animate-pulse rounded-lg" />
+                </div>
+              </div>
+              <div className="text-center w-40">
+                <div className="w-20 h-20 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-2" />
+                <div className="p-5 rounded-2xl bg-amber-500/5 border border-amber-500/20">
+                  <div className="w-12 h-12 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-2" />
+                  <div className="h-5 w-24 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-4 w-20 mx-auto bg-gray-700/50 animate-pulse rounded-lg" />
+                </div>
+              </div>
+              <div className="text-center w-36">
+                <div className="w-16 h-16 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-2" />
+                <div className="p-4 rounded-2xl bg-gray-800/50 border border-theme-border">
+                  <div className="w-10 h-10 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-2" />
+                  <div className="h-4 w-20 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-3 w-16 mx-auto bg-gray-700/50 animate-pulse rounded-lg" />
+                </div>
+              </div>
+            </div>
+            {/* Rest of leaderboard skeleton */}
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-theme-card border border-theme-border">
+                <div className="w-8 h-5 bg-gray-700/50 animate-pulse rounded-lg" />
+                <div className="w-12 h-12 rounded-xl bg-gray-700/50 animate-pulse" />
+                <div className="flex-1">
+                  <div className="h-4 w-28 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-3 w-16 bg-gray-700/50 animate-pulse rounded-lg" />
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="h-4 w-12 bg-gray-700/50 animate-pulse rounded-lg" />
+                  <div className="h-4 w-16 bg-gray-700/50 animate-pulse rounded-lg" />
+                </div>
+              </div>
+            ))}
           </div>
         )}
 

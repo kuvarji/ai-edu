@@ -86,12 +86,44 @@ export default function CoursesPage() {
     };
   });
 
+  // Skeleton components for loading state
+  const CourseCardSkeleton = () => (
+    <div className="p-6 rounded-2xl bg-theme-card border border-theme-border h-full">
+      <div className="w-full h-40 rounded-2xl bg-gray-700/50 animate-pulse mb-5" />
+      <div className="h-6 w-3/4 bg-gray-700/50 animate-pulse rounded-lg mb-2" />
+      <div className="h-4 w-full bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+      <div className="flex items-center gap-4 mb-4">
+        <div className="h-4 w-20 bg-gray-700/50 animate-pulse rounded-lg" />
+        <div className="h-4 w-16 bg-gray-700/50 animate-pulse rounded-lg" />
+        <div className="h-4 w-16 bg-gray-700/50 animate-pulse rounded-lg" />
+      </div>
+      <div className="mt-4 flex items-center justify-between">
+        <div className="h-3 w-12 bg-gray-700/50 animate-pulse rounded-lg" />
+        <div className="h-4 w-16 bg-gray-700/50 animate-pulse rounded-lg" />
+      </div>
+    </div>
+  );
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
-          <p className="text-theme-text-secondary">Loading courses...</p>
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <div className="h-8 w-48 bg-gray-700/50 animate-pulse rounded-full mb-4" />
+            <div className="h-10 w-56 bg-gray-700/50 animate-pulse rounded-lg mb-2" />
+            <div className="h-5 w-72 bg-gray-700/50 animate-pulse rounded-lg" />
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 mb-8">
+            <div className="flex-1 h-12 bg-gray-700/50 animate-pulse rounded-xl" />
+            <div className="flex gap-2">
+              <div className="h-12 w-20 bg-gray-700/50 animate-pulse rounded-xl" />
+              <div className="h-12 w-28 bg-gray-700/50 animate-pulse rounded-xl" />
+              <div className="h-12 w-20 bg-gray-700/50 animate-pulse rounded-xl" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => <CourseCardSkeleton key={i} />)}
+          </div>
         </div>
       </div>
     );

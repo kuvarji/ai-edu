@@ -97,9 +97,44 @@ export default function ParentDashboard() {
         </motion.div>
 
         {loading && (
-          <div className="text-center py-12 mb-8">
-            <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
-            <p className="text-theme-text-secondary">Loading child data...</p>
+          <div className="mb-8 space-y-6">
+            {/* Link child section skeleton */}
+            <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
+              <div className="h-6 w-44 bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1 h-12 bg-gray-700/50 animate-pulse rounded-xl" />
+                <div className="h-12 w-32 bg-gray-700/50 animate-pulse rounded-xl" />
+              </div>
+            </div>
+            {/* Child info card skeleton */}
+            <div className="p-6 rounded-2xl bg-violet-500/5 border border-violet-500/20">
+              <div className="flex flex-col sm:flex-row items-center gap-6">
+                <div className="w-20 h-20 rounded-2xl bg-gray-700/50 animate-pulse" />
+                <div className="flex-1">
+                  <div className="h-7 w-40 bg-gray-700/50 animate-pulse rounded-lg mb-2" />
+                  <div className="h-4 w-32 bg-gray-700/50 animate-pulse rounded-lg mb-3" />
+                  <div className="flex gap-3">
+                    <div className="h-6 w-24 bg-gray-700/50 animate-pulse rounded-full" />
+                    <div className="h-6 w-20 bg-gray-700/50 animate-pulse rounded-full" />
+                    <div className="h-6 w-16 bg-gray-700/50 animate-pulse rounded-full" />
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="h-8 w-14 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-4 w-20 mx-auto bg-gray-700/50 animate-pulse rounded-lg" />
+                </div>
+              </div>
+            </div>
+            {/* Stats skeleton */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="p-5 rounded-2xl bg-theme-card border border-theme-border">
+                  <div className="w-11 h-11 rounded-xl bg-gray-700/50 animate-pulse mb-3" />
+                  <div className="h-7 w-16 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-4 w-20 bg-gray-700/50 animate-pulse rounded-lg" />
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

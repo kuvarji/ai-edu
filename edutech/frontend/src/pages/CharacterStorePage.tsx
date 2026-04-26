@@ -38,10 +38,29 @@ export default function CharacterStorePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
-          <p className="text-theme-text-secondary">Loading store...</p>
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8">
+            <div className="h-8 w-36 mx-auto bg-gray-700/50 animate-pulse rounded-full mb-4" />
+            <div className="h-10 w-52 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-2" />
+            <div className="h-5 w-64 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+            <div className="h-10 w-44 mx-auto bg-gray-700/50 animate-pulse rounded-full" />
+          </div>
+          <div className="flex justify-center flex-wrap gap-2 mb-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="h-9 w-20 bg-gray-700/50 animate-pulse rounded-xl" />
+            ))}
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
+              <div key={i} className="p-5 rounded-2xl bg-theme-card border border-theme-border">
+                <div className="h-4 w-14 ml-auto bg-gray-700/50 animate-pulse rounded-full mb-4" />
+                <div className="w-14 h-14 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-3" />
+                <div className="h-4 w-20 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-2" />
+                <div className="h-6 w-16 mx-auto bg-gray-700/50 animate-pulse rounded-full" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
