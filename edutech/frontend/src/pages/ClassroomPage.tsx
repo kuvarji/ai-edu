@@ -70,6 +70,19 @@ export default function ClassroomPage() {
     fetchAvatars();
   }, []);
 
+  // Reset state when navigating to a different chapter
+  useEffect(() => {
+    chapterMarkedRef.current = false;
+    setChapterCompleted(false);
+    setStudyStartTime(null);
+    setStudyMinutes(0);
+    setNextChapterId(null);
+    setLessonSlides([]);
+    setCurrentSlide(0);
+    setIsPlaying(false);
+    cancelSpeech();
+  }, [chapterId, cancelSpeech]);
+
   // Fetch course & chapter info to auto-fill topic + find next chapter
   useEffect(() => {
     const fetchCourseChapter = async () => {
