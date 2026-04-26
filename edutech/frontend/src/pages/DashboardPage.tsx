@@ -23,6 +23,7 @@ export default function DashboardPage() {
   const { user } = useStore();
   const { t } = useLanguage();
   const [apiCourses, setApiCourses] = useState<Course[]>([]);
+  const [courseProgress, setCourseProgress] = useState<Record<string, { completed: number; total: number }>>({});
   const [stats, setStats] = useState<GamificationStats | null>(null);
   const [, setWeeklyReport] = useState<WeeklyReport | null>(null);
   const [dailyGoals, setDailyGoals] = useState<DailyGoal[]>([]);
@@ -33,7 +34,7 @@ export default function DashboardPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [coursesRes, statsRes, weeklyRes, goalsRes, studyTimeRes] = await Promise.allSettled([
+        const [coursesRes, statsRes, weeklyRes, goalsRes, studyTimeRes, progressRes] = await Promise.allSettled([
           coursesApi.getAll(
             user?.grade && !isNaN(parseInt(user.grade, 10))
               ? { grade: parseInt(user.grade, 10), ...(user.board ? { board: user.board } : {}) }
@@ -43,8 +44,19 @@ export default function DashboardPage() {
           analyticsApi.getWeeklyReport(),
           gamificationApi.getDailyGoals(),
           analyticsApi.getStudyTime(28),
+          coursesApi.getMyProgress(),
         ]);
         if (coursesRes.status === 'fulfilled') setApiCourses(coursesRes.value.courses);
+        if (progressRes.status === 'fulfilled') {
+          const progMap: Record<string, { completed: number; total: number }> = {};
+          const progData = (progressRes.value as unknown as { progress: Array<{ course: { id: string }; completed_chapters: number; total_chapters: number }> }).progress;
+          if (progData) {
+            for (const p of progData) {
+              progMap[p.course.id] = { completed: p.completed_chapters, total: p.total_chapters };
+            }
+          }
+          setCourseProgress(progMap);
+        }
         if (statsRes.status === 'fulfilled') setStats(statsRes.value);
         if (weeklyRes.status === 'fulfilled') setWeeklyReport(weeklyRes.value);
         if (goalsRes.status === 'fulfilled') setDailyGoals(goalsRes.value.goals);
@@ -69,16 +81,19 @@ export default function DashboardPage() {
   const xpToNext = (stats?.xp_for_next_level ?? 500) - (xp % 500);
   const xpProgress = ((xp % 500) / 500) * 100;
 
-  const displayCourses = apiCourses.map((c) => ({
-    id: c.id,
-    title: c.title,
-    icon: c.icon || '📚',
-    color: c.color || 'from-violet-500 to-purple-600',
-    grade: `Grade ${c.grade}`,
-    board: c.board,
-    chapters: 0,
-    completedChapters: 0,
-  }));
+  const displayCourses = apiCourses.map((c) => {
+    const prog = courseProgress[c.id];
+    return {
+      id: c.id,
+      title: c.title,
+      icon: c.icon || '📚',
+      color: c.color || 'from-violet-500 to-purple-600',
+      grade: `Grade ${c.grade}`,
+      board: c.board,
+      chapters: prog?.total ?? 0,
+      completedChapters: prog?.completed ?? 0,
+    };
+  });
 
   if (loading) {
     return (
