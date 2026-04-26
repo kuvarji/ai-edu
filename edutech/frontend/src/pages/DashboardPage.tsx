@@ -34,7 +34,11 @@ export default function DashboardPage() {
       setLoading(true);
       try {
         const [coursesRes, statsRes, weeklyRes, goalsRes, studyTimeRes] = await Promise.allSettled([
-          coursesApi.getAll(),
+          coursesApi.getAll(
+            user?.grade && !isNaN(parseInt(user.grade, 10))
+              ? { grade: parseInt(user.grade, 10), ...(user.board ? { board: user.board } : {}) }
+              : undefined
+          ),
           gamificationApi.getStats(),
           analyticsApi.getWeeklyReport(),
           gamificationApi.getDailyGoals(),
