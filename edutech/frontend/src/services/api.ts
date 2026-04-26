@@ -749,6 +749,48 @@ export interface PaymentHistoryItem {
   paid_at: string;
 }
 
+// ============================
+// Dashboard Combined API
+// ============================
+
+export interface DashboardResponse {
+  courses: { courses: Course[]; total: number };
+  stats: GamificationStats;
+  weekly_report: WeeklyReport;
+  daily_goals: { goals: DailyGoal[] };
+  study_time: StudyTimeData;
+  progress: { progress: Array<{ course: { id: string }; completed_chapters: number; total_chapters: number; progress_percentage: number }> };
+}
+
+// Simple in-memory cache for dashboard data
+const dashboardCache: { data: DashboardResponse | null; timestamp: number; key: string } = {
+  data: null,
+  timestamp: 0,
+  key: '',
+};
+
+const CACHE_TTL_MS = 60_000; // 1 minute cache
+
+export const dashboardApi = {
+  get: async (params?: { grade?: number; board?: string }): Promise<DashboardResponse> => {
+    const cacheKey = JSON.stringify(params ?? {});
+    const now = Date.now();
+    if (dashboardCache.data && dashboardCache.key === cacheKey && now - dashboardCache.timestamp < CACHE_TTL_MS) {
+      return dashboardCache.data;
+    }
+    const data = await request<DashboardResponse>('/dashboard/', { params });
+    dashboardCache.data = data;
+    dashboardCache.timestamp = now;
+    dashboardCache.key = cacheKey;
+    return data;
+  },
+  invalidate: () => {
+    dashboardCache.data = null;
+    dashboardCache.timestamp = 0;
+    dashboardCache.key = '';
+  },
+};
+
 export const paymentApi = {
   getPlans: () =>
     request<{ plans: MembershipPlan[] }>('/payment/plans', { auth: false }),

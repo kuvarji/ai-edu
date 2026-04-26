@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useStore } from '../store/useStore';
-import { coursesApi, gamificationApi, analyticsApi, type Course, type GamificationStats, type WeeklyReport, type DailyGoal, type StudyTimeData } from '../services/api';
+import { dashboardApi, type Course, type GamificationStats, type WeeklyReport, type DailyGoal, type StudyTimeData } from '../services/api';
 import { useLanguage } from '../i18n/useLanguage';
 import Avatar from '../components/Avatar';
 
@@ -18,6 +18,94 @@ const fadeUp = {
     transition: { delay: i * 0.08, duration: 0.5 },
   }),
 };
+
+// ============================
+// Skeleton Components
+// ============================
+
+function SkeletonPulse({ className = '' }: { className?: string }) {
+  return <div className={`animate-pulse bg-gray-700/50 rounded-lg ${className}`} />;
+}
+
+function StatCardSkeleton() {
+  return (
+    <div className="p-5 rounded-2xl bg-theme-card border border-theme-border">
+      <SkeletonPulse className="w-12 h-12 rounded-xl mb-3" />
+      <SkeletonPulse className="w-20 h-7 mb-2" />
+      <SkeletonPulse className="w-16 h-4" />
+    </div>
+  );
+}
+
+function ChartSkeleton() {
+  return (
+    <div className="lg:col-span-2 p-6 rounded-2xl bg-theme-card border border-theme-border">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <SkeletonPulse className="w-40 h-6 mb-2" />
+          <SkeletonPulse className="w-56 h-4" />
+        </div>
+        <SkeletonPulse className="w-16 h-8 rounded-lg" />
+      </div>
+      <div className="flex gap-2 mb-4">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <SkeletonPulse key={i} className="w-10 h-8 rounded-lg" />
+        ))}
+      </div>
+      <div className="flex items-end gap-2 h-[250px] pt-4">
+        {[40, 65, 35, 80, 55, 70, 45].map((h, i) => (
+          <div key={i} className="flex-1 flex flex-col justify-end">
+            <SkeletonPulse className="rounded-t-md" style={{ height: `${h}%` }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function GoalsSkeleton() {
+  return (
+    <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
+      <SkeletonPulse className="w-32 h-6 mb-4" />
+      <div className="space-y-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="space-y-2">
+            <div className="flex items-center justify-between">
+              <SkeletonPulse className="w-36 h-4" />
+              <SkeletonPulse className="w-12 h-4" />
+            </div>
+            <SkeletonPulse className="w-full h-2 rounded-full" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CourseCardSkeleton() {
+  return (
+    <div className="p-5 rounded-2xl bg-theme-card border border-theme-border">
+      <div className="flex items-center gap-4 mb-4">
+        <SkeletonPulse className="w-14 h-14 rounded-2xl" />
+        <div>
+          <SkeletonPulse className="w-32 h-5 mb-2" />
+          <SkeletonPulse className="w-24 h-3" />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <SkeletonPulse className="w-28 h-4" />
+          <SkeletonPulse className="w-10 h-4" />
+        </div>
+        <SkeletonPulse className="w-full h-2 rounded-full" />
+      </div>
+    </div>
+  );
+}
+
+// ============================
+// Dashboard Page
+// ============================
 
 export default function DashboardPage() {
   const { user } = useStore();
@@ -36,38 +124,38 @@ export default function DashboardPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [coursesRes, statsRes, weeklyRes, goalsRes, studyTimeRes, progressRes] = await Promise.allSettled([
-          coursesApi.getAll(
-            user?.grade && !isNaN(parseInt(user.grade, 10))
-              ? { grade: parseInt(user.grade, 10), ...(user.board ? { board: user.board } : {}) }
-              : undefined
-          ),
-          gamificationApi.getStats(),
-          analyticsApi.getWeeklyReport(),
-          gamificationApi.getDailyGoals(),
-          analyticsApi.getStudyTime(30),
-          coursesApi.getMyProgress(),
-        ]);
-        if (coursesRes.status === 'fulfilled') setApiCourses(coursesRes.value.courses);
-        if (progressRes.status === 'fulfilled') {
-          const progMap: Record<string, { completed: number; total: number }> = {};
-          const progData = (progressRes.value as unknown as { progress: Array<{ course: { id: string }; completed_chapters: number; total_chapters: number }> }).progress;
-          if (progData) {
-            for (const p of progData) {
-              progMap[p.course.id] = { completed: p.completed_chapters, total: p.total_chapters };
-            }
+        // Single combined API call instead of 6 separate calls
+        const params: { grade?: number; board?: string } = {};
+        if (user?.grade && !isNaN(parseInt(user.grade, 10))) {
+          params.grade = parseInt(user.grade, 10);
+        }
+        if (user?.board) {
+          params.board = user.board;
+        }
+
+        const data = await dashboardApi.get(Object.keys(params).length > 0 ? params : undefined);
+
+        // Set all state from single response
+        setApiCourses(data.courses.courses);
+        setStats(data.stats);
+        setWeeklyReport(data.weekly_report);
+        setDailyGoals(data.daily_goals.goals);
+
+        // Study time breakdown
+        const breakdown = data.study_time.daily_breakdown;
+        const dates = new Set(breakdown.map((d) => d.date));
+        setActiveDates(dates);
+        setStudyBreakdown(breakdown);
+
+        // Course progress
+        const progMap: Record<string, { completed: number; total: number }> = {};
+        const progData = data.progress.progress;
+        if (progData) {
+          for (const p of progData) {
+            progMap[p.course.id] = { completed: p.completed_chapters, total: p.total_chapters };
           }
-          setCourseProgress(progMap);
         }
-        if (statsRes.status === 'fulfilled') setStats(statsRes.value);
-        if (weeklyRes.status === 'fulfilled') setWeeklyReport(weeklyRes.value);
-        if (goalsRes.status === 'fulfilled') setDailyGoals(goalsRes.value.goals);
-        if (studyTimeRes.status === 'fulfilled') {
-          const breakdown = studyTimeRes.value.daily_breakdown;
-          const dates = new Set(breakdown.map((d: StudyTimeData['daily_breakdown'][number]) => d.date));
-          setActiveDates(dates);
-          setStudyBreakdown(breakdown);
-        }
+        setCourseProgress(progMap);
       } catch {
         // fallback to empty data
       } finally {
@@ -85,8 +173,8 @@ export default function DashboardPage() {
   const xpToNext = (stats?.xp_for_next_level ?? 500) - (xp % 500);
   const xpProgress = ((xp % 500) / 500) * 100;
 
-  // Build chart data from study breakdown filtered by selected days
-  const chartData = (() => {
+  // Build chart data from study breakdown filtered by selected days (memoized)
+  const chartData = useMemo(() => {
     const today = new Date();
     const days: { day: string; minutes: number; chapters: number; activities: number }[] = [];
     const breakdownMap = new Map(studyBreakdown.map(d => [d.date, d]));
@@ -106,10 +194,10 @@ export default function DashboardPage() {
       });
     }
     return days;
-  })();
+  }, [studyBreakdown, chartDays]);
 
-  // Calculate trend: compare second half vs first half
-  const trendInfo = (() => {
+  // Calculate trend: compare second half vs first half (memoized)
+  const trendInfo = useMemo(() => {
     const half = Math.floor(chartData.length / 2);
     if (half === 0) return { pct: 0, direction: 'stable' as const };
     const firstHalf = chartData.slice(0, half).reduce((s, d) => s + d.minutes, 0) / half;
@@ -118,9 +206,9 @@ export default function DashboardPage() {
     if (firstHalf === 0) return { pct: 100, direction: 'up' as const };
     const pct = Math.round(((secondHalf - firstHalf) / firstHalf) * 100);
     return { pct: Math.abs(pct), direction: pct > 0 ? 'up' as const : pct < 0 ? 'down' as const : 'stable' as const };
-  })();
+  }, [chartData]);
 
-  const totalMinutes = chartData.reduce((s, d) => s + d.minutes, 0);
+  const totalMinutes = useMemo(() => chartData.reduce((s, d) => s + d.minutes, 0), [chartData]);
   const dayRangeOptions = [1, 3, 5, 7, 14, 30] as const;
 
   const displayCourses = apiCourses.map((c) => {
@@ -136,17 +224,6 @@ export default function DashboardPage() {
       completedChapters: prog?.completed ?? 0,
     };
   });
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
-          <p className="text-theme-text-secondary">{t.loading}</p>
-        </div>
-      </div>
-    );
-  }
 
   const statCards = [
     { label: t.streak, value: `${streak} Days`, icon: Flame, color: 'from-orange-500 to-red-500', shadow: 'shadow-orange-500/20', bg: 'bg-orange-500/10' },
@@ -207,32 +284,48 @@ export default function DashboardPage() {
           </div>
         </motion.div>
 
-        {/* Stat Cards */}
+        {/* Stat Cards — Skeleton or real */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {statCards.map((stat, i) => {
-            const Icon = stat.icon;
-            return (
-              <motion.div
-                key={i}
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-                custom={i}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className={`p-5 rounded-2xl bg-theme-card border border-theme-border hover:border-theme-border transition-all ${stat.shadow}`}
-              >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-3 shadow-lg`}>
-                  <Icon className="w-6 h-6 text-white" />
-                </div>
-                <p className="text-2xl font-black text-white">{stat.value}</p>
-                <p className="text-sm text-theme-text-muted">{stat.label}</p>
-              </motion.div>
-            );
-          })}
+          {loading ? (
+            <>
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+            </>
+          ) : (
+            statCards.map((stat, i) => {
+              const Icon = stat.icon;
+              return (
+                <motion.div
+                  key={i}
+                  variants={fadeUp}
+                  initial="hidden"
+                  animate="visible"
+                  custom={i}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  className={`p-5 rounded-2xl bg-theme-card border border-theme-border hover:border-theme-border transition-all ${stat.shadow}`}
+                >
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-3 shadow-lg`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <p className="text-2xl font-black text-white">{stat.value}</p>
+                  <p className="text-sm text-theme-text-muted">{stat.label}</p>
+                </motion.div>
+              );
+            })
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Study Progress Chart */}
+          {/* Study Progress Chart — Skeleton or real */}
+          {loading ? (
+            <>
+              <ChartSkeleton />
+              <GoalsSkeleton />
+            </>
+          ) : (
+            <>
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -363,9 +456,11 @@ export default function DashboardPage() {
               )}
             </div>
           </motion.div>
+            </>
+          )}
         </div>
 
-        {/* Continue Learning */}
+        {/* Continue Learning — Skeleton or real */}
         <motion.div
           variants={fadeUp}
           initial="hidden"
@@ -383,7 +478,13 @@ export default function DashboardPage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {displayCourses.slice(0, 3).map((course, i) => (
+            {loading ? (
+              <>
+                <CourseCardSkeleton />
+                <CourseCardSkeleton />
+                <CourseCardSkeleton />
+              </>
+            ) : displayCourses.slice(0, 3).map((course, i) => (
               <motion.div
                 key={course.id}
                 variants={fadeUp}
@@ -423,6 +524,7 @@ export default function DashboardPage() {
             ))}
           </div>
         </motion.div>
+
 
         {/* Recent Badges & Calendar */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
