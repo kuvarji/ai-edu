@@ -225,13 +225,13 @@ export default function CoursesPage() {
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-theme-text-secondary">Progress</span>
                         <span className="text-violet-400 font-medium">
-                          {Math.round((course.completedChapters / course.chapters) * 100)}%
+                          {course.chapters > 0 ? Math.round((course.completedChapters / course.chapters) * 100) : 0}%
                         </span>
                       </div>
                       <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
-                          animate={{ width: `${(course.completedChapters / course.chapters) * 100}%` }}
+                          animate={{ width: `${course.chapters > 0 ? (course.completedChapters / course.chapters) * 100 : 0}%` }}
                           transition={{ duration: 0.8, delay: 0.3 + i * 0.1 }}
                           className={`h-full rounded-full bg-gradient-to-r ${course.color}`}
                         />
