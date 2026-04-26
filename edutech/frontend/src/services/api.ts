@@ -104,10 +104,10 @@ export class ApiError extends Error {
 }
 
 // ============================
-// Generic In-Memory Cache (60s TTL)
+// Generic In-Memory Cache (5min TTL)
 // ============================
 
-const CACHE_TTL_MS = 60_000; // 1 minute cache
+const CACHE_TTL_MS = 300_000; // 5 minute cache
 
 interface CacheEntry<T> {
   data: T | null;
