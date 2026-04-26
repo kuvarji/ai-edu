@@ -69,16 +69,25 @@ export default function ClassroomPage() {
     const fetchCourseChapter = async () => {
       if (!courseId) return;
       try {
-        const course = await coursesApi.getById(courseId);
-        setCourseSubject(course.subject || '');
-        setCourseTitle(course.title || '');
+        // getChapters returns { course, chapters, progress } — all-in-one
         if (chapterId) {
           const chapRes = await coursesApi.getChapters(courseId);
+          // Extract course info from chapters response
+          const courseData = (chapRes as unknown as { course?: { subject?: string; title?: string } }).course;
+          if (courseData) {
+            setCourseSubject(courseData.subject || '');
+            setCourseTitle(courseData.title || '');
+          }
           const chapter = chapRes.chapters.find((ch) => ch.id === chapterId);
           if (chapter) {
             setChapterTitle(chapter.title);
             setTopicInput(chapter.title);
           }
+        } else {
+          // No chapterId — just fetch course info
+          const course = await coursesApi.getById(courseId);
+          setCourseSubject(course.subject || '');
+          setCourseTitle(course.title || '');
         }
       } catch {
         // ignore — user can still type manually
