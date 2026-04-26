@@ -80,10 +80,33 @@ export default function CourseDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
-          <p className="text-theme-text-secondary">Loading course...</p>
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="h-5 w-32 bg-gray-700/50 animate-pulse rounded-lg mb-6" />
+          {/* Header skeleton */}
+          <div className="p-8 rounded-3xl bg-gray-700/30 animate-pulse mb-8 h-48" />
+          {/* Progress bar skeleton */}
+          <div className="mb-8 p-5 rounded-2xl bg-theme-card border border-theme-border">
+            <div className="flex items-center justify-between mb-2">
+              <div className="h-4 w-28 bg-gray-700/50 animate-pulse rounded-lg" />
+              <div className="h-4 w-36 bg-gray-700/50 animate-pulse rounded-lg" />
+            </div>
+            <div className="w-full h-3 bg-gray-700/50 animate-pulse rounded-full" />
+          </div>
+          {/* Chapters skeleton */}
+          <div className="h-6 w-32 bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+          <div className="space-y-3">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex items-center gap-4 p-5 rounded-2xl bg-theme-card border border-theme-border">
+                <div className="w-12 h-12 rounded-xl bg-gray-700/50 animate-pulse" />
+                <div className="flex-1">
+                  <div className="h-4 w-48 bg-gray-700/50 animate-pulse rounded-lg mb-2" />
+                  <div className="h-3 w-32 bg-gray-700/50 animate-pulse rounded-lg" />
+                </div>
+                <div className="h-6 w-16 bg-gray-700/50 animate-pulse rounded-full" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );

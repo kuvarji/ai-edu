@@ -174,8 +174,31 @@ export default function MembershipPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-theme-page pt-20 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-10 px-4">
+        <div className="max-w-4xl mx-auto">
+          {/* Header skeleton */}
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-gray-700/50 animate-pulse mb-4" />
+            <div className="h-10 w-52 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-3" />
+            <div className="h-5 w-80 mx-auto bg-gray-700/50 animate-pulse rounded-lg" />
+          </div>
+          {/* Plan card skeleton */}
+          <div className="bg-theme-card border-2 border-violet-500/30 rounded-2xl overflow-hidden">
+            <div className="bg-gray-700/30 animate-pulse p-6 h-36" />
+            <div className="p-4 sm:p-6">
+              <div className="h-4 w-48 bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                  <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl bg-theme-input/50 border border-theme-border">
+                    <div className="w-8 h-8 rounded-lg bg-gray-700/50 animate-pulse" />
+                    <div className="h-4 w-32 bg-gray-700/50 animate-pulse rounded-lg" />
+                  </div>
+                ))}
+              </div>
+              <div className="w-full h-14 bg-gray-700/50 animate-pulse rounded-xl" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

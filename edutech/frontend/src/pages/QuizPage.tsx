@@ -129,10 +129,38 @@ export default function QuizPage() {
 
   if (loadingQuiz) {
     return (
-      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
-          <p className="text-theme-text-secondary">Loading quiz...</p>
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
+        <div className="max-w-3xl mx-auto">
+          {/* Header skeleton */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 bg-gray-700/50 animate-pulse rounded" />
+              <div>
+                <div className="h-5 w-36 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                <div className="h-3 w-28 bg-gray-700/50 animate-pulse rounded-lg" />
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="h-8 w-20 bg-gray-700/50 animate-pulse rounded-full" />
+              <div className="h-8 w-16 bg-gray-700/50 animate-pulse rounded-full" />
+            </div>
+          </div>
+          {/* Progress bar skeleton */}
+          <div className="w-full h-2 bg-gray-700/50 animate-pulse rounded-full mb-8" />
+          {/* Question card skeleton */}
+          <div className="p-8 rounded-3xl bg-gray-900/80 border border-theme-border mb-6">
+            <div className="h-6 w-16 bg-gray-700/50 animate-pulse rounded-full mb-4" />
+            <div className="h-6 w-full bg-gray-700/50 animate-pulse rounded-lg mb-2" />
+            <div className="h-6 w-3/4 bg-gray-700/50 animate-pulse rounded-lg mb-8" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="flex items-center gap-3 p-4 rounded-xl bg-theme-input border border-theme-border">
+                  <div className="w-8 h-8 rounded-lg bg-gray-700/50 animate-pulse" />
+                  <div className="h-4 w-full bg-gray-700/50 animate-pulse rounded-lg" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );

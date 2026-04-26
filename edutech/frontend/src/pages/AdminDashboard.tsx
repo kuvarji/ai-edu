@@ -237,9 +237,66 @@ export default function AdminDashboard() {
         </motion.div>
 
         {loading && (
-          <div className="text-center py-12 mb-8">
-            <div className="animate-spin w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full mx-auto mb-3" />
-            <p className="text-theme-text-secondary">Loading dashboard data...</p>
+          <div className="mb-8 space-y-6">
+            {/* Stats skeleton */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="p-5 rounded-2xl bg-theme-card border border-theme-border">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-11 h-11 rounded-xl bg-gray-700/50 animate-pulse" />
+                    <div className="h-4 w-12 bg-gray-700/50 animate-pulse rounded-lg" />
+                  </div>
+                  <div className="h-7 w-20 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-4 w-24 bg-gray-700/50 animate-pulse rounded-lg" />
+                </div>
+              ))}
+            </div>
+            {/* Charts skeleton */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 p-6 rounded-2xl bg-theme-card border border-theme-border">
+                <div className="h-5 w-36 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                <div className="h-4 w-44 bg-gray-700/50 animate-pulse rounded-lg mb-6" />
+                <div className="h-[280px] bg-gray-700/30 animate-pulse rounded-xl" />
+              </div>
+              <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
+                <div className="h-5 w-28 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                <div className="h-4 w-40 bg-gray-700/50 animate-pulse rounded-lg mb-6" />
+                <div className="h-[280px] bg-gray-700/30 animate-pulse rounded-xl" />
+              </div>
+            </div>
+            {/* Course + Users skeleton */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
+                <div className="h-6 w-40 bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+                <div className="space-y-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-theme-input">
+                      <div className="w-10 h-10 rounded-lg bg-gray-700/50 animate-pulse" />
+                      <div className="flex-1">
+                        <div className="h-4 w-32 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                        <div className="h-3 w-20 bg-gray-700/50 animate-pulse rounded-lg" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
+                <div className="h-6 w-36 bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+                <div className="h-10 w-full bg-gray-700/50 animate-pulse rounded-xl mb-4" />
+                <div className="space-y-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-theme-input">
+                      <div className="w-10 h-10 rounded-full bg-gray-700/50 animate-pulse" />
+                      <div className="flex-1">
+                        <div className="h-4 w-28 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                        <div className="h-3 w-36 bg-gray-700/50 animate-pulse rounded-lg" />
+                      </div>
+                      <div className="h-6 w-14 bg-gray-700/50 animate-pulse rounded-full" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
