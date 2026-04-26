@@ -6,7 +6,7 @@ import {
   FileText, Play, Volume2, Sparkles, ThumbsUp, Copy,
   Pause, SkipForward, SkipBack, Loader2,
 } from 'lucide-react';
-import { aiApi, storeApi, type LessonSlide, type Avatar as ApiAvatar } from '../services/api';
+import { aiApi, storeApi, coursesApi, type LessonSlide, type Avatar as ApiAvatar } from '../services/api';
 import { useStore } from '../store/useStore';
 import MembershipPrompt from '../components/MembershipPrompt';
 
@@ -36,6 +36,9 @@ export default function ClassroomPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [topicInput, setTopicInput] = useState('');
+  const [courseSubject, setCourseSubject] = useState('');
+  const [chapterTitle, setChapterTitle] = useState('');
+  const [courseTitle, setCourseTitle] = useState('');
   const [selectedCharacter, setSelectedCharacter] = useState<{ name: string; emoji: string }>({ name: 'Sheru', emoji: '\ud83e\udd81' });
   const [userAvatars, setUserAvatars] = useState<ApiAvatar[]>([]);
   const [avatarsLoading, setAvatarsLoading] = useState(true);
@@ -60,6 +63,29 @@ export default function ClassroomPage() {
     };
     fetchAvatars();
   }, []);
+
+  // Fetch course & chapter info to auto-fill topic
+  useEffect(() => {
+    const fetchCourseChapter = async () => {
+      if (!courseId) return;
+      try {
+        const course = await coursesApi.getById(courseId);
+        setCourseSubject(course.subject || '');
+        setCourseTitle(course.title || '');
+        if (chapterId) {
+          const chapRes = await coursesApi.getChapters(courseId);
+          const chapter = chapRes.chapters.find((ch) => ch.id === chapterId);
+          if (chapter) {
+            setChapterTitle(chapter.title);
+            setTopicInput(chapter.title);
+          }
+        }
+      } catch {
+        // ignore — user can still type manually
+      }
+    };
+    fetchCourseChapter();
+  }, [courseId, chapterId]);
 
   // Chrome bug workarounds for Web Speech API
   const resumeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -215,7 +241,7 @@ export default function ClassroomPage() {
     try {
       const res = await aiApi.generateLesson({
         topic: topicInput.trim(),
-        subject: 'science',
+        subject: courseSubject || 'science',
         grade: user?.grade ? parseInt(String(user.grade)) : 8,
         language: 'hinglish',
         character_name: selectedCharacter.name,
@@ -303,8 +329,8 @@ export default function ClassroomPage() {
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div className="min-w-0">
-              <h1 className="text-base sm:text-xl font-bold text-white truncate">AI Video Classroom</h1>
-              <p className="text-xs sm:text-sm text-theme-text-muted truncate">Chapter {chapterId} — AI Character Teaching</p>
+              <h1 className="text-base sm:text-xl font-bold text-white truncate">{courseTitle || 'AI Video Classroom'}</h1>
+              <p className="text-xs sm:text-sm text-theme-text-muted truncate">{chapterTitle || `Chapter ${chapterId}`} — AI Character Teaching</p>
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
@@ -355,7 +381,14 @@ export default function ClassroomPage() {
                   <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-xl text-center">
                     <div className="text-5xl sm:text-6xl mb-3 sm:mb-4">{selectedCharacter.emoji}</div>
                     <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">AI Video Lesson</h3>
-                    <p className="text-sm sm:text-base text-theme-text-secondary mb-4 sm:mb-6">Topic likho, character select karo — {selectedCharacter.name} padhayega!</p>
+                    {chapterTitle ? (
+                      <div className="mb-4 sm:mb-6">
+                        <p className="text-sm sm:text-base text-theme-text-secondary">{courseTitle}</p>
+                        <p className="text-base sm:text-lg font-semibold text-violet-400 mt-1">{chapterTitle}</p>
+                      </div>
+                    ) : (
+                      <p className="text-sm sm:text-base text-theme-text-secondary mb-4 sm:mb-6">Topic likho, character select karo — {selectedCharacter.name} padhayega!</p>
+                    )}
 
                     {/* Character Selector */}
                     <div className="mb-6">
@@ -395,10 +428,16 @@ export default function ClassroomPage() {
 
                     {/* Topic Input */}
                     <div className="flex gap-2 sm:gap-3">
-                      <input type="text" value={topicInput} onChange={(e) => setTopicInput(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleGenerateLesson()}
-                        placeholder="Topic likho... (e.g. Microorganisms)"
-                        className="flex-1 min-w-0 px-3 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-white text-sm sm:text-base placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
+                      {chapterTitle ? (
+                        <div className="flex-1 min-w-0 px-3 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-theme-input border border-violet-500/30 text-violet-300 text-sm sm:text-base cursor-not-allowed">
+                          {topicInput}
+                        </div>
+                      ) : (
+                        <input type="text" value={topicInput} onChange={(e) => setTopicInput(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && handleGenerateLesson()}
+                          placeholder="Topic likho... (e.g. Microorganisms)"
+                          className="flex-1 min-w-0 px-3 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-white text-sm sm:text-base placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
+                      )}
                       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleGenerateLesson}
                         disabled={user?.subscription !== 'pro' && (user?.xp ?? 0) < 10}
                         className={`px-4 sm:px-6 py-3 sm:py-3.5 rounded-xl font-bold shadow-lg flex-shrink-0 ${
