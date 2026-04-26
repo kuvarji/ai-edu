@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Star, Users, BookOpen, ArrowRight, Search, Filter, Sparkles } from 'lucide-react';
+import { Star, Users, BookOpen, ArrowRight, Search, Filter, Sparkles, GraduationCap } from 'lucide-react';
 import { coursesApi, type Course } from '../services/api';
+import { useStore } from '../store/useStore';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -13,15 +14,26 @@ const fadeUp = {
 };
 
 export default function CoursesPage() {
+  const user = useStore((s) => s.user);
+  const userGrade = user?.grade ? parseInt(user.grade, 10) : null;
+  const userBoard = user?.board || null;
+  const hasClassInfo = userGrade !== null && !isNaN(userGrade);
+
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
+  const [showMyClass, setShowMyClass] = useState(hasClassInfo);
   const [apiCourses, setApiCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await coursesApi.getAll();
+        const params: { grade?: number; board?: string } = {};
+        if (showMyClass && hasClassInfo) {
+          params.grade = userGrade!;
+          if (userBoard) params.board = userBoard;
+        }
+        const res = await coursesApi.getAll(params);
         setApiCourses(res.courses);
       } catch {
         // show empty state
@@ -29,8 +41,9 @@ export default function CoursesPage() {
         setLoading(false);
       }
     };
+    setLoading(true);
     fetchCourses();
-  }, []);
+  }, [showMyClass, userGrade, userBoard, hasClassInfo]);
 
   const courses = apiCourses.map((c) => ({
     id: c.id,
@@ -79,7 +92,11 @@ export default function CoursesPage() {
             Explore Courses
           </span>
           <h1 className="text-4xl font-black text-white mb-2">Courses</h1>
-          <p className="text-theme-text-secondary">CBSE Class 6-12 ke saare subjects ek jagah</p>
+          <p className="text-theme-text-secondary">
+            {showMyClass && hasClassInfo
+              ? `Class ${userGrade}${userBoard ? ` — ${userBoard}` : ''} ke courses`
+              : 'Class 6-12 ke saare subjects ek jagah'}
+          </p>
         </motion.div>
 
         {/* Search & Filter */}
@@ -99,7 +116,21 @@ export default function CoursesPage() {
               className="w-full pl-12 pr-4 py-3 rounded-xl bg-theme-card border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all"
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            {hasClassInfo && (
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowMyClass(!showMyClass)}
+                className={`px-4 py-3 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
+                  showMyClass
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20'
+                    : 'bg-theme-card text-theme-text-secondary border border-theme-border hover:bg-theme-input'
+                }`}
+              >
+                <GraduationCap className="w-4 h-4" />
+                {showMyClass ? `Class ${userGrade}` : 'My Class'}
+              </motion.button>
+            )}
             {[
               { key: 'all', label: 'All' },
               { key: 'progress', label: 'In Progress' },
