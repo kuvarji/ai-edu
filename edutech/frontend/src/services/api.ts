@@ -213,8 +213,10 @@ export const coursesApi = {
   getAll: (params?: { subject?: string; grade?: number; board?: string }) =>
     request<{ courses: Course[]; total: number }>('/courses/', { params }),
 
-  getById: (id: string) =>
-    request<Course>(`/courses/${id}`),
+  getById: async (id: string) => {
+    const res = await request<{ course: Course }>(`/courses/${id}`);
+    return res.course;
+  },
 
   getChapters: (courseId: string) =>
     request<{ chapters: Chapter[]; total: number }>(`/courses/${courseId}/chapters`),
