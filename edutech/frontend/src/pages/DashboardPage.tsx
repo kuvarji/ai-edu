@@ -23,8 +23,8 @@ const fadeUp = {
 // Skeleton Components
 // ============================
 
-function SkeletonPulse({ className = '' }: { className?: string }) {
-  return <div className={`animate-pulse bg-gray-700/50 rounded-lg ${className}`} />;
+function SkeletonPulse({ className = '', style }: { className?: string; style?: React.CSSProperties }) {
+  return <div className={`animate-pulse bg-gray-700/50 rounded-lg ${className}`} style={style} />;
 }
 
 function StatCardSkeleton() {
