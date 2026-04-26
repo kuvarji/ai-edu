@@ -104,6 +104,42 @@ export class ApiError extends Error {
 }
 
 // ============================
+// Generic In-Memory Cache (60s TTL)
+// ============================
+
+const CACHE_TTL_MS = 60_000; // 1 minute cache
+
+interface CacheEntry<T> {
+  data: T | null;
+  timestamp: number;
+  key: string;
+}
+
+function createCache<T>(): CacheEntry<T> {
+  return { data: null, timestamp: 0, key: '' };
+}
+
+function getCached<T>(cache: CacheEntry<T>, key: string): T | null {
+  const now = Date.now();
+  if (cache.data && cache.key === key && now - cache.timestamp < CACHE_TTL_MS) {
+    return cache.data;
+  }
+  return null;
+}
+
+function setCache<T>(cache: CacheEntry<T>, key: string, data: T): void {
+  cache.data = data;
+  cache.timestamp = Date.now();
+  cache.key = key;
+}
+
+function invalidateCache<T>(cache: CacheEntry<T>): void {
+  cache.data = null;
+  cache.timestamp = 0;
+  cache.key = '';
+}
+
+// ============================
 // Auth API
 // ============================
 
@@ -209,23 +245,53 @@ export interface CourseProgress {
   completed_at?: string;
 }
 
+const coursesCache = createCache<{ courses: Course[]; total: number }>();
+const courseDetailCache = createCache<Course>();
+const courseChaptersCache = createCache<{ chapters: Chapter[]; total: number }>();
+const courseProgressCache = createCache<{ progress: CourseProgress[] }>();
+
 export const coursesApi = {
-  getAll: (params?: { subject?: string; grade?: number; board?: string }) =>
-    request<{ courses: Course[]; total: number }>('/courses/', { params }),
+  getAll: async (params?: { subject?: string; grade?: number; board?: string }) => {
+    const cacheKey = JSON.stringify(params ?? {});
+    const cached = getCached(coursesCache, cacheKey);
+    if (cached) return cached;
+    const data = await request<{ courses: Course[]; total: number }>('/courses/', { params });
+    setCache(coursesCache, cacheKey, data);
+    return data;
+  },
 
   getById: async (id: string) => {
+    const cached = getCached(courseDetailCache, id);
+    if (cached) return cached;
     const res = await request<{ course: Course }>(`/courses/${id}`);
+    setCache(courseDetailCache, id, res.course);
     return res.course;
   },
 
-  getChapters: (courseId: string) =>
-    request<{ chapters: Chapter[]; total: number }>(`/courses/${courseId}/chapters`),
+  getChapters: async (courseId: string) => {
+    const cached = getCached(courseChaptersCache, courseId);
+    if (cached) return cached;
+    const data = await request<{ chapters: Chapter[]; total: number }>(`/courses/${courseId}/chapters`);
+    setCache(courseChaptersCache, courseId, data);
+    return data;
+  },
 
-  markChapterComplete: (data: { course_id: string; chapter_id: string }) =>
-    request<{ message: string; xp_earned: number; total_xp?: number; level?: number }>('/courses/progress', { method: 'POST', body: data }),
+  markChapterComplete: (data: { course_id: string; chapter_id: string }) => {
+    // Invalidate caches when progress changes
+    invalidateCache(courseChaptersCache);
+    invalidateCache(courseProgressCache);
+    invalidateCache(coursesCache);
+    invalidateCache(dashboardCache);
+    return request<{ message: string; xp_earned: number; total_xp?: number; level?: number }>('/courses/progress', { method: 'POST', body: data });
+  },
 
-  getMyProgress: () =>
-    request<{ progress: CourseProgress[] }>('/courses/progress/me'),
+  getMyProgress: async () => {
+    const cached = getCached(courseProgressCache, 'me');
+    if (cached) return cached;
+    const data = await request<{ progress: CourseProgress[] }>('/courses/progress/me');
+    setCache(courseProgressCache, 'me', data);
+    return data;
+  },
 };
 
 // ============================
@@ -335,12 +401,20 @@ export interface DailyGoal {
   color: string;
 }
 
+const leaderboardCache = createCache<{ leaderboard: LeaderboardEntry[]; total: number }>();
+
 export const gamificationApi = {
   getStats: () =>
     request<GamificationStats>('/gamification/stats'),
 
-  getLeaderboard: (params?: { period?: string; limit?: number }) =>
-    request<{ leaderboard: LeaderboardEntry[]; total: number }>('/gamification/leaderboard', { params }),
+  getLeaderboard: async (params?: { period?: string; limit?: number }) => {
+    const cacheKey = JSON.stringify(params ?? {});
+    const cached = getCached(leaderboardCache, cacheKey);
+    if (cached) return cached;
+    const data = await request<{ leaderboard: LeaderboardEntry[]; total: number }>('/gamification/leaderboard', { params });
+    setCache(leaderboardCache, cacheKey, data);
+    return data;
+  },
 
   getBadges: () =>
     request<{ badges: Badge[] }>('/gamification/badges'),
@@ -376,18 +450,29 @@ export interface InventoryItem {
   purchased_at: string;
 }
 
+const storeAvatarsCache = createCache<{ avatars: Avatar[]; user_xp: number }>();
+
 export const storeApi = {
-  getAvatars: () =>
-    request<{ avatars: Avatar[]; user_xp: number }>('/store/avatars'),
+  getAvatars: async () => {
+    const cached = getCached(storeAvatarsCache, 'all');
+    if (cached) return cached;
+    const data = await request<{ avatars: Avatar[]; user_xp: number }>('/store/avatars');
+    setCache(storeAvatarsCache, 'all', data);
+    return data;
+  },
 
   getInventory: () =>
     request<{ inventory: InventoryItem[] }>('/store/inventory'),
 
-  buy: (avatarId: string) =>
-    request<{ message: string }>('/store/buy', { method: 'POST', body: { avatar_id: avatarId } }),
+  buy: (avatarId: string) => {
+    invalidateCache(storeAvatarsCache); // Invalidate after purchase
+    return request<{ message: string }>('/store/buy', { method: 'POST', body: { avatar_id: avatarId } });
+  },
 
-  equip: (avatarId: string) =>
-    request<{ message: string }>('/store/equip', { method: 'POST', body: { avatar_id: avatarId } }),
+  equip: (avatarId: string) => {
+    invalidateCache(storeAvatarsCache);
+    return request<{ message: string }>('/store/equip', { method: 'POST', body: { avatar_id: avatarId } });
+  },
 };
 
 // ============================
@@ -501,17 +586,32 @@ export interface ChildActivity {
   timestamp: string;
 }
 
+const parentChildrenCache = createCache<{ children: ChildInfo[]; total: number }>();
+const parentChildProgressCache = createCache<ChildProgress>();
+
 export const parentApi = {
-  linkChild: (childEmail: string) =>
-    request<{ message: string; child: { id: string; name: string; email: string; xp: number; level: number } }>(
+  linkChild: (childEmail: string) => {
+    invalidateCache(parentChildrenCache);
+    return request<{ message: string; child: { id: string; name: string; email: string; xp: number; level: number } }>(
       '/parent/link-child', { method: 'POST', body: { child_email: childEmail } }
-    ),
+    );
+  },
 
-  getChildren: () =>
-    request<{ children: ChildInfo[]; total: number }>('/parent/children'),
+  getChildren: async () => {
+    const cached = getCached(parentChildrenCache, 'all');
+    if (cached) return cached;
+    const data = await request<{ children: ChildInfo[]; total: number }>('/parent/children');
+    setCache(parentChildrenCache, 'all', data);
+    return data;
+  },
 
-  getChildProgress: (childId: string) =>
-    request<ChildProgress>(`/parent/child/${childId}/progress`),
+  getChildProgress: async (childId: string) => {
+    const cached = getCached(parentChildProgressCache, childId);
+    if (cached) return cached;
+    const data = await request<ChildProgress>(`/parent/child/${childId}/progress`);
+    setCache(parentChildProgressCache, childId, data);
+    return data;
+  },
 
   getChildActivity: (childId: string, limit?: number) =>
     request<{ activities: ChildActivity[]; total: number }>(
@@ -549,12 +649,26 @@ export interface AdminUser {
   created_at: string;
 }
 
-export const adminApi = {
-  getStats: () =>
-    request<PlatformStats>('/admin/stats'),
+const adminStatsCache = createCache<PlatformStats>();
+const adminUsersCache = createCache<{ users: AdminUser[]; total: number; skip: number; limit: number }>();
 
-  getUsers: (params?: { role?: string; search?: string; limit?: number; skip?: number }) =>
-    request<{ users: AdminUser[]; total: number; skip: number; limit: number }>('/admin/users', { params }),
+export const adminApi = {
+  getStats: async () => {
+    const cached = getCached(adminStatsCache, 'stats');
+    if (cached) return cached;
+    const data = await request<PlatformStats>('/admin/stats');
+    setCache(adminStatsCache, 'stats', data);
+    return data;
+  },
+
+  getUsers: async (params?: { role?: string; search?: string; limit?: number; skip?: number }) => {
+    const cacheKey = JSON.stringify(params ?? {});
+    const cached = getCached(adminUsersCache, cacheKey);
+    if (cached) return cached;
+    const data = await request<{ users: AdminUser[]; total: number; skip: number; limit: number }>('/admin/users', { params });
+    setCache(adminUsersCache, cacheKey, data);
+    return data;
+  },
 
   changeUserRole: (userId: string, role: string) =>
     request<{ message: string }>(`/admin/users/${userId}/role`, { method: 'PUT', body: { role } }),
@@ -582,6 +696,11 @@ export const adminApi = {
 
   addQuizQuestions: (questions: { question: string; options: string[]; correct_option: number; subject: string; grade?: number; difficulty?: string; explanation?: string }[]) =>
     request<{ message: string; count: number }>('/admin/quiz-questions', { method: 'POST', body: questions }),
+
+  invalidateCaches: () => {
+    invalidateCache(adminStatsCache);
+    invalidateCache(adminUsersCache);
+  },
 };
 
 // ============================
@@ -762,38 +881,31 @@ export interface DashboardResponse {
   progress: { progress: Array<{ course: { id: string }; completed_chapters: number; total_chapters: number; progress_percentage: number }> };
 }
 
-// Simple in-memory cache for dashboard data
-const dashboardCache: { data: DashboardResponse | null; timestamp: number; key: string } = {
-  data: null,
-  timestamp: 0,
-  key: '',
-};
-
-const CACHE_TTL_MS = 60_000; // 1 minute cache
+const dashboardCache = createCache<DashboardResponse>();
 
 export const dashboardApi = {
   get: async (params?: { grade?: number; board?: string }): Promise<DashboardResponse> => {
     const cacheKey = JSON.stringify(params ?? {});
-    const now = Date.now();
-    if (dashboardCache.data && dashboardCache.key === cacheKey && now - dashboardCache.timestamp < CACHE_TTL_MS) {
-      return dashboardCache.data;
-    }
+    const cached = getCached(dashboardCache, cacheKey);
+    if (cached) return cached;
     const data = await request<DashboardResponse>('/dashboard/', { params });
-    dashboardCache.data = data;
-    dashboardCache.timestamp = now;
-    dashboardCache.key = cacheKey;
+    setCache(dashboardCache, cacheKey, data);
     return data;
   },
-  invalidate: () => {
-    dashboardCache.data = null;
-    dashboardCache.timestamp = 0;
-    dashboardCache.key = '';
-  },
+  invalidate: () => invalidateCache(dashboardCache),
 };
 
+const paymentPlansCache = createCache<{ plans: MembershipPlan[] }>();
+const paymentStatusCache = createCache<MembershipStatus>();
+
 export const paymentApi = {
-  getPlans: () =>
-    request<{ plans: MembershipPlan[] }>('/payment/plans', { auth: false }),
+  getPlans: async () => {
+    const cached = getCached(paymentPlansCache, 'plans');
+    if (cached) return cached;
+    const data = await request<{ plans: MembershipPlan[] }>('/payment/plans', { auth: false });
+    setCache(paymentPlansCache, 'plans', data);
+    return data;
+  },
 
   createOrder: (plan_id: string = 'pro') =>
     request<CreateOrderResponse>('/payment/create-order', {
@@ -807,8 +919,13 @@ export const paymentApi = {
       { method: 'POST', body: data }
     ),
 
-  getStatus: () =>
-    request<MembershipStatus>('/payment/status'),
+  getStatus: async () => {
+    const cached = getCached(paymentStatusCache, 'status');
+    if (cached) return cached;
+    const data = await request<MembershipStatus>('/payment/status');
+    setCache(paymentStatusCache, 'status', data);
+    return data;
+  },
 
   getHistory: () =>
     request<{ payments: PaymentHistoryItem[]; total: number }>('/payment/history'),
