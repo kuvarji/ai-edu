@@ -533,7 +533,7 @@ export default function ClassroomPage() {
                       ))}
                       <button onClick={() => { cancelSpeech(); setLessonSlides([]); setCurrentSlide(0); setIsPlaying(false); setIsSpeaking(false); }}
                         className="w-full mt-3 p-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text-muted text-sm hover:text-violet-400 hover:border-violet-500/20 transition-all">
-                        + Naya Topic
+                        {chapterTitle ? '🔄 Dobara Banao' : '+ Naya Topic'}
                       </button>
                     </div>
                   </div>
