@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
-  Flame, Zap, Trophy, Target, BookOpen, TrendingUp,
-  ArrowRight, Calendar, Award, Sparkles,
+  Flame, Zap, Trophy, Target, BookOpen, TrendingUp, TrendingDown, Minus,
+  ArrowRight, Calendar, Award, Sparkles, Clock,
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useStore } from '../store/useStore';
@@ -28,6 +28,8 @@ export default function DashboardPage() {
   const [, setWeeklyReport] = useState<WeeklyReport | null>(null);
   const [dailyGoals, setDailyGoals] = useState<DailyGoal[]>([]);
   const [activeDates, setActiveDates] = useState<Set<string>>(new Set());
+  const [studyBreakdown, setStudyBreakdown] = useState<StudyTimeData['daily_breakdown']>([]);
+  const [chartDays, setChartDays] = useState(7);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function DashboardPage() {
           gamificationApi.getStats(),
           analyticsApi.getWeeklyReport(),
           gamificationApi.getDailyGoals(),
-          analyticsApi.getStudyTime(28),
+          analyticsApi.getStudyTime(30),
           coursesApi.getMyProgress(),
         ]);
         if (coursesRes.status === 'fulfilled') setApiCourses(coursesRes.value.courses);
@@ -61,8 +63,10 @@ export default function DashboardPage() {
         if (weeklyRes.status === 'fulfilled') setWeeklyReport(weeklyRes.value);
         if (goalsRes.status === 'fulfilled') setDailyGoals(goalsRes.value.goals);
         if (studyTimeRes.status === 'fulfilled') {
-          const dates = new Set(studyTimeRes.value.daily_breakdown.map((d: StudyTimeData['daily_breakdown'][number]) => d.date));
+          const breakdown = studyTimeRes.value.daily_breakdown;
+          const dates = new Set(breakdown.map((d: StudyTimeData['daily_breakdown'][number]) => d.date));
           setActiveDates(dates);
+          setStudyBreakdown(breakdown);
         }
       } catch {
         // fallback to empty data
@@ -80,6 +84,44 @@ export default function DashboardPage() {
   const isPremium = user?.subscription === 'pro' || user?.subscription === 'premium';
   const xpToNext = (stats?.xp_for_next_level ?? 500) - (xp % 500);
   const xpProgress = ((xp % 500) / 500) * 100;
+
+  // Build chart data from study breakdown filtered by selected days
+  const chartData = (() => {
+    const today = new Date();
+    const days: { day: string; minutes: number; chapters: number; activities: number }[] = [];
+    const breakdownMap = new Map(studyBreakdown.map(d => [d.date, d]));
+    for (let i = chartDays - 1; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().slice(0, 10);
+      const dayLabel = chartDays <= 7
+        ? date.toLocaleDateString('en', { weekday: 'short' })
+        : date.toLocaleDateString('en', { month: 'short', day: 'numeric' });
+      const entry = breakdownMap.get(dateStr);
+      days.push({
+        day: dayLabel,
+        minutes: entry?.estimated_minutes ?? 0,
+        chapters: entry?.chapters_completed ?? 0,
+        activities: entry?.total_activities ?? 0,
+      });
+    }
+    return days;
+  })();
+
+  // Calculate trend: compare second half vs first half
+  const trendInfo = (() => {
+    const half = Math.floor(chartData.length / 2);
+    if (half === 0) return { pct: 0, direction: 'stable' as const };
+    const firstHalf = chartData.slice(0, half).reduce((s, d) => s + d.minutes, 0) / half;
+    const secondHalf = chartData.slice(half).reduce((s, d) => s + d.minutes, 0) / (chartData.length - half);
+    if (firstHalf === 0 && secondHalf === 0) return { pct: 0, direction: 'stable' as const };
+    if (firstHalf === 0) return { pct: 100, direction: 'up' as const };
+    const pct = Math.round(((secondHalf - firstHalf) / firstHalf) * 100);
+    return { pct: Math.abs(pct), direction: pct > 0 ? 'up' as const : pct < 0 ? 'down' as const : 'stable' as const };
+  })();
+
+  const totalMinutes = chartData.reduce((s, d) => s + d.minutes, 0);
+  const dayRangeOptions = [1, 3, 5, 7, 14, 30] as const;
 
   const displayCourses = apiCourses.map((c) => {
     const prog = courseProgress[c.id];
@@ -190,7 +232,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Weekly Progress Chart */}
+          {/* Study Progress Chart */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -198,20 +240,51 @@ export default function DashboardPage() {
             custom={4}
             className="lg:col-span-2 p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
               <div>
-                <h3 className="text-lg font-bold text-white">{t.weekly_progress}</h3>
-                <p className="text-sm text-theme-text-muted">XP earned this week</p>
+                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-violet-400" />
+                  Study Progress
+                </h3>
+                <p className="text-sm text-theme-text-muted">
+                  {totalMinutes > 0 ? `${totalMinutes} min study — last ${chartDays} day${chartDays > 1 ? 's' : ''}` : `No activity — last ${chartDays} day${chartDays > 1 ? 's' : ''}`}
+                </p>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 text-sm font-medium">
-                <TrendingUp className="w-4 h-4" />
-                +23%
+              <div className="flex items-center gap-2">
+                {trendInfo.direction !== 'stable' || trendInfo.pct > 0 ? (
+                  <div className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium ${
+                    trendInfo.direction === 'up'
+                      ? 'bg-emerald-500/10 text-emerald-400'
+                      : trendInfo.direction === 'down'
+                      ? 'bg-red-500/10 text-red-400'
+                      : 'bg-gray-500/10 text-gray-400'
+                  }`}>
+                    {trendInfo.direction === 'up' ? <TrendingUp className="w-4 h-4" /> : trendInfo.direction === 'down' ? <TrendingDown className="w-4 h-4" /> : <Minus className="w-4 h-4" />}
+                    {trendInfo.direction === 'up' ? '+' : trendInfo.direction === 'down' ? '-' : ''}{trendInfo.pct}%
+                  </div>
+                ) : null}
               </div>
             </div>
+            {/* Day range selector */}
+            <div className="flex gap-2 mb-4 flex-wrap">
+              {dayRangeOptions.map((d) => (
+                <button
+                  key={d}
+                  onClick={() => setChartDays(d)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    chartDays === d
+                      ? 'bg-violet-500/20 text-violet-400 border border-violet-500/30'
+                      : 'bg-theme-input text-theme-text-muted border border-transparent hover:bg-theme-card hover:text-white'
+                  }`}
+                >
+                  {d}D
+                </button>
+              ))}
+            </div>
             <ResponsiveContainer width="100%" height={250}>
-              <AreaChart data={[]}>
+              <AreaChart data={chartData}>
                 <defs>
-                  <linearGradient id="xpGrad" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="minutesGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
                     <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                   </linearGradient>
@@ -225,13 +298,27 @@ export default function DashboardPage() {
                     borderRadius: '12px',
                     color: '#fff',
                   }}
+                  formatter={(value: number, name: string) => {
+                    if (name === 'minutes') return [`${value} min`, 'Study Time'];
+                    if (name === 'chapters') return [value, 'Chapters'];
+                    return [value, name];
+                  }}
                 />
                 <Area
                   type="monotone"
-                  dataKey="xp"
+                  dataKey="minutes"
                   stroke="#8b5cf6"
                   strokeWidth={3}
-                  fill="url(#xpGrad)"
+                  fill="url(#minutesGrad)"
+                  name="minutes"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="chapters"
+                  stroke="#10b981"
+                  strokeWidth={2}
+                  fill="transparent"
+                  name="chapters"
                 />
               </AreaChart>
             </ResponsiveContainer>
