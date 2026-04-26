@@ -222,7 +222,7 @@ export const coursesApi = {
     request<{ chapters: Chapter[]; total: number }>(`/courses/${courseId}/chapters`),
 
   markChapterComplete: (data: { course_id: string; chapter_id: string }) =>
-    request<{ message: string; xp_earned: number }>('/courses/progress', { method: 'POST', body: data }),
+    request<{ message: string; xp_earned: number; total_xp?: number; level?: number }>('/courses/progress', { method: 'POST', body: data }),
 
   getMyProgress: () =>
     request<{ progress: CourseProgress[] }>('/courses/progress/me'),
@@ -663,6 +663,9 @@ export const analyticsApi = {
 
   getWeeklyReport: () =>
     request<WeeklyReport>('/analytics/weekly-report'),
+
+  logStudyTime: (data: { minutes: number; course_id?: string; chapter_id?: string; activity_type?: string }) =>
+    request<{ message: string; minutes: number }>('/analytics/study-time', { method: 'POST', body: data }),
 };
 
 // ============================

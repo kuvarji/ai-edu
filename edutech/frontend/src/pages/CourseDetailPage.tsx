@@ -48,13 +48,29 @@ export default function CourseDetailPage() {
       }
     : null;
 
-  const chapters = apiChapters.map((ch, i) => ({
-    id: ch.id,
-    title: ch.title,
-    duration: '45 min',
-    status: (i === 0 ? 'in-progress' : 'locked') as 'completed' | 'in-progress' | 'locked',
-    xp: 50,
-  }));
+  // Determine chapter status based on real is_completed from backend
+  // Rule: first chapter always unlocked, next chapter unlocks after previous is completed
+  const chapters = apiChapters.map((ch, i) => {
+    const isCompleted = (ch as unknown as { is_completed?: boolean }).is_completed === true;
+    const prevCompleted = i === 0 ? true : (apiChapters[i - 1] as unknown as { is_completed?: boolean }).is_completed === true;
+
+    let status: 'completed' | 'in-progress' | 'locked';
+    if (isCompleted) {
+      status = 'completed';
+    } else if (prevCompleted) {
+      status = 'in-progress';
+    } else {
+      status = 'locked';
+    }
+
+    return {
+      id: ch.id,
+      title: ch.title,
+      duration: '45 min',
+      status,
+      xp: 50,
+    };
+  });
 
   if (loading) {
     return (

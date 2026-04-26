@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Send, Bot, User, BookOpen, MessageCircle,
   FileText, Play, Volume2, Sparkles, ThumbsUp, Copy,
-  Pause, SkipForward, SkipBack, Loader2,
+  Pause, SkipForward, SkipBack, Loader2, CheckCircle2, Clock, ChevronRight,
 } from 'lucide-react';
-import { aiApi, storeApi, coursesApi, type LessonSlide, type Avatar as ApiAvatar } from '../services/api';
+import { aiApi, storeApi, coursesApi, analyticsApi, type LessonSlide, type Avatar as ApiAvatar } from '../services/api';
 import { useStore } from '../store/useStore';
 import MembershipPrompt from '../components/MembershipPrompt';
 
@@ -20,6 +20,7 @@ const CHARACTER_EMOJIS: Record<string, string> = {
 
 export default function ClassroomPage() {
   const { courseId, chapterId } = useParams();
+  const navigate = useNavigate();
   const { user, setXP } = useStore();
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState<'chat' | 'notes' | 'video'>('video');
@@ -44,8 +45,13 @@ export default function ClassroomPage() {
   const [avatarsLoading, setAvatarsLoading] = useState(true);
   const [showMembershipPrompt, setShowMembershipPrompt] = useState(false);
   const [membershipPromptInfo, setMembershipPromptInfo] = useState({ requiredXP: 0, feature: '' });
+  const [chapterCompleted, setChapterCompleted] = useState(false);
+  const [nextChapterId, setNextChapterId] = useState<string | null>(null);
+  const [studyStartTime, setStudyStartTime] = useState<number | null>(null);
+  const [studyMinutes, setStudyMinutes] = useState(0);
   const isPlayingRef = useRef(false);
   const slidesRef = useRef<LessonSlide[]>([]);
+  const chapterMarkedRef = useRef(false);
 
   useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
   useEffect(() => { slidesRef.current = lessonSlides; }, [lessonSlides]);
@@ -64,7 +70,20 @@ export default function ClassroomPage() {
     fetchAvatars();
   }, []);
 
-  // Fetch course & chapter info to auto-fill topic
+  // Reset state when navigating to a different chapter
+  useEffect(() => {
+    chapterMarkedRef.current = false;
+    setChapterCompleted(false);
+    setStudyStartTime(null);
+    setStudyMinutes(0);
+    setNextChapterId(null);
+    setLessonSlides([]);
+    setCurrentSlide(0);
+    setIsPlaying(false);
+    cancelSpeech();
+  }, [chapterId, cancelSpeech]);
+
+  // Fetch course & chapter info to auto-fill topic + find next chapter
   useEffect(() => {
     const fetchCourseChapter = async () => {
       if (!courseId) return;
@@ -78,10 +97,14 @@ export default function ClassroomPage() {
             setCourseSubject(courseData.subject || '');
             setCourseTitle(courseData.title || '');
           }
-          const chapter = chapRes.chapters.find((ch) => ch.id === chapterId);
-          if (chapter) {
-            setChapterTitle(chapter.title);
-            setTopicInput(chapter.title);
+          const chapterIndex = chapRes.chapters.findIndex((ch) => ch.id === chapterId);
+          if (chapterIndex >= 0) {
+            setChapterTitle(chapRes.chapters[chapterIndex].title);
+            setTopicInput(chapRes.chapters[chapterIndex].title);
+            // Find next chapter for navigation
+            if (chapterIndex + 1 < chapRes.chapters.length) {
+              setNextChapterId(chapRes.chapters[chapterIndex + 1].id);
+            }
           }
         } else {
           // No chapterId — just fetch course info
@@ -95,6 +118,34 @@ export default function ClassroomPage() {
     };
     fetchCourseChapter();
   }, [courseId, chapterId]);
+
+  // Study time timer — update every minute
+  useEffect(() => {
+    if (!studyStartTime) return;
+    const interval = setInterval(() => {
+      setStudyMinutes(Math.floor((Date.now() - studyStartTime) / 60000));
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [studyStartTime]);
+
+  // Mark chapter complete + log study time
+  const handleChapterComplete = useCallback(async () => {
+    if (!courseId || !chapterId || chapterMarkedRef.current) return;
+    chapterMarkedRef.current = true;
+    try {
+      const res = await coursesApi.markChapterComplete({ course_id: courseId, chapter_id: chapterId });
+      if (res.total_xp !== undefined) setXP(res.total_xp);
+      setChapterCompleted(true);
+      // Log study time
+      if (studyStartTime) {
+        const mins = Math.max(1, Math.floor((Date.now() - studyStartTime) / 60000));
+        await analyticsApi.logStudyTime({ minutes: mins, course_id: courseId, chapter_id: chapterId, activity_type: 'lesson' });
+      }
+    } catch {
+      // already completed or error — still show as complete
+      setChapterCompleted(true);
+    }
+  }, [courseId, chapterId, studyStartTime, setXP]);
 
   // Chrome bug workarounds for Web Speech API
   const resumeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -174,7 +225,9 @@ export default function ClassroomPage() {
             setCurrentSlide(nextIndex);
             doSpeak(nextIndex, true);
           } else {
+            // All slides finished — mark chapter complete
             setIsPlaying(false);
+            handleChapterComplete();
           }
         }
         return;
@@ -218,7 +271,7 @@ export default function ClassroomPage() {
     };
 
     speakChunk();
-  }, [clearResumeInterval, splitIntoChunks]);
+  }, [clearResumeInterval, splitIntoChunks, handleChapterComplete]);
 
   /**
    * Interrupt any current speech and start speaking a slide.
@@ -256,6 +309,8 @@ export default function ClassroomPage() {
         character_name: selectedCharacter.name,
       });
       setLessonSlides(res.slides);
+      // Start study timer
+      setStudyStartTime(Date.now());
       // Update XP in store from backend response
       if (res.remaining_xp !== undefined) {
         setXP(res.remaining_xp);
@@ -287,7 +342,14 @@ export default function ClassroomPage() {
     cancelSpeech();
     setIsSpeaking(false);
     setIsPlaying(false);
-    if (currentSlide < lessonSlides.length - 1) setCurrentSlide((prev) => prev + 1);
+    if (currentSlide < lessonSlides.length - 1) {
+      const nextIdx = currentSlide + 1;
+      setCurrentSlide(nextIdx);
+      // If reaching last slide, mark chapter complete
+      if (nextIdx === lessonSlides.length - 1) {
+        handleChapterComplete();
+      }
+    }
   };
 
   const handlePrevSlide = () => {
@@ -571,7 +633,41 @@ export default function ClassroomPage() {
                       className="p-1.5 sm:p-2 rounded-xl text-theme-text-secondary hover:text-violet-400 transition-all" title="Speak this slide">
                       <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
                     </motion.button>
+                    {/* Study time indicator */}
+                    {studyStartTime && (
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-[10px] sm:text-xs font-medium">
+                        <Clock className="w-3 h-3" />
+                        {studyMinutes < 1 ? '<1 min' : `${studyMinutes} min`}
+                      </div>
+                    )}
                   </div>
+
+                  {/* Chapter Complete Banner */}
+                  {chapterCompleted && chapterId && (
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                      className="p-3 sm:p-4 border-t border-emerald-500/30 bg-emerald-500/10 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                        <span className="text-sm font-bold text-emerald-400">Chapter Complete! +50 XP earned</span>
+                        {studyMinutes > 0 && (
+                          <span className="text-xs text-emerald-400/70 ml-1">({studyMinutes} min padhai)</span>
+                        )}
+                      </div>
+                      {nextChapterId && courseId && (
+                        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                          onClick={() => navigate(`/classroom/${courseId}/${nextChapterId}`)}
+                          className="flex items-center gap-1 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-sm font-bold shadow-lg shadow-emerald-500/25">
+                          Next Chapter <ChevronRight className="w-4 h-4" />
+                        </motion.button>
+                      )}
+                      {!nextChapterId && courseId && (
+                        <Link to={`/courses/${courseId}`}
+                          className="flex items-center gap-1 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-bold shadow-lg shadow-violet-500/25">
+                          Back to Course <ChevronRight className="w-4 h-4" />
+                        </Link>
+                      )}
+                    </motion.div>
+                  )}
                 </div>
               )}
             </div>

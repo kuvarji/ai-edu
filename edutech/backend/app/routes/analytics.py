@@ -2,14 +2,16 @@
 Analytics Routes - Study Time, Performance, Weak Areas, Recommendations
 ========================================================================
 Ye module analytics aur insights provide karta hai:
-- GET /analytics/study-time    → Study time ka analysis
-- GET /analytics/performance   → Subject-wise performance
-- GET /analytics/weak-areas    → Weak areas identify karo
-- GET /analytics/recommendations → AI-based study recommendations
-- GET /analytics/weekly-report → Weekly progress report
+- GET  /analytics/study-time    → Study time ka analysis
+- POST /analytics/study-time    → Study time log karo
+- GET  /analytics/performance   → Subject-wise performance
+- GET  /analytics/weak-areas    → Weak areas identify karo
+- GET  /analytics/recommendations → AI-based study recommendations
+- GET  /analytics/weekly-report → Weekly progress report
 """
 
 from fastapi import APIRouter, HTTPException, Depends, Query
+from pydantic import BaseModel, Field
 from bson import ObjectId
 from datetime import datetime, timezone, timedelta
 from app.database import (
@@ -18,14 +20,48 @@ from app.database import (
     get_courses_collection, get_chapters_collection
 )
 from app.utils.auth import get_current_user
-from app.utils.helpers import valid_object_id
+from app.utils.helpers import valid_object_id, get_current_timestamp
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
+
+
+class LogStudyTimeRequest(BaseModel):
+    """Study session log karne ka request"""
+    minutes: int = Field(..., ge=1, le=300, description="Kitne minutes study ki")
+    course_id: str | None = Field(None, description="Course ID (optional)")
+    chapter_id: str | None = Field(None, description="Chapter ID (optional)")
+    activity_type: str = Field("lesson", description="Activity type: lesson, chat, quiz")
 
 
 # ============================
 # Routes
 # ============================
+
+@router.post("/study-time")
+async def log_study_time(
+    req: LogStudyTimeRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Study session log karo.
+    Frontend se call hota hai jab user lesson complete karta hai ya chat karta hai.
+    """
+    activity_coll = get_activity_log_collection()
+
+    await activity_coll.insert_one({
+        "user_id": current_user["user_id"],
+        "action": "study_session",
+        "details": {
+            "minutes": req.minutes,
+            "course_id": req.course_id,
+            "chapter_id": req.chapter_id,
+            "activity_type": req.activity_type,
+        },
+        "timestamp": get_current_timestamp()
+    })
+
+    return {"message": f"{req.minutes} minutes study time logged!", "minutes": req.minutes}
+
 
 @router.get("/study-time")
 async def get_study_time(
@@ -48,36 +84,38 @@ async def get_study_time(
         "timestamp": {"$gte": start_date}
     }).sort("timestamp", 1).to_list(length=1000)
     
-    # Day-wise activity count (proxy for study time)
-    # Har activity ~5 minutes ka study time represent karti hai
+    # Day-wise activity count + actual logged study minutes
     daily_data = {}
     for act in activities:
         ts = act.get("timestamp", "")
         if ts:
             day = ts[:10]  # "2024-01-15" format
             if day not in daily_data:
-                daily_data[day] = {"activities": 0, "chapters": 0, "quizzes": 0}
+                daily_data[day] = {"activities": 0, "chapters": 0, "quizzes": 0, "logged_minutes": 0}
             daily_data[day]["activities"] += 1
             
             if act.get("action") == "chapter_completed":
                 daily_data[day]["chapters"] += 1
             elif act.get("action") == "quiz_completed":
                 daily_data[day]["quizzes"] += 1
+            elif act.get("action") == "study_session":
+                daily_data[day]["logged_minutes"] += act.get("details", {}).get("minutes", 0)
     
     # Result format
     study_days = []
     for day, data in sorted(daily_data.items()):
+        # Use logged minutes if available, otherwise estimate from activities
+        minutes = data["logged_minutes"] if data["logged_minutes"] > 0 else data["activities"] * 5
         study_days.append({
             "date": day,
-            "estimated_minutes": data["activities"] * 5,  # 5 min per activity
+            "estimated_minutes": minutes,
             "chapters_completed": data["chapters"],
             "quizzes_taken": data["quizzes"],
             "total_activities": data["activities"]
         })
     
     # Summary
-    total_activities = sum(d["total_activities"] for d in study_days)
-    total_minutes = total_activities * 5
+    total_minutes = sum(d["estimated_minutes"] for d in study_days)
     avg_daily = round(total_minutes / days) if days > 0 else 0
     
     return {
