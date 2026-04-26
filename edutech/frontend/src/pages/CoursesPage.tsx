@@ -23,6 +23,7 @@ export default function CoursesPage() {
   const [filter, setFilter] = useState('all');
   const [showMyClass, setShowMyClass] = useState(hasClassInfo);
   const [apiCourses, setApiCourses] = useState<Course[]>([]);
+  const [courseProgress, setCourseProgress] = useState<Record<string, { completed: number; total: number }>>({});
   const [loading, setLoading] = useState(true);
 
   // Sync showMyClass when user data loads asynchronously
@@ -39,8 +40,23 @@ export default function CoursesPage() {
           params.grade = userGrade!;
           if (userBoard) params.board = userBoard;
         }
-        const res = await coursesApi.getAll(params);
-        if (!cancelled) setApiCourses(res.courses);
+        const [coursesRes, progressRes] = await Promise.allSettled([
+          coursesApi.getAll(params),
+          coursesApi.getMyProgress(),
+        ]);
+        if (!cancelled) {
+          if (coursesRes.status === 'fulfilled') setApiCourses(coursesRes.value.courses);
+          if (progressRes.status === 'fulfilled') {
+            const progMap: Record<string, { completed: number; total: number }> = {};
+            const progData = (progressRes.value as unknown as { progress: Array<{ course: { id: string }; completed_chapters: number; total_chapters: number }> }).progress;
+            if (progData) {
+              for (const p of progData) {
+                progMap[p.course.id] = { completed: p.completed_chapters, total: p.total_chapters };
+              }
+            }
+            setCourseProgress(progMap);
+          }
+        }
       } catch {
         // show empty state
       } finally {
@@ -52,20 +68,23 @@ export default function CoursesPage() {
     return () => { cancelled = true; };
   }, [showMyClass, userGrade, userBoard, hasClassInfo]);
 
-  const courses = apiCourses.map((c) => ({
-    id: c.id,
-    title: c.title,
-    subject: c.subject,
-    grade: `Class ${c.grade}`,
-    board: c.board,
-    chapters: 0,
-    completedChapters: 0,
-    color: c.color || 'from-violet-500 to-purple-600',
-    icon: c.icon || '\ud83d\udcda',
-    description: c.description || '',
-    students: 0,
-    rating: 0,
-  }));
+  const courses = apiCourses.map((c) => {
+    const prog = courseProgress[c.id];
+    return {
+      id: c.id,
+      title: c.title,
+      subject: c.subject,
+      grade: `Class ${c.grade}`,
+      board: c.board,
+      chapters: prog?.total ?? 0,
+      completedChapters: prog?.completed ?? 0,
+      color: c.color || 'from-violet-500 to-purple-600',
+      icon: c.icon || '\ud83d\udcda',
+      description: c.description || '',
+      students: 0,
+      rating: 0,
+    };
+  });
 
   if (loading) {
     return (

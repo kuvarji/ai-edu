@@ -11,6 +11,7 @@ export default function CourseDetailPage() {
   const { id } = useParams();
   const [apiCourse, setApiCourse] = useState<Course | null>(null);
   const [apiChapters, setApiChapters] = useState<Chapter[]>([]);
+  const [progress, setProgress] = useState<{ completed: number; total: number; percentage: number }>({ completed: 0, total: 0, percentage: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,7 +23,12 @@ export default function CourseDetailPage() {
           coursesApi.getChapters(id),
         ]);
         if (courseRes.status === 'fulfilled') setApiCourse(courseRes.value);
-        if (chaptersRes.status === 'fulfilled') setApiChapters(chaptersRes.value.chapters);
+        if (chaptersRes.status === 'fulfilled') {
+          setApiChapters(chaptersRes.value.chapters);
+          // Extract progress from chapters response
+          const prog = (chaptersRes.value as unknown as { progress?: { completed: number; total: number; percentage: number } }).progress;
+          if (prog) setProgress(prog);
+        }
       } catch {
         // fallback to mock
       } finally {
@@ -41,8 +47,8 @@ export default function CourseDetailPage() {
         board: apiCourse.board,
         icon: apiCourse.icon || '\ud83d\udcda',
         color: apiCourse.color || 'from-violet-500 to-purple-600',
-        chapters: 0,
-        completedChapters: 0,
+        chapters: progress.total,
+        completedChapters: progress.completed,
         students: 0,
         rating: 0,
       }
@@ -127,7 +133,7 @@ export default function CourseDetailPage() {
               </div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-black text-white">{Math.round((course.completedChapters / course.chapters) * 100)}%</div>
+              <div className="text-4xl font-black text-white">{course.chapters > 0 ? Math.round((course.completedChapters / course.chapters) * 100) : 0}%</div>
               <p className="text-white/70 text-sm">Complete</p>
             </div>
           </div>
@@ -147,7 +153,7 @@ export default function CourseDetailPage() {
           <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: `${(course.completedChapters / course.chapters) * 100}%` }}
+              animate={{ width: `${course.chapters > 0 ? (course.completedChapters / course.chapters) * 100 : 0}%` }}
               transition={{ duration: 1, delay: 0.4 }}
               className={`h-full rounded-full bg-gradient-to-r ${course.color}`}
             />
