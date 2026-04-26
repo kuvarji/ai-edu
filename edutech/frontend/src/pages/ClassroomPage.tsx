@@ -119,7 +119,7 @@ export default function ClassroomPage() {
     fetchCourseChapter();
   }, [courseId, chapterId]);
 
-  // Study time timer — update every minute
+  // Study time timer — update every 10s
   useEffect(() => {
     if (!studyStartTime) return;
     const interval = setInterval(() => {
@@ -127,6 +127,13 @@ export default function ClassroomPage() {
     }, 10000);
     return () => clearInterval(interval);
   }, [studyStartTime]);
+
+  // Auto-mark chapter complete when user reaches last slide (any method)
+  useEffect(() => {
+    if (lessonSlides.length > 0 && currentSlide === lessonSlides.length - 1 && !chapterCompleted) {
+      handleChapterComplete();
+    }
+  }, [currentSlide, lessonSlides.length, chapterCompleted, handleChapterComplete]);
 
   // Mark chapter complete + log study time
   const handleChapterComplete = useCallback(async () => {
@@ -343,12 +350,7 @@ export default function ClassroomPage() {
     setIsSpeaking(false);
     setIsPlaying(false);
     if (currentSlide < lessonSlides.length - 1) {
-      const nextIdx = currentSlide + 1;
-      setCurrentSlide(nextIdx);
-      // If reaching last slide, mark chapter complete
-      if (nextIdx === lessonSlides.length - 1) {
-        handleChapterComplete();
-      }
+      setCurrentSlide(currentSlide + 1);
     }
   };
 
