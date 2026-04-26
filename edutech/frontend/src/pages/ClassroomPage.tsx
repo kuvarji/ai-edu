@@ -70,19 +70,6 @@ export default function ClassroomPage() {
     fetchAvatars();
   }, []);
 
-  // Reset state when navigating to a different chapter
-  useEffect(() => {
-    chapterMarkedRef.current = false;
-    setChapterCompleted(false);
-    setStudyStartTime(null);
-    setStudyMinutes(0);
-    setNextChapterId(null);
-    setLessonSlides([]);
-    setCurrentSlide(0);
-    setIsPlaying(false);
-    cancelSpeech();
-  }, [chapterId, cancelSpeech]);
-
   // Fetch course & chapter info to auto-fill topic + find next chapter
   useEffect(() => {
     const fetchCourseChapter = async () => {
@@ -128,13 +115,6 @@ export default function ClassroomPage() {
     return () => clearInterval(interval);
   }, [studyStartTime]);
 
-  // Auto-mark chapter complete when user reaches last slide (any method)
-  useEffect(() => {
-    if (lessonSlides.length > 0 && currentSlide === lessonSlides.length - 1 && !chapterCompleted) {
-      handleChapterComplete();
-    }
-  }, [currentSlide, lessonSlides.length, chapterCompleted, handleChapterComplete]);
-
   // Mark chapter complete + log study time
   const handleChapterComplete = useCallback(async () => {
     if (!courseId || !chapterId || chapterMarkedRef.current) return;
@@ -153,6 +133,13 @@ export default function ClassroomPage() {
       setChapterCompleted(true);
     }
   }, [courseId, chapterId, studyStartTime, setXP]);
+
+  // Auto-mark chapter complete when user reaches last slide (any method)
+  useEffect(() => {
+    if (lessonSlides.length > 0 && currentSlide === lessonSlides.length - 1 && !chapterCompleted) {
+      handleChapterComplete();
+    }
+  }, [currentSlide, lessonSlides.length, chapterCompleted, handleChapterComplete]);
 
   // Chrome bug workarounds for Web Speech API
   const resumeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -184,6 +171,19 @@ export default function ClassroomPage() {
   useEffect(() => {
     return () => { cancelSpeech(); };
   }, [cancelSpeech]);
+
+  // Reset state when navigating to a different chapter
+  useEffect(() => {
+    chapterMarkedRef.current = false;
+    setChapterCompleted(false);
+    setStudyStartTime(null);
+    setStudyMinutes(0);
+    setNextChapterId(null);
+    setLessonSlides([]);
+    setCurrentSlide(0);
+    setIsPlaying(false);
+    cancelSpeech();
+  }, [chapterId, cancelSpeech]);
 
   /**
    * Split text into short sentences for mobile Chrome which cuts off long utterances.
