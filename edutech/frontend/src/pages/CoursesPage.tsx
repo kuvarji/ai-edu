@@ -31,6 +31,7 @@ export default function CoursesPage() {
   }, [hasClassInfo]);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchCourses = async () => {
       try {
         const params: { grade?: number; board?: string } = {};
@@ -39,15 +40,16 @@ export default function CoursesPage() {
           if (userBoard) params.board = userBoard;
         }
         const res = await coursesApi.getAll(params);
-        setApiCourses(res.courses);
+        if (!cancelled) setApiCourses(res.courses);
       } catch {
         // show empty state
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     setLoading(true);
     fetchCourses();
+    return () => { cancelled = true; };
   }, [showMyClass, userGrade, userBoard, hasClassInfo]);
 
   const courses = apiCourses.map((c) => ({
