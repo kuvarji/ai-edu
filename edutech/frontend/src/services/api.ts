@@ -670,37 +670,53 @@ export const adminApi = {
     return data;
   },
 
-  changeUserRole: (userId: string, role: string) =>
-    request<{ message: string }>(`/admin/users/${userId}/role`, { method: 'PUT', body: { role } }),
+  changeUserRole: (userId: string, role: string) => {
+    invalidateCache(adminUsersCache);
+    invalidateCache(adminStatsCache);
+    return request<{ message: string }>(`/admin/users/${userId}/role`, { method: 'PUT', body: { role } });
+  },
 
-  deleteUser: (userId: string) =>
-    request<{ message: string }>(`/admin/users/${userId}`, { method: 'DELETE' }),
+  deleteUser: (userId: string) => {
+    invalidateCache(adminUsersCache);
+    invalidateCache(adminStatsCache);
+    return request<{ message: string }>(`/admin/users/${userId}`, { method: 'DELETE' });
+  },
 
-  createCourse: (data: { title: string; subject: string; grade: number; board?: string; icon?: string; color?: string; description?: string }) =>
-    request<{ message: string; course_id: string }>('/admin/courses', { method: 'POST', body: data }),
+  createCourse: (data: { title: string; subject: string; grade: number; board?: string; icon?: string; color?: string; description?: string }) => {
+    invalidateCache(adminStatsCache);
+    invalidateCache(coursesCache);
+    invalidateCache(courseDetailCache);
+    return request<{ message: string; course_id: string }>('/admin/courses', { method: 'POST', body: data });
+  },
 
-  updateCourse: (courseId: string, data: Record<string, unknown>) =>
-    request<{ message: string }>(`/admin/courses/${courseId}`, { method: 'PUT', body: data }),
+  updateCourse: (courseId: string, data: Record<string, unknown>) => {
+    invalidateCache(coursesCache);
+    invalidateCache(courseDetailCache);
+    return request<{ message: string }>(`/admin/courses/${courseId}`, { method: 'PUT', body: data });
+  },
 
-  deleteCourse: (courseId: string) =>
-    request<{ message: string }>(`/admin/courses/${courseId}`, { method: 'DELETE' }),
+  deleteCourse: (courseId: string) => {
+    invalidateCache(adminStatsCache);
+    invalidateCache(coursesCache);
+    invalidateCache(courseDetailCache);
+    return request<{ message: string }>(`/admin/courses/${courseId}`, { method: 'DELETE' });
+  },
 
-  createChapter: (data: { course_id: string; title: string; content?: string; video_url?: string; order?: number }) =>
-    request<{ message: string; chapter_id: string }>('/admin/chapters', { method: 'POST', body: data }),
+  createChapter: (data: { course_id: string; title: string; content?: string; video_url?: string; order?: number }) => {
+    invalidateCache(courseChaptersCache);
+    return request<{ message: string; chapter_id: string }>('/admin/chapters', { method: 'POST', body: data });
+  },
 
   createBadge: (data: { name: string; description?: string; icon?: string; rarity?: string; condition_type: string; condition_value: number }) =>
     request<{ message: string; badge_id: string }>('/admin/badges', { method: 'POST', body: data }),
 
-  createAvatar: (data: { name: string; emoji?: string; description?: string; rarity?: string; price?: number }) =>
-    request<{ message: string; avatar_id: string }>('/admin/avatars', { method: 'POST', body: data }),
+  createAvatar: (data: { name: string; emoji?: string; description?: string; rarity?: string; price?: number }) => {
+    invalidateCache(storeAvatarsCache);
+    return request<{ message: string; avatar_id: string }>('/admin/avatars', { method: 'POST', body: data });
+  },
 
   addQuizQuestions: (questions: { question: string; options: string[]; correct_option: number; subject: string; grade?: number; difficulty?: string; explanation?: string }[]) =>
     request<{ message: string; count: number }>('/admin/quiz-questions', { method: 'POST', body: questions }),
-
-  invalidateCaches: () => {
-    invalidateCache(adminStatsCache);
-    invalidateCache(adminUsersCache);
-  },
 };
 
 // ============================
@@ -913,11 +929,13 @@ export const paymentApi = {
       body: { plan_id },
     }),
 
-  verifyPayment: (data: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) =>
-    request<{ message: string; membership: { plan: string; status: string; started_at: string; expires_at: string; features: string[] } }>(
+  verifyPayment: (data: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
+    invalidateCache(paymentStatusCache);
+    return request<{ message: string; membership: { plan: string; status: string; started_at: string; expires_at: string; features: string[] } }>(
       '/payment/verify',
       { method: 'POST', body: data }
-    ),
+    );
+  },
 
   getStatus: async () => {
     const cached = getCached(paymentStatusCache, 'status');
