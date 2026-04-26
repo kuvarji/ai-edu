@@ -45,7 +45,7 @@ export default function DashboardPage() {
           gamificationApi.getStats(),
           analyticsApi.getWeeklyReport(),
           gamificationApi.getDailyGoals(),
-          analyticsApi.getStudyTime(28),
+          analyticsApi.getStudyTime(30),
           coursesApi.getMyProgress(),
         ]);
         if (coursesRes.status === 'fulfilled') setApiCourses(coursesRes.value.courses);
