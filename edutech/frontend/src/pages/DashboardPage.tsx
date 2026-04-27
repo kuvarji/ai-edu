@@ -386,7 +386,7 @@ export default function DashboardPage() {
                 <YAxis stroke="#4b5563" fontSize={12} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'var(--color-card)',
+                    backgroundColor: 'var(--color-tooltip-bg)',
                     border: '1px solid var(--color-border)',
                     borderRadius: '12px',
                     color: 'var(--color-text)',

@@ -349,7 +349,7 @@ export default function AdminDashboard() {
                 </defs>
                 <XAxis dataKey="month" stroke="#4b5563" fontSize={12} />
                 <YAxis stroke="#4b5563" fontSize={12} />
-                <Tooltip contentStyle={{ backgroundColor: 'var(--color-card)', border: '1px solid var(--color-border)', borderRadius: '12px', color: 'var(--color-text)' }} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--color-tooltip-bg)', border: '1px solid var(--color-border)', borderRadius: '12px', color: 'var(--color-text)' }} />
                 <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} fill="url(#revGrad)" />
               </AreaChart>
             </ResponsiveContainer> : <div className="flex items-center justify-center h-[280px] text-theme-text-muted">No revenue data available yet</div>}
@@ -368,7 +368,7 @@ export default function AdminDashboard() {
               <BarChart data={[]}>
                 <XAxis dataKey="month" stroke="#4b5563" fontSize={12} />
                 <YAxis stroke="#4b5563" fontSize={12} />
-                <Tooltip contentStyle={{ backgroundColor: 'var(--color-card)', border: '1px solid var(--color-border)', borderRadius: '12px', color: 'var(--color-text)' }} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--color-tooltip-bg)', border: '1px solid var(--color-border)', borderRadius: '12px', color: 'var(--color-text)' }} />
                 <Bar dataKey="users" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer> : <div className="flex items-center justify-center h-[280px] text-theme-text-muted">No user growth data yet</div>}
