@@ -25,7 +25,7 @@ export default function AdminDashboard() {
 
   // Add Course form
   const [courseForm, setCourseForm] = useState({
-    title: '', subject: '', grade: 10, board: 'CBSE', icon: '', color: 'violet', description: '',
+    title: '', subject: '', grade: 10, board: 'CBSE', icon: '', color: 'indigo', description: '',
   });
   const [courseSubmitting, setCourseSubmitting] = useState(false);
 
@@ -95,7 +95,7 @@ export default function AdminDashboard() {
       });
       setSuccessMsg(res.message || 'Course created!');
       setShowAddCourse(false);
-      setCourseForm({ title: '', subject: '', grade: 10, board: 'CBSE', icon: '', color: 'violet', description: '' });
+      setCourseForm({ title: '', subject: '', grade: 10, board: 'CBSE', icon: '', color: 'indigo', description: '' });
       fetchData();
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : 'Course create karne mein error aaya.');
@@ -148,7 +148,7 @@ export default function AdminDashboard() {
     title: c.title,
     subject: c.subject,
     icon: c.icon || '\ud83d\udcda',
-    color: c.color || 'from-violet-500 to-purple-600',
+    color: c.color || 'from-indigo-500 to-violet-500',
   }));
 
   const filteredUsers = apiUsers.filter((u) => {
@@ -167,7 +167,7 @@ export default function AdminDashboard() {
   }));
 
   const stats = [
-    { label: 'Total Users', value: ps ? ps.users.total.toLocaleString() : '0', change: '', up: true, icon: Users, color: 'from-violet-500 to-purple-600' },
+    { label: 'Total Users', value: ps ? ps.users.total.toLocaleString() : '0', change: '', up: true, icon: Users, color: 'from-indigo-500 to-violet-500' },
     { label: 'Active Courses', value: ps ? String(ps.content.total_courses) : String(apiCourses.length), change: '', up: true, icon: BookOpen, color: 'from-emerald-500 to-teal-600' },
     { label: 'Revenue (Monthly)', value: ps ? `\u20b9${(ps.revenue.estimated_monthly_revenue / 100000).toFixed(1)}L` : '\u20b90', change: '', up: true, icon: DollarSign, color: 'from-amber-500 to-orange-600' },
     { label: 'Conversion Rate', value: ps ? `${(((ps.revenue.pro_users + ps.revenue.premium_users) / (ps.users.total || 1)) * 100).toFixed(1)}%` : '0%', change: '', up: true, icon: TrendingUp, color: 'from-cyan-500 to-blue-600' },
@@ -229,7 +229,7 @@ export default function AdminDashboard() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowAddCourse(true)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/25"
             >
               <PlusCircle className="w-4 h-4" /> Add Course
             </motion.button>
@@ -243,55 +243,55 @@ export default function AdminDashboard() {
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="p-5 rounded-2xl bg-theme-card border border-theme-border">
                   <div className="flex items-center justify-between mb-3">
-                    <div className="w-11 h-11 rounded-xl bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
-                    <div className="h-4 w-12 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+                    <div className="w-11 h-11 rounded-xl bg-indigo-100 dark:bg-gray-700/50 animate-pulse" />
+                    <div className="h-4 w-12 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                   </div>
-                  <div className="h-7 w-20 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                  <div className="h-4 w-24 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+                  <div className="h-7 w-20 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-4 w-24 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                 </div>
               ))}
             </div>
             {/* Charts skeleton */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 p-6 rounded-2xl bg-theme-card border border-theme-border">
-                <div className="h-5 w-36 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                <div className="h-4 w-44 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-6" />
-                <div className="h-[280px] bg-violet-50 dark:bg-gray-700/30 animate-pulse rounded-xl" />
+                <div className="h-5 w-36 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                <div className="h-4 w-44 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-6" />
+                <div className="h-[280px] bg-indigo-50 dark:bg-gray-700/30 animate-pulse rounded-xl" />
               </div>
               <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
-                <div className="h-5 w-28 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                <div className="h-4 w-40 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-6" />
-                <div className="h-[280px] bg-violet-50 dark:bg-gray-700/30 animate-pulse rounded-xl" />
+                <div className="h-5 w-28 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                <div className="h-4 w-40 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-6" />
+                <div className="h-[280px] bg-indigo-50 dark:bg-gray-700/30 animate-pulse rounded-xl" />
               </div>
             </div>
             {/* Course + Users skeleton */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
-                <div className="h-6 w-40 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+                <div className="h-6 w-40 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
                 <div className="space-y-3">
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-theme-input">
-                      <div className="w-10 h-10 rounded-lg bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
+                      <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-gray-700/50 animate-pulse" />
                       <div className="flex-1">
-                        <div className="h-4 w-32 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                        <div className="h-3 w-20 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+                        <div className="h-4 w-32 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                        <div className="h-3 w-20 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
               <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
-                <div className="h-6 w-36 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
-                <div className="h-10 w-full bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl mb-4" />
+                <div className="h-6 w-36 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+                <div className="h-10 w-full bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-xl mb-4" />
                 <div className="space-y-3">
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-theme-input">
-                      <div className="w-10 h-10 rounded-full bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
+                      <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-gray-700/50 animate-pulse" />
                       <div className="flex-1">
-                        <div className="h-4 w-28 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                        <div className="h-3 w-36 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+                        <div className="h-4 w-28 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                        <div className="h-3 w-36 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                       </div>
-                      <div className="h-6 w-14 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
+                      <div className="h-6 w-14 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
                     </div>
                   ))}
                 </div>
@@ -385,7 +385,7 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-theme-text flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-violet-400" /> Course Management
+                <BookOpen className="w-5 h-5 text-indigo-400" /> Course Management
               </h3>
             </div>
             <div className="space-y-3">
@@ -398,7 +398,7 @@ export default function AdminDashboard() {
                   transition={{ delay: 0.6 + i * 0.05 }}
                   className="flex items-center gap-3 p-3 rounded-xl bg-theme-input hover:bg-theme-card-hover transition-all"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-lg">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-lg">
                     {course.icon}
                   </div>
                   <div className="flex-1">
@@ -447,7 +447,7 @@ export default function AdminDashboard() {
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-4 py-2 rounded-lg bg-theme-input border border-theme-border text-theme-text text-sm placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50 w-40"
+                  className="pl-9 pr-4 py-2 rounded-lg bg-theme-input border border-theme-border text-theme-text text-sm placeholder-theme-text-muted focus:outline-none focus:border-indigo-500/50 w-40"
                 />
               </div>
             </div>
@@ -461,7 +461,7 @@ export default function AdminDashboard() {
                   transition={{ delay: 0.7 + i * 0.05 }}
                   className="flex items-center gap-3 p-3 rounded-xl bg-theme-input hover:bg-theme-card-hover transition-all"
                 >
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-sm font-bold text-white">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-sm font-bold text-white">
                     {u.name.charAt(0)}
                   </div>
                   <div className="flex-1">
@@ -471,11 +471,11 @@ export default function AdminDashboard() {
                   <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                     u.role === 'admin' ? 'bg-red-500/20 text-red-400' :
                     u.role === 'parent' ? 'bg-cyan-500/20 text-cyan-400' :
-                    'bg-violet-500/20 text-violet-400'
+                    'bg-indigo-500/20 text-indigo-400'
                   }`}>{u.role}</span>
                   <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                     u.plan === 'premium' ? 'bg-amber-500/20 text-amber-400' :
-                    u.plan === 'pro' ? 'bg-violet-500/20 text-violet-400' :
+                    u.plan === 'pro' ? 'bg-indigo-500/20 text-indigo-400' :
                     'bg-gray-500/20 text-theme-text-secondary'
                   }`}>{u.plan}</span>
                 </motion.div>
@@ -500,7 +500,7 @@ export default function AdminDashboard() {
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-theme-text flex items-center gap-2">
-                  <PlusCircle className="w-5 h-5 text-violet-400" /> Add New Course
+                  <PlusCircle className="w-5 h-5 text-indigo-400" /> Add New Course
                 </h2>
                 <button onClick={() => setShowAddCourse(false)} className="text-theme-text-muted hover:text-theme-text transition-colors">
                   <X className="w-5 h-5" />
@@ -513,7 +513,7 @@ export default function AdminDashboard() {
                   <input
                     type="text" placeholder="e.g. Mathematics" value={courseForm.title}
                     onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-indigo-500/50"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -522,7 +522,7 @@ export default function AdminDashboard() {
                     <input
                       type="text" placeholder="e.g. math, science" value={courseForm.subject}
                       onChange={(e) => setCourseForm({ ...courseForm, subject: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-indigo-500/50"
                     />
                   </div>
                   <div>
@@ -530,7 +530,7 @@ export default function AdminDashboard() {
                     <select
                       value={courseForm.grade}
                       onChange={(e) => setCourseForm({ ...courseForm, grade: Number(e.target.value) })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-indigo-500/50"
                     >
                       {[6, 7, 8, 9, 10, 11, 12].map((g) => (
                         <option key={g} value={g} className="bg-theme-card">Class {g}</option>
@@ -544,7 +544,7 @@ export default function AdminDashboard() {
                     <select
                       value={courseForm.board}
                       onChange={(e) => setCourseForm({ ...courseForm, board: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-indigo-500/50"
                     >
                       {['CBSE', 'ICSE', 'State Board', 'Other'].map((b) => (
                         <option key={b} value={b} className="bg-theme-card">{b}</option>
@@ -556,7 +556,7 @@ export default function AdminDashboard() {
                     <input
                       type="text" placeholder="e.g. \ud83d\udcda" value={courseForm.icon}
                       onChange={(e) => setCourseForm({ ...courseForm, icon: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-indigo-500/50"
                     />
                   </div>
                   <div>
@@ -564,7 +564,7 @@ export default function AdminDashboard() {
                     <select
                       value={courseForm.color}
                       onChange={(e) => setCourseForm({ ...courseForm, color: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-indigo-500/50"
                     >
                       {['violet', 'cyan', 'emerald', 'amber', 'rose', 'indigo', 'blue', 'red'].map((c) => (
                         <option key={c} value={c} className="bg-theme-card">{c}</option>
@@ -578,7 +578,7 @@ export default function AdminDashboard() {
                     placeholder="Course ke baare mein likho..." value={courseForm.description}
                     onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
                     rows={3}
-                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50 resize-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-indigo-500/50 resize-none"
                   />
                 </div>
               </div>
@@ -590,7 +590,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={handleAddCourse}
                   disabled={courseSubmitting}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25 disabled:opacity-50"
+                  className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/25 disabled:opacity-50"
                 >
                   {courseSubmitting ? 'Creating...' : 'Create Course'}
                 </button>
@@ -628,7 +628,7 @@ export default function AdminDashboard() {
                   <select
                     value={chapterForm.course_id}
                     onChange={(e) => setChapterForm({ ...chapterForm, course_id: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-violet-500/50"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-indigo-500/50"
                   >
                     <option value="" className="bg-theme-card">-- Course select karo --</option>
                     {apiCourses.map((c) => (
@@ -641,7 +641,7 @@ export default function AdminDashboard() {
                   <input
                     type="text" placeholder="e.g. Real Numbers" value={chapterForm.title}
                     onChange={(e) => setChapterForm({ ...chapterForm, title: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-indigo-500/50"
                   />
                 </div>
                 <div>
@@ -650,7 +650,7 @@ export default function AdminDashboard() {
                     placeholder="Chapter ka content / notes likho..." value={chapterForm.content}
                     onChange={(e) => setChapterForm({ ...chapterForm, content: e.target.value })}
                     rows={4}
-                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50 resize-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-indigo-500/50 resize-none"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -659,7 +659,7 @@ export default function AdminDashboard() {
                     <input
                       type="text" placeholder="https://youtube.com/..." value={chapterForm.video_url}
                       onChange={(e) => setChapterForm({ ...chapterForm, video_url: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-indigo-500/50"
                     />
                   </div>
                   <div>
@@ -667,7 +667,7 @@ export default function AdminDashboard() {
                     <input
                       type="number" min={1} value={chapterForm.order}
                       onChange={(e) => setChapterForm({ ...chapterForm, order: Number(e.target.value) })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-indigo-500/50"
                     />
                   </div>
                 </div>

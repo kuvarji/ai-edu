@@ -46,7 +46,7 @@ export default function CourseDetailPage() {
         grade: `Class ${apiCourse.grade}`,
         board: apiCourse.board,
         icon: apiCourse.icon || '\ud83d\udcda',
-        color: apiCourse.color || 'from-violet-500 to-purple-600',
+        color: apiCourse.color || 'from-indigo-500 to-violet-500',
         chapters: progress.total,
         completedChapters: progress.completed,
         students: 0,
@@ -82,28 +82,28 @@ export default function CourseDetailPage() {
     return (
       <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
         <div className="max-w-5xl mx-auto">
-          <div className="h-5 w-32 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-6" />
+          <div className="h-5 w-32 bg-[var(--color-surface)] animate-pulse rounded-lg mb-6" />
           {/* Header skeleton */}
-          <div className="p-8 rounded-3xl bg-violet-50 dark:bg-gray-700/30 animate-pulse mb-8 h-48" />
+          <div className="p-8 rounded-3xl bg-[var(--color-surface)] animate-pulse mb-8 h-48" />
           {/* Progress bar skeleton */}
           <div className="mb-8 p-5 rounded-2xl bg-theme-card border border-theme-border">
             <div className="flex items-center justify-between mb-2">
-              <div className="h-4 w-28 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
-              <div className="h-4 w-36 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+              <div className="h-4 w-28 bg-[var(--color-surface)] animate-pulse rounded-lg" />
+              <div className="h-4 w-36 bg-[var(--color-surface)] animate-pulse rounded-lg" />
             </div>
-            <div className="w-full h-3 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
+            <div className="w-full h-3 bg-[var(--color-surface)] animate-pulse rounded-full" />
           </div>
           {/* Chapters skeleton */}
-          <div className="h-6 w-32 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+          <div className="h-6 w-32 bg-[var(--color-surface)] animate-pulse rounded-lg mb-4" />
           <div className="space-y-3">
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="flex items-center gap-4 p-5 rounded-2xl bg-theme-card border border-theme-border">
-                <div className="w-12 h-12 rounded-xl bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
+                <div className="w-12 h-12 rounded-xl bg-[var(--color-surface)] animate-pulse" />
                 <div className="flex-1">
-                  <div className="h-4 w-48 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
-                  <div className="h-3 w-32 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+                  <div className="h-4 w-48 bg-[var(--color-surface)] animate-pulse rounded-lg mb-2" />
+                  <div className="h-3 w-32 bg-[var(--color-surface)] animate-pulse rounded-lg" />
                 </div>
-                <div className="h-6 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
+                <div className="h-6 w-16 bg-[var(--color-surface)] animate-pulse rounded-full" />
               </div>
             ))}
           </div>
@@ -118,7 +118,7 @@ export default function CourseDetailPage() {
         <div className="text-center">
           <BookOpen className="w-12 h-12 text-gray-600 mx-auto mb-3" />
           <p className="text-theme-text-secondary mb-4">Course not found</p>
-          <Link to="/courses" className="text-violet-400 hover:text-violet-300">Back to Courses</Link>
+          <Link to="/courses" className="text-indigo-400 hover:text-indigo-300">Back to Courses</Link>
         </div>
       </div>
     );
@@ -171,7 +171,7 @@ export default function CourseDetailPage() {
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-theme-text-secondary">Overall Progress</span>
-            <span className="text-sm font-bold text-violet-400">{course.completedChapters}/{course.chapters} chapters done</span>
+            <span className="text-sm font-bold text-indigo-400">{course.completedChapters}/{course.chapters} chapters done</span>
           </div>
           <div className="w-full h-3 bg-theme-surface rounded-full overflow-hidden">
             <motion.div
@@ -186,7 +186,7 @@ export default function CourseDetailPage() {
         {/* Chapters List */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
           <h2 className="text-xl font-bold text-theme-text mb-4 flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-violet-400" /> Chapters
+            <BookOpen className="w-5 h-5 text-indigo-400" /> Chapters
           </h2>
           <div className="space-y-3">
             {chapters.map((chapter, i) => (
@@ -202,14 +202,14 @@ export default function CourseDetailPage() {
                     chapter.status === 'completed'
                       ? 'bg-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/30'
                       : chapter.status === 'in-progress'
-                      ? 'bg-violet-500/5 border-violet-500/20 hover:border-violet-500/30'
+                      ? 'bg-indigo-500/5 border-indigo-500/20 hover:border-indigo-500/30'
                       : 'bg-theme-surface/30 border-theme-border opacity-60'
                   }`}>
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                       chapter.status === 'completed'
                         ? 'bg-emerald-500/20 text-emerald-400'
                         : chapter.status === 'in-progress'
-                        ? 'bg-violet-500/20 text-violet-400'
+                        ? 'bg-indigo-500/20 text-indigo-400'
                         : 'bg-theme-input text-gray-600'
                     }`}>
                       {chapter.status === 'completed' ? (
@@ -231,7 +231,7 @@ export default function CourseDetailPage() {
                       <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">Done</span>
                     )}
                     {chapter.status === 'in-progress' && (
-                      <span className="px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-xs font-bold animate-pulse">Continue</span>
+                      <span className="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-400 text-xs font-bold animate-pulse">Continue</span>
                     )}
                     <ChevronRight className="w-5 h-5 text-gray-600" />
                   </div>
@@ -246,7 +246,7 @@ export default function CourseDetailPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="mt-8 p-8 rounded-3xl bg-gradient-to-r from-violet-500/10 to-cyan-500/10 border border-violet-500/20 text-center"
+          className="mt-8 p-8 rounded-3xl bg-gradient-to-r from-indigo-500/10 to-cyan-500/10 border border-indigo-500/20 text-center"
         >
           <Award className="w-12 h-12 text-amber-400 mx-auto mb-3" />
           <h3 className="text-xl font-bold text-theme-text mb-2">Ready for Quiz?</h3>
@@ -255,7 +255,7 @@ export default function CourseDetailPage() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25"
+              className="px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/25"
             >
               Start Quiz 🎯
             </motion.button>

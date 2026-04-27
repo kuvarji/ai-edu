@@ -84,7 +84,7 @@ export default function MembershipPrompt({ show, onClose, currentXP, requiredXP,
                 <p className="text-xs text-theme-text-muted font-semibold uppercase tracking-wider">Pro Membership mein milega:</p>
                 {['Unlimited AI Chat', 'Unlimited AI Video Lessons', 'Premium Avatars', 'All Courses Access'].map((feat) => (
                   <div key={feat} className="flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+                    <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
                     <span className="text-sm text-theme-text-secondary">{feat}</span>
                   </div>
                 ))}
@@ -96,7 +96,7 @@ export default function MembershipPrompt({ show, onClose, currentXP, requiredXP,
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleUpgrade}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-bold text-sm shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 text-white font-bold text-sm shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all flex items-center justify-center gap-2"
                 >
                   <Crown className="w-4 h-4" />
                   Pro Membership Lo — Sirf ₹299

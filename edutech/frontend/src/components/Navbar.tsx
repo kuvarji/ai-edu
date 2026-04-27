@@ -73,11 +73,11 @@ export default function Navbar() {
           <Link to="/" className="flex items-center gap-2 group">
             <motion.div
               whileHover={{ rotate: 20, scale: 1.1 }}
-              className="p-2 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-500/30"
+              className="p-2 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/30"
             >
               <GraduationCap className="w-6 h-6 text-white" />
             </motion.div>
-            <span className="text-xl font-bold text-violet-600 dark:text-violet-400" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+            <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
               EduTech AI
             </span>
           </Link>
@@ -93,7 +93,7 @@ export default function Navbar() {
                     whileTap={{ scale: 0.95 }}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                       active
-                        ? 'bg-violet-100 dark:bg-violet-500/20 text-violet-700 dark:text-violet-400 shadow-sm'
+                        ? 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 shadow-sm'
                         : 'text-theme-text-secondary hover:text-theme-text hover:bg-theme-card-hover'
                     }`}
                   >
@@ -114,7 +114,7 @@ export default function Navbar() {
                   <input
                     type="text"
                     placeholder="Search..."
-                    className="pl-9 pr-3 py-2 w-40 rounded-xl text-sm bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-400/50 transition-all"
+                    className="pl-9 pr-3 py-2 w-40 rounded-xl text-sm bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-indigo-400/50 transition-all"
                   />
                 </div>
                 {/* XP Badge */}
@@ -137,7 +137,7 @@ export default function Navbar() {
                 </motion.div>
                 {/* Avatar */}
                 <Link to="/profile">
-                  <motion.div whileHover={{ scale: 1.05 }} className="w-9 h-9 rounded-full overflow-hidden border-2 border-violet-200 dark:border-violet-500/30 shadow-md cursor-pointer">
+                  <motion.div whileHover={{ scale: 1.05 }} className="w-9 h-9 rounded-full overflow-hidden border-2 border-indigo-200 dark:border-indigo-500/30 shadow-md cursor-pointer">
                     <Avatar avatar={user.avatar} imgClassName="w-full h-full object-cover rounded-full" />
                   </motion.div>
                 </Link>
@@ -168,7 +168,7 @@ export default function Navbar() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 transition-all"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/30 hover:shadow-violet-500/50 transition-all"
                   >
                     <UserPlus className="w-4 h-4" />
                     {t.nav_signup}
@@ -219,7 +219,7 @@ export default function Navbar() {
                     </div>
                   </Link>
                   <Link to="/signup" onClick={() => setMobileOpen(false)}>
-                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-white bg-gradient-to-r from-violet-500 to-purple-600">
+                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-white bg-gradient-to-r from-indigo-500 to-violet-500">
                       <UserPlus className="w-5 h-5" />
                       {t.nav_signup}
                     </div>

@@ -66,7 +66,7 @@ export default function SignupPage() {
     <div className="min-h-screen bg-theme-page transition-colors duration-300 flex items-center justify-center pt-20 pb-8 px-4 relative overflow-hidden">
       <div className="absolute inset-0">
         <div className="absolute top-1/4 right-1/3 w-80 h-80 bg-emerald-600/15 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-violet-600/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-indigo-600/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
       <motion.div

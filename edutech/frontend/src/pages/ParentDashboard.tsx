@@ -79,7 +79,7 @@ export default function ParentDashboard() {
         progress: p.percentage,
         grade: p.percentage >= 80 ? 'A' : p.percentage >= 60 ? 'B' : 'C',
         color: [
-          'from-violet-500 to-purple-600',
+          'from-indigo-500 to-violet-500',
           'from-emerald-500 to-teal-600',
           'from-amber-500 to-orange-600',
           'from-rose-500 to-pink-600',
@@ -100,28 +100,28 @@ export default function ParentDashboard() {
           <div className="mb-8 space-y-6">
             {/* Link child section skeleton */}
             <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
-              <div className="h-6 w-44 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+              <div className="h-6 w-44 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
               <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 h-12 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
-                <div className="h-12 w-32 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
+                <div className="flex-1 h-12 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
+                <div className="h-12 w-32 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
               </div>
             </div>
             {/* Child info card skeleton */}
-            <div className="p-6 rounded-2xl bg-violet-500/5 border border-violet-500/20">
+            <div className="p-6 rounded-2xl bg-indigo-500/5 border border-indigo-500/20">
               <div className="flex flex-col sm:flex-row items-center gap-6">
-                <div className="w-20 h-20 rounded-2xl bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
+                <div className="w-20 h-20 rounded-2xl bg-indigo-100 dark:bg-gray-700/50 animate-pulse" />
                 <div className="flex-1">
-                  <div className="h-7 w-40 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
-                  <div className="h-4 w-32 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-3" />
+                  <div className="h-7 w-40 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
+                  <div className="h-4 w-32 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-3" />
                   <div className="flex gap-3">
-                    <div className="h-6 w-24 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
-                    <div className="h-6 w-20 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
-                    <div className="h-6 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
+                    <div className="h-6 w-24 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
+                    <div className="h-6 w-20 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
+                    <div className="h-6 w-16 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="h-8 w-14 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                  <div className="h-4 w-20 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+                  <div className="h-8 w-14 mx-auto bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-4 w-20 mx-auto bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                 </div>
               </div>
             </div>
@@ -129,9 +129,9 @@ export default function ParentDashboard() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="p-5 rounded-2xl bg-theme-card border border-theme-border">
-                  <div className="w-11 h-11 rounded-xl bg-violet-100 dark:bg-gray-700/50 animate-pulse mb-3" />
-                  <div className="h-7 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                  <div className="h-4 w-20 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+                  <div className="w-11 h-11 rounded-xl bg-indigo-100 dark:bg-gray-700/50 animate-pulse mb-3" />
+                  <div className="h-7 w-16 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-4 w-20 bg-indigo-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                 </div>
               ))}
             </div>
@@ -146,7 +146,7 @@ export default function ParentDashboard() {
           className="p-6 rounded-2xl bg-theme-card border border-theme-border mb-8"
         >
                     <h3 className="text-lg font-bold text-theme-text mb-4 flex items-center gap-2">
-                      <UserPlus className="w-5 h-5 text-violet-400" /> Link Child Account
+                      <UserPlus className="w-5 h-5 text-indigo-400" /> Link Child Account
           </h3>
           <div className="flex flex-col sm:flex-row gap-3">
             <input
@@ -154,13 +154,13 @@ export default function ParentDashboard() {
               value={childEmail}
               onChange={(e) => setChildEmail(e.target.value)}
               placeholder="Bachche ka registered email daalo..."
-              className="flex-1 px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted text-sm focus:outline-none focus:border-violet-500"
+              className="flex-1 px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted text-sm focus:outline-none focus:border-indigo-500"
               onKeyDown={(e) => e.key === 'Enter' && !linking && handleLinkChild()}
             />
             <button
               onClick={handleLinkChild}
               disabled={linking || !childEmail.trim()}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 justify-center"
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 justify-center"
             >
               {linking ? (
                 <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
@@ -196,8 +196,8 @@ export default function ParentDashboard() {
                   onClick={() => handleSelectChild(child.id)}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
                     selectedChildId === child.id
-                      ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg'
-                      : 'bg-theme-card border border-theme-border text-theme-text-secondary hover:border-violet-500'
+                      ? 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-lg'
+                      : 'bg-theme-card border border-theme-border text-theme-text-secondary hover:border-indigo-500'
                   }`}
                 >
                   <span className="text-lg"><Avatar avatar={child.avatar} fallback="🦁" className="" imgClassName="w-6 h-6 rounded-full" /></span>
@@ -221,10 +221,10 @@ export default function ParentDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="p-6 rounded-2xl bg-gradient-to-r from-violet-500/10 to-cyan-500/10 border border-violet-500/20 mb-8"
+          className="p-6 rounded-2xl bg-gradient-to-r from-indigo-500/10 to-cyan-500/10 border border-indigo-500/20 mb-8"
         >
           <div className="flex flex-col sm:flex-row items-center gap-6">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-4xl shadow-xl overflow-hidden">
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-4xl shadow-xl overflow-hidden">
               <Avatar avatar={cp.child?.avatar} fallback="🦁" className="" imgClassName="w-full h-full object-cover" />
             </div>
             <div className="flex-1 text-center sm:text-left">
@@ -237,7 +237,7 @@ export default function ParentDashboard() {
                 <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold">
                   <Zap className="w-3 h-3" /> {(cp.child?.xp ?? 0).toLocaleString()} XP
                 </span>
-                <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-xs font-bold">
+                <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-400 text-xs font-bold">
                   Level {cp.child?.level ?? 1}
                 </span>
               </div>
@@ -252,7 +252,7 @@ export default function ParentDashboard() {
         {/* Quick Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
-            { label: 'Total XP', value: cp ? String(cp.child?.xp ?? 0) : '0', icon: Clock, color: 'from-violet-500 to-purple-600', badge: '' },
+            { label: 'Total XP', value: cp ? String(cp.child?.xp ?? 0) : '0', icon: Clock, color: 'from-indigo-500 to-violet-500', badge: '' },
             { label: 'Quizzes Done', value: cp ? String(cp.quiz_stats?.total_quizzes ?? 0) : '0', icon: Target, color: 'from-emerald-500 to-teal-600', badge: '' },
             { label: 'Avg Score', value: cp ? `${cp.quiz_stats?.average_score ?? 0}%` : '0%', icon: AlertCircle, color: 'from-red-500 to-rose-600', badge: '' },
             { label: 'Courses Active', value: cp ? String(cp.course_progress?.length ?? 0) : '0', icon: BookOpen, color: 'from-amber-500 to-orange-600', badge: '' },
@@ -317,9 +317,9 @@ export default function ParentDashboard() {
               <div className="p-4 rounded-xl bg-theme-input">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm text-theme-text-secondary">Daily Limit</span>
-                  <span className="text-sm font-bold text-violet-400">4 hours</span>
+                  <span className="text-sm font-bold text-indigo-400">4 hours</span>
                 </div>
-                <input type="range" min="1" max="8" defaultValue={4} className="w-full accent-violet-500" />
+                <input type="range" min="1" max="8" defaultValue={4} className="w-full accent-indigo-500" />
               </div>
               <div className="p-4 rounded-xl bg-theme-input">
                 <div className="flex items-center justify-between mb-2">

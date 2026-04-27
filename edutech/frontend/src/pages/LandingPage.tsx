@@ -44,8 +44,8 @@ export default function LandingPage() {
       icon: Brain,
       title: 'AI-Powered Tutor',
       description: 'Gemini AI se smart answers, Socratic method se samjhaye',
-      color: 'from-violet-500 to-purple-600',
-      shadow: 'shadow-violet-500/20',
+      color: 'from-indigo-500 to-violet-500',
+      shadow: 'shadow-indigo-500/20',
     },
     {
       icon: MessageCircle,
@@ -97,9 +97,9 @@ export default function LandingPage() {
       <section className="relative min-h-screen flex items-center justify-center pt-16">
         {/* Animated background */}
         <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-indigo-600/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
         </div>
 
         {/* Grid pattern */}
@@ -118,7 +118,7 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
             className="mb-6"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium">
               <Sparkles className="w-4 h-4" />
               India&apos;s #1 AI Education Platform
               <Sparkles className="w-4 h-4" />
@@ -135,7 +135,7 @@ export default function LandingPage() {
               Padhai Ko
             </span>
             <br />
-            <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
               Banao Smart
             </span>
           </motion.h1>
@@ -160,7 +160,7 @@ export default function LandingPage() {
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(139, 92, 246, 0.3)' }}
                 whileTap={{ scale: 0.95 }}
-                className="group flex items-center gap-3 px-8 py-4 rounded-2xl text-lg font-bold text-white bg-gradient-to-r from-violet-500 via-purple-500 to-violet-600 shadow-xl shadow-violet-500/25 transition-all"
+                className="group flex items-center gap-3 px-8 py-4 rounded-2xl text-lg font-bold text-white bg-gradient-to-r from-indigo-500 via-violet-500 to-indigo-600 shadow-xl shadow-indigo-500/25 transition-all"
               >
                 <Zap className="w-5 h-5" />
                 Start Free Padhai
@@ -172,7 +172,7 @@ export default function LandingPage() {
               whileTap={{ scale: 0.95 }}
               className="flex items-center gap-3 px-8 py-4 rounded-2xl text-lg font-medium text-gray-300 bg-theme-input border border-theme-border hover:bg-theme-card-hover transition-all"
             >
-              <Play className="w-5 h-5 text-violet-400" />
+              <Play className="w-5 h-5 text-indigo-400" />
               Watch Demo
             </motion.button>
           </motion.div>
@@ -209,7 +209,7 @@ export default function LandingPage() {
                           animate={{ width: `${item.progress}%` }}
                           transition={{ delay: 1.5 + i * 0.15, duration: 0.8 }}
                           className={`h-full rounded-full bg-gradient-to-r ${
-                            item.color === 'violet' ? 'from-violet-500 to-purple-500' :
+                            item.color === 'violet' ? 'from-indigo-500 to-violet-500' :
                             item.color === 'emerald' ? 'from-emerald-500 to-teal-500' :
                             item.color === 'amber' ? 'from-amber-500 to-orange-500' :
                             'from-cyan-500 to-blue-500'
@@ -263,9 +263,9 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   custom={i}
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="text-center p-6 rounded-2xl bg-theme-card border border-theme-border hover:border-violet-500/20 transition-all"
+                  className="text-center p-6 rounded-2xl bg-theme-card border border-theme-border hover:border-indigo-500/20 transition-all"
                 >
-                  <Icon className="w-8 h-8 text-violet-400 mx-auto mb-3" />
+                  <Icon className="w-8 h-8 text-indigo-400 mx-auto mb-3" />
                   <h3 className="text-3xl font-black text-white mb-1">{stat.value}</h3>
                   <p className="text-theme-text-muted text-sm">{stat.label}</p>
                 </motion.div>
@@ -278,7 +278,7 @@ export default function LandingPage() {
       {/* Features Section */}
       <section className="py-20 relative">
         <div className="absolute inset-0">
-          <div className="absolute top-1/2 left-0 w-72 h-72 bg-purple-600/10 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-0 w-72 h-72 bg-indigo-600/10 rounded-full blur-3xl" />
           <div className="absolute top-1/4 right-0 w-72 h-72 bg-cyan-600/10 rounded-full blur-3xl" />
         </div>
 
@@ -355,7 +355,7 @@ export default function LandingPage() {
                 step: '01',
                 title: 'Sign Up Karo',
                 desc: 'Free account banao aur apna class/board select karo',
-                color: 'from-violet-500 to-purple-600',
+                color: 'from-indigo-500 to-violet-500',
                 icon: '🚀',
               },
               {
@@ -400,8 +400,8 @@ export default function LandingPage() {
       {/* Pricing Section */}
       <section className="py-20 relative">
         <div className="absolute inset-0">
-          <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl" />
-          <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-amber-600/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-1/4 w-96 h-96           bg-indigo-600/10 rounded-full blur-3xl" />
+                    <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-amber-600/10 rounded-full blur-3xl" />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -437,13 +437,13 @@ export default function LandingPage() {
                 whileHover={{ y: -8, scale: 1.02 }}
                 className={`relative p-8 rounded-3xl border transition-all ${
                   plan.popular
-                    ? 'bg-gradient-to-b from-violet-500/10 to-purple-500/5 border-violet-500/30 shadow-xl shadow-violet-500/10'
+                    ? 'bg-gradient-to-b from-indigo-500/10 to-violet-500/5 border-indigo-500/30 shadow-xl shadow-indigo-500/10'
                     : 'bg-theme-card border-theme-border hover:border-theme-border'
                 }`}
               >
                 {plan.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="px-4 py-1 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs font-bold shadow-lg">
+                    <span className="px-4 py-1 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-xs font-bold shadow-lg">
                       MOST POPULAR
                     </span>
                   </div>
@@ -474,7 +474,7 @@ export default function LandingPage() {
                     whileTap={{ scale: 0.97 }}
                     className={`w-full py-3 rounded-xl font-bold text-sm transition-all ${
                       plan.popular
-                        ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/25'
+                        ? 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/25'
                         : 'bg-theme-input text-white hover:bg-theme-card-hover border border-theme-border'
                     }`}
                   >
@@ -496,9 +496,9 @@ export default function LandingPage() {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0}
-            className="relative p-12 rounded-3xl bg-gradient-to-br from-violet-600/20 to-purple-600/20 border border-violet-500/20 text-center overflow-hidden"
+            className="relative p-12 rounded-3xl bg-gradient-to-br from-indigo-600/20 to-violet-600/20 border border-indigo-500/20 text-center overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-violet-600/5 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/5 to-transparent" />
             <div className="relative">
               <motion.div
                 animate={{ rotate: [0, 5, -5, 0] }}
@@ -515,9 +515,9 @@ export default function LandingPage() {
               </p>
               <Link to="/signup">
                 <motion.button
-                  whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(139, 92, 246, 0.4)' }}
+                  whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(99, 102, 241, 0.4)' }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center gap-3 px-10 py-4 rounded-2xl text-lg font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-xl shadow-violet-500/25"
+                  className="inline-flex items-center gap-3 px-10 py-4 rounded-2xl text-lg font-bold text-white bg-gradient-to-r from-indigo-500 to-violet-500 shadow-xl shadow-indigo-500/25"
                 >
                   <Sparkles className="w-5 h-5" />
                   Join EduAI Free

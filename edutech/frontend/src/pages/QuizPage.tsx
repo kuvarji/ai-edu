@@ -142,18 +142,18 @@ export default function QuizPage() {
           </div>
           {/* Progress dots skeleton */}
           <div className="flex gap-1.5 justify-center mb-6">
-            {[1,2,3,4,5].map(i => <div key={i} className="w-2.5 h-2.5 rounded-full bg-violet-100 dark:bg-gray-700/50 animate-pulse" />)}
+            {[1,2,3,4,5].map(i => <div key={i} className="w-2.5 h-2.5 rounded-full bg-[var(--color-surface)] animate-pulse" />)}
           </div>
           {/* Question card skeleton */}
           <div className="p-7 rounded-[22px] bg-theme-card border border-theme-border">
-            <div className="h-6 w-36 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
-            <div className="h-5 w-full bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
-            <div className="h-5 w-3/4 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-6" />
+            <div className="h-6 w-36 bg-[var(--color-surface)] animate-pulse rounded-lg mb-4" />
+            <div className="h-5 w-full bg-[var(--color-surface)] animate-pulse rounded-lg mb-2" />
+            <div className="h-5 w-3/4 bg-[var(--color-surface)] animate-pulse rounded-lg mb-6" />
             <div className="flex flex-col gap-2.5">
               {[1,2,3,4].map(i => (
                 <div key={i} className="flex items-center gap-3.5 p-4 rounded-2xl bg-theme-input border border-theme-border">
-                  <div className="w-9 h-9 rounded-[10px] bg-violet-100 dark:bg-gray-700/50 animate-pulse flex-shrink-0" />
-                  <div className="h-4 w-full bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+                  <div className="w-9 h-9 rounded-[10px] bg-[var(--color-surface)] animate-pulse flex-shrink-0" />
+                  <div className="h-4 w-full bg-[var(--color-surface)] animate-pulse rounded-lg" />
                 </div>
               ))}
             </div>
@@ -172,7 +172,7 @@ export default function QuizPage() {
           <p className="text-theme-text-secondary mb-4">No quiz questions available right now. Try again later!</p>
           <Link to="/dashboard">
             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600">
+              className="px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-violet-500">
               Back to Dashboard
             </motion.button>
           </Link>
@@ -200,8 +200,8 @@ export default function QuizPage() {
               {percentage >= 80 ? 'Excellent! Bahut accha kiya!' : percentage >= 60 ? 'Good job! Keep going!' : 'Koi baat nahi, practice karo!'}
             </p>
             <div className="grid grid-cols-3 gap-4 mb-8">
-              <div className="p-4 rounded-2xl bg-violet-500/10 border border-violet-500/20">
-                <p className="text-2xl font-black text-violet-400">{score}/{quizQuestions.length}</p>
+              <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
+                <p className="text-2xl font-black text-indigo-400">{score}/{quizQuestions.length}</p>
                 <p className="text-xs text-theme-text-muted">Correct</p>
               </div>
               <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20">
@@ -235,7 +235,7 @@ export default function QuizPage() {
               </motion.button>
               <Link to="/leaderboard" className="flex-1">
                 <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25">
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-violet-500 shadow-lg shadow-violet-500/25">
                   <Trophy className="w-4 h-4" /> Leaderboard
                 </motion.button>
               </Link>
@@ -292,7 +292,7 @@ export default function QuizPage() {
               animate={{ width: i === currentQ ? 28 : 10 }}
               className={`h-2.5 rounded-full transition-colors ${
                 i < currentQ ? (answers[i] === quizQuestions[i].correct ? 'bg-green-500' : 'bg-rose-500')
-                : i === currentQ ? 'bg-violet-600' : 'bg-black/[0.06] dark:bg-white/10'
+                : i === currentQ ? 'bg-indigo-600' : 'bg-black/[0.06] dark:bg-white/10'
               }`}
               style={{ borderRadius: i === currentQ ? 5 : '50%' }}
             />
@@ -302,7 +302,7 @@ export default function QuizPage() {
         {/* Timer Bar */}
         <div className="flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-theme-card border border-theme-border shadow-sm mb-5">
           <span className="text-[22px]">{'\u23f1'}</span>
-          <div className="flex-1 h-2 rounded-lg overflow-hidden" style={{ background: 'rgba(0,0,0,0.04)' }}>
+          <div className="flex-1 h-2 rounded-lg overflow-hidden" style={{ background: 'var(--color-surface)' }}>
             <motion.div animate={{ width: `${timerPct}%` }} transition={{ duration: 0.8 }}
               className="h-full rounded-lg"
               style={{ background: timerLow ? 'linear-gradient(90deg, #f43f5e, #fb7185)' : 'linear-gradient(90deg, #10b981, #06b6d4)' }} />
@@ -316,7 +316,7 @@ export default function QuizPage() {
         <AnimatePresence mode="wait">
           <motion.div key={currentQ} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }}
             className="p-7 rounded-[22px] bg-theme-card border border-theme-border shadow-sm mb-5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 text-xs font-bold mb-3.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-xs font-bold mb-3.5">
               {'\u2753'} Question {currentQ + 1} of {quizQuestions.length}
             </div>
             <h2 className="text-[17px] font-bold text-theme-text leading-relaxed mb-5">
@@ -327,7 +327,7 @@ export default function QuizPage() {
             <div className="flex flex-col gap-2.5">
               {question.options.map((option, i) => {
                 let borderColor = 'border-theme-border';
-                let bg = 'bg-theme-card hover:bg-violet-50/50 dark:hover:bg-violet-900/10';
+                let bg = 'bg-theme-card hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10';
                 let letterBg = 'bg-theme-surface border border-theme-border text-theme-text-secondary';
                 let textColor = 'text-theme-text-secondary';
 
@@ -347,10 +347,10 @@ export default function QuizPage() {
                     textColor = 'text-theme-text-muted';
                   }
                 } else if (selected === i) {
-                  borderColor = 'border-violet-400';
-                  bg = 'bg-violet-50 dark:bg-violet-900/20';
-                  letterBg = 'bg-violet-600 border-violet-600 text-white';
-                  textColor = 'text-violet-600 dark:text-violet-400 font-bold';
+                  borderColor = 'border-indigo-400';
+                  bg = 'bg-indigo-50 dark:bg-indigo-900/20';
+                  letterBg = 'bg-indigo-600 border-indigo-600 text-white';
+                  textColor = 'text-indigo-600 dark:text-indigo-400 font-bold';
                 }
 
                 return (
@@ -377,13 +377,13 @@ export default function QuizPage() {
                 <>
                   <motion.button whileTap={{ scale: 0.98 }}
                     onClick={() => handleAnswer(null)}
-                    className="flex-1 py-3.5 rounded-[14px] text-sm font-bold bg-violet-100 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 flex items-center justify-center gap-2">
+                    className="flex-1 py-3.5 rounded-[14px] text-sm font-bold bg-indigo-100 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center gap-2">
                     {'\u23ed'} Skip
                   </motion.button>
                   <motion.button whileHover={{ y: -1 }} whileTap={{ scale: 0.98 }}
                     onClick={() => selected !== null && handleAnswer(selected)}
                     disabled={selected === null}
-                    className="flex-1 py-3.5 rounded-[14px] text-sm font-bold text-white bg-violet-600 shadow-lg shadow-violet-500/25 disabled:opacity-50 flex items-center justify-center gap-2">
+                    className="flex-1 py-3.5 rounded-[14px] text-sm font-bold text-white bg-indigo-600 shadow-lg shadow-indigo-500/25 disabled:opacity-50 flex items-center justify-center gap-2">
                     {'\u2705'} Submit Answer
                   </motion.button>
                 </>
@@ -391,7 +391,7 @@ export default function QuizPage() {
                 <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                   whileHover={{ y: -1 }} whileTap={{ scale: 0.98 }}
                   onClick={nextQuestion}
-                  className="flex-1 py-3.5 rounded-[14px] text-sm font-bold text-white bg-violet-600 shadow-lg shadow-violet-500/25 flex items-center justify-center gap-2">
+                  className="flex-1 py-3.5 rounded-[14px] text-sm font-bold text-white bg-indigo-600 shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2">
                   {currentQ + 1 >= quizQuestions.length ? 'See Results' : 'Next Question'}
                   <ArrowRight className="w-4 h-4" />
                 </motion.button>
@@ -404,10 +404,10 @@ export default function QuizPage() {
         <AnimatePresence>
           {answered && question.explanation && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-              className="p-6 rounded-2xl bg-violet-500/10 border border-violet-500/20 mb-6">
+              className="p-6 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 mb-6">
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-4 h-4 text-violet-400" />
-                <h4 className="font-bold text-violet-400">Explanation</h4>
+                <Sparkles className="w-4 h-4 text-indigo-400" />
+                <h4 className="font-bold text-indigo-400">Explanation</h4>
               </div>
               <p className="text-theme-text-secondary text-sm leading-relaxed">{question.explanation}</p>
             </motion.div>
