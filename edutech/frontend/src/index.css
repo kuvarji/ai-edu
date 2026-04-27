@@ -20,6 +20,7 @@
     --color-border: rgba(0,0,0,0.06);
     --color-nav: rgba(255,255,255,0.85);
     --color-nav-border: rgba(0,0,0,0.06);
+    --color-tooltip-bg: #ffffff;
 
     /* Accent colors */
     --color-accent: #7c3aed;
@@ -45,6 +46,7 @@
     --color-border: rgba(124,58,237,0.12);
     --color-nav: rgba(15,10,26,0.85);
     --color-nav-border: rgba(124,58,237,0.12);
+    --color-tooltip-bg: #1e1432;
   }
 
   body {
