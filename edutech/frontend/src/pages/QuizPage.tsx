@@ -129,34 +129,34 @@ export default function QuizPage() {
 
   if (loadingQuiz) {
     return (
-      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
-        <div className="max-w-3xl mx-auto">
-          {/* Header skeleton */}
+            <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
+              <div className="max-w-3xl mx-auto relative z-10">
+                {/* Header skeleton */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-6 h-6 bg-gray-700/50 animate-pulse rounded" />
+              <div className="w-6 h-6 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded" />
               <div>
-                <div className="h-5 w-36 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                <div className="h-3 w-28 bg-gray-700/50 animate-pulse rounded-lg" />
+                <div className="h-5 w-36 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                <div className="h-3 w-28 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="h-8 w-20 bg-gray-700/50 animate-pulse rounded-full" />
-              <div className="h-8 w-16 bg-gray-700/50 animate-pulse rounded-full" />
+              <div className="h-8 w-20 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
+              <div className="h-8 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
             </div>
           </div>
           {/* Progress bar skeleton */}
-          <div className="w-full h-2 bg-gray-700/50 animate-pulse rounded-full mb-8" />
+          <div className="w-full h-2 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full mb-8" />
           {/* Question card skeleton */}
-          <div className="p-8 rounded-3xl bg-gray-900/80 border border-theme-border mb-6">
-            <div className="h-6 w-16 bg-gray-700/50 animate-pulse rounded-full mb-4" />
-            <div className="h-6 w-full bg-gray-700/50 animate-pulse rounded-lg mb-2" />
-            <div className="h-6 w-3/4 bg-gray-700/50 animate-pulse rounded-lg mb-8" />
+                    <div className="p-8 rounded-3xl bg-theme-card border border-theme-border mb-6">
+                      <div className="h-6 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full mb-4" />
+            <div className="h-6 w-full bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
+            <div className="h-6 w-3/4 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-8" />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="flex items-center gap-3 p-4 rounded-xl bg-theme-input border border-theme-border">
-                  <div className="w-8 h-8 rounded-lg bg-gray-700/50 animate-pulse" />
-                  <div className="h-4 w-full bg-gray-700/50 animate-pulse rounded-lg" />
+                  <div className="w-8 h-8 rounded-lg bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
+                  <div className="h-4 w-full bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                 </div>
               ))}
             </div>
@@ -168,9 +168,9 @@ export default function QuizPage() {
 
   if (quizQuestions.length === 0) {
     return (
-      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
-        <div className="text-center">
-          <Brain className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+            <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center blob-bg">
+              <div className="text-center relative z-10">
+                <Brain className="w-12 h-12 text-theme-text-muted mx-auto mb-3" />
           <p className="text-theme-text-secondary mb-4">No quiz questions available right now. Try again later!</p>
           <Link to="/dashboard">
             <motion.button
@@ -190,13 +190,13 @@ export default function QuizPage() {
     const percentage = Math.round((score / quizQuestions.length) * 100);
     const earnedXP = score * 10 + 50;
     return (
-      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-lg text-center"
-        >
-          <div className="p-8 rounded-3xl bg-gray-900/80 border border-theme-border shadow-2xl">
+            <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center blob-bg">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="w-full max-w-lg text-center relative z-10"
+              >
+                <div className="p-8 rounded-3xl bg-theme-card border border-theme-border shadow-2xl">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -206,7 +206,7 @@ export default function QuizPage() {
               {percentage >= 80 ? '🏆' : percentage >= 60 ? '🎉' : percentage >= 40 ? '💪' : '📚'}
             </motion.div>
 
-            <h1 className="text-3xl font-black text-white mb-2">Quiz Complete!</h1>
+            <h1 className="text-3xl font-black text-theme-text mb-2">Quiz Complete!</h1>
             <p className="text-theme-text-secondary mb-6">
               {percentage >= 80 ? 'Excellent! Bahut accha kiya!' : percentage >= 60 ? 'Good job! Keep going!' : 'Koi baat nahi, practice karo!'}
             </p>
@@ -237,7 +237,7 @@ export default function QuizPage() {
                   ) : (
                     <XCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
                   )}
-                  <span className="text-sm text-gray-300 truncate">{q.question}</span>
+                  <span className="text-sm text-theme-text-secondary truncate">{q.question}</span>
                 </div>
               ))}
             </div>
@@ -247,7 +247,7 @@ export default function QuizPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={restart}
-                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-gray-300 bg-theme-input border border-theme-border hover:bg-theme-card-hover transition-all"
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-theme-text-secondary bg-theme-input border border-theme-border hover:bg-theme-card-hover transition-all"
               >
                 <RotateCcw className="w-4 h-4" />
                 Try Again
@@ -270,9 +270,9 @@ export default function QuizPage() {
   }
 
   return (
-    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
+        <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
+          <div className="max-w-3xl mx-auto relative z-10">
+            {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -281,7 +281,7 @@ export default function QuizPage() {
           <div className="flex items-center gap-3">
             <Brain className="w-6 h-6 text-violet-400" />
             <div>
-              <h1 className="text-lg font-bold text-white">Mathematics Quiz</h1>
+              <h1 className="text-lg font-bold text-theme-text">Mathematics Quiz</h1>
               <p className="text-sm text-theme-text-muted">Question {currentQ + 1} of {quizQuestions.length}</p>
             </div>
           </div>
@@ -300,7 +300,7 @@ export default function QuizPage() {
         </motion.div>
 
         {/* Progress Bar */}
-        <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden mb-8">
+        <div className="w-full h-2 bg-violet-100 dark:bg-gray-800 rounded-full overflow-hidden mb-8">
           <motion.div
             animate={{ width: `${((currentQ + 1) / quizQuestions.length) * 100}%` }}
             className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-500"
@@ -314,7 +314,7 @@ export default function QuizPage() {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
-            className="p-8 rounded-3xl bg-gray-900/80 border border-theme-border shadow-xl mb-6"
+            className="p-8 rounded-3xl bg-theme-card border border-theme-border shadow-xl mb-6"
           >
             <div className="flex items-center gap-2 mb-4">
               <span className={`px-3 py-1 rounded-full text-xs font-bold ${
@@ -326,17 +326,17 @@ export default function QuizPage() {
               </span>
             </div>
 
-            <h2 className="text-xl font-bold text-white mb-8 leading-relaxed">
+            <h2 className="text-xl font-bold text-theme-text mb-8 leading-relaxed">
               {question.question}
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {question.options.map((option, i) => {
-                let style = 'bg-theme-input border-theme-border hover:bg-theme-card-hover hover:border-white/20 text-gray-200';
+                let style = 'bg-theme-input border-theme-border hover:bg-theme-card-hover hover:border-violet-300/30 text-theme-text-secondary';
                 if (answered) {
                   if (i === question.correct) style = 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400';
                   else if (i === selected) style = 'bg-red-500/20 border-red-500/30 text-red-400';
-                  else style = 'bg-theme-input border-theme-border text-gray-600';
+                  else style = 'bg-theme-input border-theme-border text-theme-text-muted';
                 }
 
                 return (
@@ -374,7 +374,7 @@ export default function QuizPage() {
                 <Sparkles className="w-4 h-4 text-violet-400" />
                 <h4 className="font-bold text-violet-400">Explanation</h4>
               </div>
-              <p className="text-gray-300 text-sm leading-relaxed">{question.explanation}</p>
+              <p className="text-theme-text-secondary text-sm leading-relaxed">{question.explanation}</p>
             </motion.div>
           )}
         </AnimatePresence>

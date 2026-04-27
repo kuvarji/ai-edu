@@ -24,7 +24,7 @@ const fadeUp = {
 // ============================
 
 function SkeletonPulse({ className = '', style }: { className?: string; style?: React.CSSProperties }) {
-  return <div className={`animate-pulse bg-gray-700/50 rounded-lg ${className}`} style={style} />;
+  return <div className={`animate-pulse bg-violet-100 dark:bg-gray-700/50 rounded-lg ${className}`} style={style} />;
 }
 
 function StatCardSkeleton() {
@@ -233,9 +233,9 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Welcome Header */}
+        <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
+          <div className="max-w-7xl mx-auto relative z-10">
+            {/* Welcome Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -243,7 +243,7 @@ export default function DashboardPage() {
         >
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-black text-white mb-1">
+              <h1 className="text-3xl font-black text-theme-text mb-1">
                 {t.dashboard_welcome}, {displayName}! 👋
               </h1>
               <p className="text-theme-text-secondary">{t.dashboard_title}</p>
@@ -256,8 +256,8 @@ export default function DashboardPage() {
                 <Avatar avatar={user?.avatar} imgClassName="w-full h-full object-cover rounded-full" />
               </div>
               <div>
-                <p className="text-sm font-bold text-white">Level {level}</p>
-                <p className="text-xs text-violet-400">{isPremium ? 'Pro Member ∞' : `${xpToNext} XP to next level`}</p>
+                                <p className="text-sm font-bold text-theme-text">Level {level}</p>
+                                <p className="text-xs text-violet-500">{isPremium ? 'Pro Member ∞' : `${xpToNext} XP to next level`}</p>
               </div>
             </motion.div>
           </div>
@@ -272,9 +272,9 @@ export default function DashboardPage() {
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-medium text-theme-text-secondary">Level {level} Progress</span>
-            <span className="text-sm font-bold text-violet-400">{Math.round(xpProgress)}%</span>
+            <span className="text-sm font-bold text-violet-600 dark:text-violet-400">{Math.round(xpProgress)}%</span>
           </div>
-          <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
+          <div className="w-full h-3 bg-violet-100 dark:bg-gray-800 rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${xpProgress}%` }}
@@ -309,7 +309,7 @@ export default function DashboardPage() {
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-3 shadow-lg`}>
                     <Icon className="w-6 h-6 text-white" />
                   </div>
-                  <p className="text-2xl font-black text-white">{stat.value}</p>
+                  <p className="text-2xl font-black text-theme-text">{stat.value}</p>
                   <p className="text-sm text-theme-text-muted">{stat.label}</p>
                 </motion.div>
               );
@@ -335,8 +335,8 @@ export default function DashboardPage() {
           >
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
               <div>
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-violet-400" />
+                                <h3 className="text-lg font-bold text-theme-text flex items-center gap-2">
+                                  <Clock className="w-5 h-5 text-violet-500" />
                   Study Progress
                 </h3>
                 <p className="text-sm text-theme-text-muted">
@@ -367,7 +367,7 @@ export default function DashboardPage() {
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                     chartDays === d
                       ? 'bg-violet-500/20 text-violet-400 border border-violet-500/30'
-                      : 'bg-theme-input text-theme-text-muted border border-transparent hover:bg-theme-card hover:text-white'
+                      : 'bg-theme-input text-theme-text-muted border border-transparent hover:bg-theme-card-hover hover:text-theme-text'
                   }`}
                 >
                   {d}D
@@ -386,10 +386,11 @@ export default function DashboardPage() {
                 <YAxis stroke="#4b5563" fontSize={12} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1f2937',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    backgroundColor: '#ffffff',
+                    border: '1px solid rgba(0,0,0,0.08)',
                     borderRadius: '12px',
-                    color: '#fff',
+                    color: '#1a1a2e',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                   }}
                   formatter={(value: number, name: string) => {
                     if (name === 'minutes') return [`${value} min`, 'Study Time'];
@@ -425,8 +426,8 @@ export default function DashboardPage() {
             custom={5}
             className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
-            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Target className="w-5 h-5 text-cyan-400" />
+                        <h3 className="text-lg font-bold text-theme-text mb-4 flex items-center gap-2">
+                          <Target className="w-5 h-5 text-cyan-500" />
               Aaj Ke Goals
             </h3>
             <div className="space-y-4">
@@ -436,17 +437,17 @@ export default function DashboardPage() {
                 return (
                   <div key={goal.id} className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-300">{goal.label}</span>
+                      <span className="text-sm text-theme-text-secondary">{goal.label}</span>
                       <span className={`text-xs font-bold ${progress >= 100 ? 'text-emerald-400' : 'text-theme-text-muted'}`}>
                         {done}
                       </span>
                     </div>
-                    <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${progress}%` }}
-                        transition={{ duration: 0.8, delay: 0.5 + i * 0.1 }}
-                        className={`h-full rounded-full bg-gradient-to-r ${goal.color}`}
+                                        <div className="w-full h-2 bg-violet-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                          <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${progress}%` }}
+                                            transition={{ duration: 0.8, delay: 0.5 + i * 0.1 }}
+                                            className={`h-full rounded-full bg-gradient-to-r ${goal.color}`}
                       />
                     </div>
                   </div>
@@ -469,7 +470,7 @@ export default function DashboardPage() {
           className="mt-8"
         >
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+            <h3 className="text-xl font-bold text-theme-text flex items-center gap-2">
                             <Sparkles className="w-5 h-5 text-violet-400" />
                             {t.continue_learning}
             </h3>
@@ -500,7 +501,7 @@ export default function DashboardPage() {
                         {course.icon}
                       </div>
                       <div>
-                        <h4 className="font-bold text-white group-hover:text-violet-400 transition-colors">{course.title}</h4>
+                        <h4 className="font-bold text-theme-text group-hover:text-violet-500 transition-colors">{course.title}</h4>
                         <p className="text-xs text-theme-text-muted">{course.grade} - {course.board}</p>
                       </div>
                     </div>
@@ -509,10 +510,10 @@ export default function DashboardPage() {
                         <span className="text-theme-text-secondary">{course.completedChapters}/{course.chapters} chapters</span>
                         <span className="text-violet-400 font-medium">{course.chapters > 0 ? Math.round((course.completedChapters / course.chapters) * 100) : 0}%</span>
                       </div>
-                      <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${course.chapters > 0 ? (course.completedChapters / course.chapters) * 100 : 0}%` }}
+                                            <div className="w-full h-2 bg-violet-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                              <motion.div
+                                                initial={{ width: 0 }}
+                                                animate={{ width: `${course.chapters > 0 ? (course.completedChapters / course.chapters) * 100 : 0}%` }}
                           transition={{ duration: 0.8, delay: 0.8 + i * 0.1 }}
                           className={`h-full rounded-full bg-gradient-to-r ${course.color}`}
                         />
@@ -536,8 +537,8 @@ export default function DashboardPage() {
             custom={10}
             className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
-            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                            <Award className="w-5 h-5 text-amber-400" />
+                        <h3 className="text-lg font-bold text-theme-text mb-4 flex items-center gap-2">
+                                        <Award className="w-5 h-5 text-amber-500" />
                             {t.badges}
             </h3>
             <div className="grid grid-cols-4 gap-3">
@@ -553,8 +554,8 @@ export default function DashboardPage() {
             custom={11}
             className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
-            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-emerald-400" />
+                        <h3 className="text-lg font-bold text-theme-text mb-4 flex items-center gap-2">
+                          <Calendar className="w-5 h-5 text-emerald-500" />
               {t.streak}
             </h3>
             <div className="grid grid-cols-7 gap-2">
@@ -577,7 +578,7 @@ export default function DashboardPage() {
                         ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/30'
                         : active
                         ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20'
-                        : 'bg-theme-input text-gray-600'
+                        : 'bg-theme-input text-theme-text-muted'
                     }`}
                   >
                     {dayNum}

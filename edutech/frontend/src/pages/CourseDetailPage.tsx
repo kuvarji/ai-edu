@@ -82,28 +82,28 @@ export default function CourseDetailPage() {
     return (
       <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
         <div className="max-w-5xl mx-auto">
-          <div className="h-5 w-32 bg-gray-700/50 animate-pulse rounded-lg mb-6" />
+          <div className="h-5 w-32 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-6" />
           {/* Header skeleton */}
-          <div className="p-8 rounded-3xl bg-gray-700/30 animate-pulse mb-8 h-48" />
+          <div className="p-8 rounded-3xl bg-violet-50 dark:bg-gray-700/30 animate-pulse mb-8 h-48" />
           {/* Progress bar skeleton */}
           <div className="mb-8 p-5 rounded-2xl bg-theme-card border border-theme-border">
             <div className="flex items-center justify-between mb-2">
-              <div className="h-4 w-28 bg-gray-700/50 animate-pulse rounded-lg" />
-              <div className="h-4 w-36 bg-gray-700/50 animate-pulse rounded-lg" />
+              <div className="h-4 w-28 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+              <div className="h-4 w-36 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
             </div>
-            <div className="w-full h-3 bg-gray-700/50 animate-pulse rounded-full" />
+            <div className="w-full h-3 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
           </div>
           {/* Chapters skeleton */}
-          <div className="h-6 w-32 bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+          <div className="h-6 w-32 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
           <div className="space-y-3">
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="flex items-center gap-4 p-5 rounded-2xl bg-theme-card border border-theme-border">
-                <div className="w-12 h-12 rounded-xl bg-gray-700/50 animate-pulse" />
+                <div className="w-12 h-12 rounded-xl bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
                 <div className="flex-1">
-                  <div className="h-4 w-48 bg-gray-700/50 animate-pulse rounded-lg mb-2" />
-                  <div className="h-3 w-32 bg-gray-700/50 animate-pulse rounded-lg" />
+                  <div className="h-4 w-48 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
+                  <div className="h-3 w-32 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                 </div>
-                <div className="h-6 w-16 bg-gray-700/50 animate-pulse rounded-full" />
+                <div className="h-6 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
               </div>
             ))}
           </div>
@@ -128,7 +128,7 @@ export default function CourseDetailPage() {
     <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
       <div className="max-w-5xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <Link to="/courses" className="inline-flex items-center gap-2 text-theme-text-secondary hover:text-white mb-6 transition-colors">
+          <Link to="/courses" className="inline-flex items-center gap-2 text-theme-text-secondary hover:text-theme-text mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back to Courses
           </Link>
         </motion.div>
@@ -173,7 +173,7 @@ export default function CourseDetailPage() {
             <span className="text-sm text-theme-text-secondary">Overall Progress</span>
             <span className="text-sm font-bold text-violet-400">{course.completedChapters}/{course.chapters} chapters done</span>
           </div>
-          <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
+          <div className="w-full h-3 bg-theme-surface rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${course.chapters > 0 ? (course.completedChapters / course.chapters) * 100 : 0}%` }}
@@ -185,7 +185,7 @@ export default function CourseDetailPage() {
 
         {/* Chapters List */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-theme-text mb-4 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-violet-400" /> Chapters
           </h2>
           <div className="space-y-3">
@@ -203,7 +203,7 @@ export default function CourseDetailPage() {
                       ? 'bg-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/30'
                       : chapter.status === 'in-progress'
                       ? 'bg-violet-500/5 border-violet-500/20 hover:border-violet-500/30'
-                      : 'bg-gray-900/30 border-theme-border opacity-60'
+                      : 'bg-theme-surface/30 border-theme-border opacity-60'
                   }`}>
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                       chapter.status === 'completed'
@@ -221,7 +221,7 @@ export default function CourseDetailPage() {
                       )}
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-white text-sm">{chapter.title}</h4>
+                      <h4 className="font-bold text-theme-text text-sm">{chapter.title}</h4>
                       <div className="flex items-center gap-3 text-xs text-theme-text-muted mt-1">
                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {chapter.duration}</span>
                         <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> +{chapter.xp} XP</span>
@@ -249,7 +249,7 @@ export default function CourseDetailPage() {
           className="mt-8 p-8 rounded-3xl bg-gradient-to-r from-violet-500/10 to-cyan-500/10 border border-violet-500/20 text-center"
         >
           <Award className="w-12 h-12 text-amber-400 mx-auto mb-3" />
-          <h3 className="text-xl font-bold text-white mb-2">Ready for Quiz?</h3>
+          <h3 className="text-xl font-bold text-theme-text mb-2">Ready for Quiz?</h3>
           <p className="text-theme-text-secondary mb-4">Chapter quiz de aur XP kamao!</p>
           <Link to="/quiz">
             <motion.button

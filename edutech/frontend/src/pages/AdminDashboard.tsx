@@ -179,7 +179,7 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 flex items-center justify-center">
         <div className="text-center max-w-md">
           <AlertTriangle className="w-16 h-16 text-amber-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-2">Admin Access Required</h2>
+          <h2 className="text-2xl font-bold text-theme-text mb-2">Admin Access Required</h2>
           <p className="text-theme-text-secondary mb-6">
             Admin dashboard access karne ke liye admin account se login karo.
             <br /><br />
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-black text-white mb-1">Admin Dashboard</h1>
+            <h1 className="text-3xl font-black text-theme-text mb-1">Admin Dashboard</h1>
             <p className="text-theme-text-secondary">Platform ka overview aur management</p>
           </div>
           <div className="flex gap-3">
@@ -243,55 +243,55 @@ export default function AdminDashboard() {
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="p-5 rounded-2xl bg-theme-card border border-theme-border">
                   <div className="flex items-center justify-between mb-3">
-                    <div className="w-11 h-11 rounded-xl bg-gray-700/50 animate-pulse" />
-                    <div className="h-4 w-12 bg-gray-700/50 animate-pulse rounded-lg" />
+                    <div className="w-11 h-11 rounded-xl bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
+                    <div className="h-4 w-12 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                   </div>
-                  <div className="h-7 w-20 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                  <div className="h-4 w-24 bg-gray-700/50 animate-pulse rounded-lg" />
+                  <div className="h-7 w-20 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-4 w-24 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                 </div>
               ))}
             </div>
             {/* Charts skeleton */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 p-6 rounded-2xl bg-theme-card border border-theme-border">
-                <div className="h-5 w-36 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                <div className="h-4 w-44 bg-gray-700/50 animate-pulse rounded-lg mb-6" />
-                <div className="h-[280px] bg-gray-700/30 animate-pulse rounded-xl" />
+                <div className="h-5 w-36 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                <div className="h-4 w-44 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-6" />
+                <div className="h-[280px] bg-violet-50 dark:bg-gray-700/30 animate-pulse rounded-xl" />
               </div>
               <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
-                <div className="h-5 w-28 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                <div className="h-4 w-40 bg-gray-700/50 animate-pulse rounded-lg mb-6" />
-                <div className="h-[280px] bg-gray-700/30 animate-pulse rounded-xl" />
+                <div className="h-5 w-28 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                <div className="h-4 w-40 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-6" />
+                <div className="h-[280px] bg-violet-50 dark:bg-gray-700/30 animate-pulse rounded-xl" />
               </div>
             </div>
             {/* Course + Users skeleton */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
-                <div className="h-6 w-40 bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+                <div className="h-6 w-40 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
                 <div className="space-y-3">
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-theme-input">
-                      <div className="w-10 h-10 rounded-lg bg-gray-700/50 animate-pulse" />
+                      <div className="w-10 h-10 rounded-lg bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
                       <div className="flex-1">
-                        <div className="h-4 w-32 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                        <div className="h-3 w-20 bg-gray-700/50 animate-pulse rounded-lg" />
+                        <div className="h-4 w-32 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                        <div className="h-3 w-20 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
               <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
-                <div className="h-6 w-36 bg-gray-700/50 animate-pulse rounded-lg mb-4" />
-                <div className="h-10 w-full bg-gray-700/50 animate-pulse rounded-xl mb-4" />
+                <div className="h-6 w-36 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+                <div className="h-10 w-full bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl mb-4" />
                 <div className="space-y-3">
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-theme-input">
-                      <div className="w-10 h-10 rounded-full bg-gray-700/50 animate-pulse" />
+                      <div className="w-10 h-10 rounded-full bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
                       <div className="flex-1">
-                        <div className="h-4 w-28 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                        <div className="h-3 w-36 bg-gray-700/50 animate-pulse rounded-lg" />
+                        <div className="h-4 w-28 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                        <div className="h-3 w-36 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                       </div>
-                      <div className="h-6 w-14 bg-gray-700/50 animate-pulse rounded-full" />
+                      <div className="h-6 w-14 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
                     </div>
                   ))}
                 </div>
@@ -322,7 +322,7 @@ export default function AdminDashboard() {
                     {stat.change}
                   </span>
                 </div>
-                <p className="text-2xl font-black text-white">{stat.value}</p>
+                <p className="text-2xl font-black text-theme-text">{stat.value}</p>
                 <p className="text-sm text-theme-text-muted">{stat.label}</p>
               </motion.div>
             );
@@ -337,7 +337,7 @@ export default function AdminDashboard() {
             transition={{ delay: 0.3 }}
             className="lg:col-span-2 p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
-            <h3 className="text-lg font-bold text-white mb-1">Revenue Overview</h3>
+            <h3 className="text-lg font-bold text-theme-text mb-1">Revenue Overview</h3>
             <p className="text-sm text-theme-text-muted mb-6">Monthly revenue trend</p>
             {ps?.revenue ? <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={[]}>
@@ -349,7 +349,7 @@ export default function AdminDashboard() {
                 </defs>
                 <XAxis dataKey="month" stroke="#4b5563" fontSize={12} />
                 <YAxis stroke="#4b5563" fontSize={12} />
-                <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }} />
+                <Tooltip contentStyle={{ backgroundColor: '#ffffff', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', color: '#1a1a2e' }} />
                 <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} fill="url(#revGrad)" />
               </AreaChart>
             </ResponsiveContainer> : <div className="flex items-center justify-center h-[280px] text-theme-text-muted">No revenue data available yet</div>}
@@ -362,13 +362,13 @@ export default function AdminDashboard() {
             transition={{ delay: 0.4 }}
             className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
-            <h3 className="text-lg font-bold text-white mb-1">User Growth</h3>
+            <h3 className="text-lg font-bold text-theme-text mb-1">User Growth</h3>
             <p className="text-sm text-theme-text-muted mb-6">New users per month</p>
             {ps?.users ? <ResponsiveContainer width="100%" height={280}>
               <BarChart data={[]}>
                 <XAxis dataKey="month" stroke="#4b5563" fontSize={12} />
                 <YAxis stroke="#4b5563" fontSize={12} />
-                <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }} />
+                <Tooltip contentStyle={{ backgroundColor: '#ffffff', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', color: '#1a1a2e' }} />
                 <Bar dataKey="users" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer> : <div className="flex items-center justify-center h-[280px] text-theme-text-muted">No user growth data yet</div>}
@@ -384,7 +384,7 @@ export default function AdminDashboard() {
             className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <h3 className="text-lg font-bold text-theme-text flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-violet-400" /> Course Management
               </h3>
             </div>
@@ -402,7 +402,7 @@ export default function AdminDashboard() {
                     {course.icon}
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-sm font-bold text-white">{course.title}</h4>
+                    <h4 className="text-sm font-bold text-theme-text">{course.title}</h4>
                     <p className="text-xs text-theme-text-muted">{course.subject}</p>
                   </div>
                   <div className="flex gap-1">
@@ -437,7 +437,7 @@ export default function AdminDashboard() {
             className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <h3 className="text-lg font-bold text-theme-text flex items-center gap-2">
                 <Users className="w-5 h-5 text-cyan-400" /> Recent Users
               </h3>
               <div className="relative">
@@ -447,7 +447,7 @@ export default function AdminDashboard() {
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-4 py-2 rounded-lg bg-theme-input border border-theme-border text-white text-sm placeholder-gray-600 focus:outline-none focus:border-violet-500/50 w-40"
+                  className="pl-9 pr-4 py-2 rounded-lg bg-theme-input border border-theme-border text-theme-text text-sm placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50 w-40"
                 />
               </div>
             </div>
@@ -465,7 +465,7 @@ export default function AdminDashboard() {
                     {u.name.charAt(0)}
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-sm font-bold text-white">{u.name}</h4>
+                    <h4 className="text-sm font-bold text-theme-text">{u.name}</h4>
                     <p className="text-xs text-theme-text-muted">{u.email}</p>
                   </div>
                   <span className={`px-2 py-1 rounded-full text-xs font-bold ${
@@ -495,14 +495,14 @@ export default function AdminDashboard() {
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-lg bg-gray-900 border border-theme-border rounded-2xl p-6 shadow-2xl"
+              className="w-full max-w-lg bg-theme-card border border-theme-border rounded-2xl p-6 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <h2 className="text-xl font-bold text-theme-text flex items-center gap-2">
                   <PlusCircle className="w-5 h-5 text-violet-400" /> Add New Course
                 </h2>
-                <button onClick={() => setShowAddCourse(false)} className="text-theme-text-muted hover:text-white transition-colors">
+                <button onClick={() => setShowAddCourse(false)} className="text-theme-text-muted hover:text-theme-text transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -513,7 +513,7 @@ export default function AdminDashboard() {
                   <input
                     type="text" placeholder="e.g. Mathematics" value={courseForm.title}
                     onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -522,7 +522,7 @@ export default function AdminDashboard() {
                     <input
                       type="text" placeholder="e.g. math, science" value={courseForm.subject}
                       onChange={(e) => setCourseForm({ ...courseForm, subject: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50"
                     />
                   </div>
                   <div>
@@ -530,10 +530,10 @@ export default function AdminDashboard() {
                     <select
                       value={courseForm.grade}
                       onChange={(e) => setCourseForm({ ...courseForm, grade: Number(e.target.value) })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-violet-500/50"
                     >
                       {[6, 7, 8, 9, 10, 11, 12].map((g) => (
-                        <option key={g} value={g} className="bg-gray-900">Class {g}</option>
+                        <option key={g} value={g} className="bg-theme-card">Class {g}</option>
                       ))}
                     </select>
                   </div>
@@ -544,10 +544,10 @@ export default function AdminDashboard() {
                     <select
                       value={courseForm.board}
                       onChange={(e) => setCourseForm({ ...courseForm, board: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-violet-500/50"
                     >
                       {['CBSE', 'ICSE', 'State Board', 'Other'].map((b) => (
-                        <option key={b} value={b} className="bg-gray-900">{b}</option>
+                        <option key={b} value={b} className="bg-theme-card">{b}</option>
                       ))}
                     </select>
                   </div>
@@ -556,7 +556,7 @@ export default function AdminDashboard() {
                     <input
                       type="text" placeholder="e.g. \ud83d\udcda" value={courseForm.icon}
                       onChange={(e) => setCourseForm({ ...courseForm, icon: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50"
                     />
                   </div>
                   <div>
@@ -564,10 +564,10 @@ export default function AdminDashboard() {
                     <select
                       value={courseForm.color}
                       onChange={(e) => setCourseForm({ ...courseForm, color: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-violet-500/50"
                     >
                       {['violet', 'cyan', 'emerald', 'amber', 'rose', 'indigo', 'blue', 'red'].map((c) => (
-                        <option key={c} value={c} className="bg-gray-900">{c}</option>
+                        <option key={c} value={c} className="bg-theme-card">{c}</option>
                       ))}
                     </select>
                   </div>
@@ -578,7 +578,7 @@ export default function AdminDashboard() {
                     placeholder="Course ke baare mein likho..." value={courseForm.description}
                     onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
                     rows={3}
-                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 resize-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50 resize-none"
                   />
                 </div>
               </div>
@@ -610,14 +610,14 @@ export default function AdminDashboard() {
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-lg bg-gray-900 border border-theme-border rounded-2xl p-6 shadow-2xl max-h-[85vh] overflow-y-auto"
+              className="w-full max-w-lg bg-theme-card border border-theme-border rounded-2xl p-6 shadow-2xl max-h-[85vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <h2 className="text-xl font-bold text-theme-text flex items-center gap-2">
                   <Upload className="w-5 h-5 text-cyan-400" /> Upload Syllabus / Add Chapters
                 </h2>
-                <button onClick={() => setShowUploadSyllabus(false)} className="text-theme-text-muted hover:text-white transition-colors">
+                <button onClick={() => setShowUploadSyllabus(false)} className="text-theme-text-muted hover:text-theme-text transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -628,11 +628,11 @@ export default function AdminDashboard() {
                   <select
                     value={chapterForm.course_id}
                     onChange={(e) => setChapterForm({ ...chapterForm, course_id: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white focus:outline-none focus:border-violet-500/50"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-violet-500/50"
                   >
-                    <option value="" className="bg-gray-900">-- Course select karo --</option>
+                    <option value="" className="bg-theme-card">-- Course select karo --</option>
                     {apiCourses.map((c) => (
-                      <option key={c.id} value={c.id} className="bg-gray-900">{c.icon} {c.title} ({c.subject})</option>
+                      <option key={c.id} value={c.id} className="bg-theme-card">{c.icon} {c.title} ({c.subject})</option>
                     ))}
                   </select>
                 </div>
@@ -641,7 +641,7 @@ export default function AdminDashboard() {
                   <input
                     type="text" placeholder="e.g. Real Numbers" value={chapterForm.title}
                     onChange={(e) => setChapterForm({ ...chapterForm, title: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50"
                   />
                 </div>
                 <div>
@@ -650,7 +650,7 @@ export default function AdminDashboard() {
                     placeholder="Chapter ka content / notes likho..." value={chapterForm.content}
                     onChange={(e) => setChapterForm({ ...chapterForm, content: e.target.value })}
                     rows={4}
-                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 resize-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50 resize-none"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -659,7 +659,7 @@ export default function AdminDashboard() {
                     <input
                       type="text" placeholder="https://youtube.com/..." value={chapterForm.video_url}
                       onChange={(e) => setChapterForm({ ...chapterForm, video_url: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50"
                     />
                   </div>
                   <div>
@@ -667,7 +667,7 @@ export default function AdminDashboard() {
                     <input
                       type="number" min={1} value={chapterForm.order}
                       onChange={(e) => setChapterForm({ ...chapterForm, order: Number(e.target.value) })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-white focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-4 py-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text focus:outline-none focus:border-violet-500/50"
                     />
                   </div>
                 </div>
