@@ -26,5 +26,5 @@ export default function Avatar({ avatar, fallback = '🦁', className = '', imgC
     );
   }
 
-  return <>{value}</>;
+  return <span className={`flex items-center justify-center w-full h-full ${className}`}>{value}</span>;
 }
