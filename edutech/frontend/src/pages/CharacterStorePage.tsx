@@ -110,8 +110,8 @@ export default function CharacterStorePage() {
   const filtered = filter === 'all' ? avatars : avatars.filter((a: typeof avatars[number]) => a.rarity === filter);
 
   return (
-    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
+      <div className="max-w-6xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium mb-4">
             <ShoppingBag className="w-4 h-4" /> Avatar Store

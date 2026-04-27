@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  User, Mail, Phone, Shield, Edit3, Camera, Moon, Sun,
-  Globe, Bell, Zap, Flame, Trophy, Award, BookOpen, Star,
-  CheckCircle, AlertTriangle, LogOut, School,
+  Edit3, Camera,
+  Flame, Award, BookOpen, Star,
+  CheckCircle, AlertTriangle, LogOut, Crown,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { authApi, gamificationApi, type Badge as ApiBadge } from '../services/api';
 
@@ -92,7 +92,6 @@ export default function ProfilePage() {
         phone: phone.trim() || undefined,
         ...(user?.role === 'student' ? { grade: grade || undefined, board: board || undefined } : {}),
       });
-      // Update store with new data
       if (user) {
         setUser({
           ...user,
@@ -128,252 +127,201 @@ export default function ProfilePage() {
     setSuccessMsg(newVal ? 'Notifications enabled!' : 'Notifications disabled!');
   };
 
-  const stats = [
-    { label: 'Total XP', value: user?.subscription === 'pro' || user?.subscription === 'premium' ? '∞ Unlimited' : (user?.xp ?? 0).toLocaleString(), icon: Zap, color: 'text-yellow-400' },
-    { label: 'Streak', value: `${user?.streak ?? 0} Days`, icon: Flame, color: 'text-orange-400' },
-    { label: 'Level', value: `${user?.level ?? 1}`, icon: Trophy, color: 'text-violet-400' },
-    { label: 'Courses', value: '0', icon: BookOpen, color: 'text-emerald-400' },
-  ];
+  const isPremium = user?.subscription === 'pro' || user?.subscription === 'premium';
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      setErrorMsg('Photo size 2MB se kam honi chahiye.');
+      return;
+    }
+    setUploadingPhoto(true);
+    try {
+      const reader = new FileReader();
+      const base64 = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const img = new Image();
+      const resized = await new Promise<string>((resolve, reject) => {
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxSize = 200;
+          let w = img.width;
+          let h = img.height;
+          if (w > h) { h = (h / w) * maxSize; w = maxSize; }
+          else { w = (w / h) * maxSize; h = maxSize; }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.8));
+        };
+        img.onerror = reject;
+        img.src = base64;
+      });
+      await authApi.updateProfile({ avatar: resized });
+      if (user) {
+        setUser({ ...user, avatar: resized });
+      }
+      setSuccessMsg('Profile photo updated!');
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : 'Photo upload failed.');
+    } finally {
+      setUploadingPhoto(false);
+      e.target.value = '';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
       {/* Toast notifications */}
       <AnimatePresence>
         {successMsg && (
-          <motion.div
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            className="fixed top-4 right-4 z-50 flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-500/30"
-          >
-            <CheckCircle className="w-5 h-5" />
-            {successMsg}
+          <motion.div initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }}
+            className="fixed top-4 right-4 z-50 flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-500/30">
+            <CheckCircle className="w-5 h-5" /> {successMsg}
           </motion.div>
         )}
         {errorMsg && (
-          <motion.div
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            className="fixed top-4 right-4 z-50 flex items-center gap-2 px-5 py-3 rounded-xl bg-red-600 text-white shadow-lg shadow-red-500/30"
-          >
-            <AlertTriangle className="w-5 h-5" />
-            {errorMsg}
+          <motion.div initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }}
+            className="fixed top-4 right-4 z-50 flex items-center gap-2 px-5 py-3 rounded-xl bg-red-600 text-white shadow-lg shadow-red-500/30">
+            <AlertTriangle className="w-5 h-5" /> {errorMsg}
           </motion.div>
         )}
       </AnimatePresence>
 
-            <div className="max-w-4xl mx-auto relative z-10">
-              {/* Profile Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative p-8 rounded-3xl bg-gradient-to-br from-violet-600/20 via-purple-600/10 to-cyan-600/20 border border-theme-border mb-8 overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-t from-white/80 dark:from-gray-950/80 to-transparent" />
-          <div className="relative flex flex-col sm:flex-row items-center gap-6">
-            <div className="relative">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="w-28 h-28 rounded-3xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-5xl shadow-xl shadow-violet-500/30"
-              >
-                {user?.avatar && user.avatar.startsWith('data:') ? (
-                  <img src={user.avatar} alt="Profile" className="w-full h-full object-cover rounded-3xl" />
-                ) : (
-                  user?.avatar || '🦁'
-                )}
-              </motion.div>
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploadingPhoto}
-                className="absolute -bottom-2 -right-2 p-2 rounded-xl bg-theme-card border border-theme-border text-theme-text-secondary hover:text-theme-text transition-colors disabled:opacity-50"
-              >
-                {uploadingPhoto ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <Camera className="w-4 h-4" />
-                )}
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  if (file.size > 2 * 1024 * 1024) {
-                    setErrorMsg('Photo size 2MB se kam honi chahiye.');
-                    return;
-                  }
-                  setUploadingPhoto(true);
-                  try {
-                    const reader = new FileReader();
-                    const base64 = await new Promise<string>((resolve, reject) => {
-                      reader.onload = () => resolve(reader.result as string);
-                      reader.onerror = reject;
-                      reader.readAsDataURL(file);
-                    });
-                    // Resize image to max 200x200 for storage
-                    const img = new Image();
-                    const resized = await new Promise<string>((resolve, reject) => {
-                      img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const maxSize = 200;
-                        let w = img.width;
-                        let h = img.height;
-                        if (w > h) { h = (h / w) * maxSize; w = maxSize; }
-                        else { w = (w / h) * maxSize; h = maxSize; }
-                        canvas.width = w;
-                        canvas.height = h;
-                        const ctx = canvas.getContext('2d');
-                        ctx?.drawImage(img, 0, 0, w, h);
-                        resolve(canvas.toDataURL('image/jpeg', 0.8));
-                      };
-                      img.onerror = reject;
-                      img.src = base64;
-                    });
-                    await authApi.updateProfile({ avatar: resized });
-                    if (user) {
-                      setUser({ ...user, avatar: resized });
-                    }
-                    setSuccessMsg('Profile photo updated!');
-                  } catch (err) {
-                    setErrorMsg(err instanceof Error ? err.message : 'Photo upload failed.');
-                  } finally {
-                    setUploadingPhoto(false);
-                    e.target.value = '';
-                  }
-                }}
-              />
-            </div>
-            <div className="text-center sm:text-left flex-1">
-              <h1 className="text-3xl font-black text-theme-text mb-1">{user?.name || 'Student'}</h1>
-              <p className="text-theme-text-secondary mb-3">{user?.email || 'student@eduai.com'}</p>
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
-                <span className="px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-xs font-bold capitalize">
-                  {user?.role || 'student'}
-                </span>
-                <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold capitalize">
-                  {user?.subscription || 'pro'} Plan
-                </span>
-                <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">
-                  <Star className="w-3 h-3" /> Level {user?.level ?? 5}
-                </span>
-              </div>
-            </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setEditing(!editing)}
-              className="px-5 py-2.5 rounded-xl font-medium text-sm text-theme-text bg-theme-surface border border-theme-border hover:bg-theme-card-hover transition-all flex items-center gap-2"
-            >
-              <Edit3 className="w-4 h-4" />
-              Edit Profile
-            </motion.button>
+      <div className="max-w-[1100px] mx-auto relative z-10">
+
+        {/* Profile Header — matching mockup */}
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+          className="p-8 rounded-[24px] mb-6 relative overflow-hidden flex flex-col sm:flex-row items-center gap-7"
+          style={{ background: 'linear-gradient(135deg, var(--color-surface), #fce7f3, #dbeafe)', border: '1px solid rgba(124,58,237,0.06)' }}>
+          <div className="absolute -top-[60px] -right-[60px] w-[250px] h-[250px] rounded-full bg-violet-300/10 dark:bg-violet-400/5 blur-[40px]" />
+
+          {/* Avatar Section */}
+          <div className="relative z-[1] flex-shrink-0">
+            <motion.div whileHover={{ scale: 1.05 }}
+              className="w-[120px] h-[120px] rounded-[30px] overflow-hidden border-4 border-white dark:border-gray-700 shadow-xl cursor-pointer"
+              onClick={() => fileInputRef.current?.click()}>
+              {user?.avatar && user.avatar.startsWith('data:') ? (
+                <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-5xl">
+                  {user?.avatar || '\ud83e\udd81'}
+                </div>
+              )}
+            </motion.div>
+            <button onClick={() => fileInputRef.current?.click()} disabled={uploadingPhoto}
+              className="absolute -bottom-1 -right-1 w-9 h-9 rounded-xl bg-violet-600 text-white border-[3px] border-white dark:border-gray-800 flex items-center justify-center shadow-md disabled:opacity-50">
+              {uploadingPhoto ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Camera className="w-4 h-4" />}
+            </button>
+            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
           </div>
+
+          {/* Profile Info */}
+          <div className="relative z-[1] flex-1 text-center sm:text-left">
+            <h1 className="font-['Space_Grotesk'] text-[26px] font-extrabold text-theme-text mb-1">{user?.name || 'Student'}</h1>
+            <p className="text-[13px] text-theme-text-secondary mb-3">
+              {user?.email || 'student@eduai.com'}
+              {user?.phone ? ` \u2022 ${user.phone}` : ''}
+            </p>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+              {isPremium && (
+                <span className="inline-flex items-center gap-1 px-3 py-[5px] rounded-lg text-[11px] font-bold"
+                  style={{ background: 'linear-gradient(135deg, #fef3c7, #fde68a)', color: '#92400e' }}>
+                  <Crown className="w-3 h-3" /> Pro Member
+                </span>
+              )}
+              <span className="inline-flex items-center gap-1 px-3 py-[5px] rounded-lg text-[11px] font-bold bg-amber-50 dark:bg-amber-900/20 text-orange-500">
+                <Flame className="w-3 h-3" /> {user?.streak ?? 0} Day Streak
+              </span>
+              <span className="inline-flex items-center gap-1 px-3 py-[5px] rounded-lg text-[11px] font-bold bg-violet-100 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400">
+                <Star className="w-3 h-3" /> Level {user?.level ?? 1}
+              </span>
+              {user?.board && user?.grade && (
+                <span className="inline-flex items-center gap-1 px-3 py-[5px] rounded-lg text-[11px] font-bold bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                  <BookOpen className="w-3 h-3" /> {user.board} \u2022 Class {user.grade}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="relative z-[1] flex gap-5 sm:gap-6 flex-shrink-0">
+            <div className="text-center">
+              <div className="font-['Space_Grotesk'] text-[24px] font-extrabold text-theme-text">
+                {isPremium ? '\u221e' : (user?.xp ?? 0).toLocaleString()}
+              </div>
+              <div className="text-[11px] font-semibold text-theme-text-muted">Total XP</div>
+            </div>
+            <div className="text-center">
+              <div className="font-['Space_Grotesk'] text-[24px] font-extrabold text-theme-text">
+                {user?.level ?? 1}
+              </div>
+              <div className="text-[11px] font-semibold text-theme-text-muted">Level</div>
+            </div>
+            <div className="text-center">
+              <div className="font-['Space_Grotesk'] text-[24px] font-extrabold text-theme-text">
+                {user?.streak ?? 0}
+              </div>
+              <div className="text-[11px] font-semibold text-theme-text-muted">Streak</div>
+            </div>
+          </div>
+
+          {/* Edit button */}
+          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+            onClick={() => setEditing(!editing)}
+            className="absolute top-6 right-6 z-[2] p-2.5 rounded-xl bg-white/80 dark:bg-gray-800/60 border border-theme-border text-theme-text-secondary hover:text-theme-text transition-all backdrop-blur-sm">
+            <Edit3 className="w-4 h-4" />
+          </motion.button>
         </motion.div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-          {stats.map((stat, i) => {
-            const Icon = stat.icon;
-            return (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.05 }}
-                whileHover={{ y: -3 }}
-                className="p-4 rounded-2xl bg-theme-card border border-theme-border text-center"
-              >
-                <Icon className={`w-6 h-6 mx-auto mb-2 ${stat.color}`} />
-                <p className="text-xl font-black text-theme-text">{stat.value}</p>
-                <p className="text-xs text-theme-text-muted">{stat.label}</p>
-              </motion.div>
-            );
-          })}
-        </div>
+        {/* 2-Column Grid — matching mockup */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Personal Info */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="p-6 rounded-2xl bg-theme-card border border-theme-border"
-          >
-                        <h3 className="text-lg font-bold text-theme-text mb-4 flex items-center gap-2">
-                          <User className="w-5 h-5 text-violet-400" />
-                          Personal Information
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <label className="text-xs text-theme-text-muted mb-1 block">Full Name</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  disabled={!editing}
-                  className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-theme-text-muted mb-1 block">Email</label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
-                  <input
-                    type="email"
-                    value={user?.email || 'student@eduai.com'}
-                    disabled
-                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text opacity-50"
-                  />
+          {/* Left Column */}
+          <div className="flex flex-col gap-4">
+            {/* Personal Info Card */}
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}
+              className="p-6 rounded-[22px] bg-theme-card border border-theme-border shadow-sm">
+              <h3 className="text-[16px] font-extrabold text-theme-text mb-[18px] flex items-center gap-2">
+                {'\ud83d\udc64'} Personal Information
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-[12px] font-bold text-theme-text-muted mb-1.5 block">Full Name</label>
+                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} disabled={!editing}
+                    className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm disabled:opacity-60 focus:outline-none focus:border-violet-400 transition-all" />
                 </div>
-              </div>
-              <div>
-                <label className="text-xs text-theme-text-muted mb-1 block">Phone</label>
-                <div className="relative">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 9876543210"
-                    disabled={!editing}
-                                      className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all"
-                                    />
+                <div>
+                  <label className="text-[12px] font-bold text-theme-text-muted mb-1.5 block">Email</label>
+                  <input type="email" value={user?.email || ''} disabled
+                    className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm opacity-60" />
                 </div>
-              </div>
-              {/* Grade & Board - only for students */}
-              {user?.role === 'student' && (
-                <>
-                  <div>
-                    <label className="text-xs text-theme-text-muted mb-1 block">Class</label>
-                    <div className="relative">
-                      <BookOpen className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
-                      <select
-                                                value={grade}
-                                                onChange={(e) => setGrade(e.target.value)}
-                                                disabled={!editing}
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all appearance-none"
-                      >
+                <div>
+                  <label className="text-[12px] font-bold text-theme-text-muted mb-1.5 block">Phone Number</label>
+                  <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 9876543210" disabled={!editing}
+                    className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm disabled:opacity-60 focus:outline-none focus:border-violet-400 transition-all" />
+                </div>
+                {user?.role === 'student' && (
+                  <div className="flex gap-3">
+                    <div className="flex-1">
+                      <label className="text-[12px] font-bold text-theme-text-muted mb-1.5 block">Class</label>
+                      <select value={grade} onChange={(e) => setGrade(e.target.value)} disabled={!editing}
+                        className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm disabled:opacity-60 focus:outline-none focus:border-violet-400 transition-all appearance-none">
                         <option value="">Select Class</option>
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((g) => (
                           <option key={g} value={String(g)}>Class {g}</option>
                         ))}
                       </select>
                     </div>
-                  </div>
-                  <div>
-                    <label className="text-xs text-theme-text-muted mb-1 block">Board</label>
-                    <div className="relative">
-                      <School className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
-                      <select
-                                                value={board}
-                                                onChange={(e) => setBoard(e.target.value)}
-                                                disabled={!editing}
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all appearance-none"
-                      >
+                    <div className="flex-1">
+                      <label className="text-[12px] font-bold text-theme-text-muted mb-1.5 block">Board</label>
+                      <select value={board} onChange={(e) => setBoard(e.target.value)} disabled={!editing}
+                        className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm disabled:opacity-60 focus:outline-none focus:border-violet-400 transition-all appearance-none">
                         <option value="">Select Board</option>
                         <option value="CBSE">CBSE</option>
                         <option value="ICSE">ICSE</option>
@@ -381,125 +329,155 @@ export default function ProfilePage() {
                       </select>
                     </div>
                   </div>
-                </>
-              )}
-              {editing && (
-                <motion.button
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25 disabled:opacity-60"
-                >
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </motion.button>
-              )}
-            </div>
-          </motion.div>
+                )}
+                {editing && (
+                  <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                    whileHover={{ y: -1 }} whileTap={{ scale: 0.98 }}
+                    onClick={handleSave} disabled={saving}
+                    className="w-full py-3.5 rounded-[14px] font-bold text-white bg-violet-600 shadow-lg shadow-violet-500/25 disabled:opacity-60 mt-2 text-sm">
+                    {saving ? 'Saving...' : '\ud83d\udcbe Save Changes'}
+                  </motion.button>
+                )}
+              </div>
+            </motion.div>
 
-          {/* Settings */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-            className="space-y-6"
-          >
-            {/* Theme */}
-            <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
-                            <h3 className="text-lg font-bold text-theme-text mb-4 flex items-center gap-2">
-                              <Shield className="w-5 h-5 text-cyan-400" />
-                              Settings
+            {/* Preferences Card */}
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}
+              className="p-6 rounded-[22px] bg-theme-card border border-theme-border shadow-sm">
+              <h3 className="text-[16px] font-extrabold text-theme-text mb-[18px] flex items-center gap-2">
+                {'\u2699\ufe0f'} Preferences
               </h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-theme-input">
-                  <div className="flex items-center gap-3">
-                    {darkMode ? <Moon className="w-5 h-5 text-violet-400" /> : <Sun className="w-5 h-5 text-amber-400" />}
-                    <span className="text-sm text-theme-text-secondary">Dark Mode</span>
+              <div className="divide-y divide-[rgba(0,0,0,0.03)] dark:divide-white/5">
+                {/* Dark Mode */}
+                <div className="flex items-center justify-between py-3">
+                  <div>
+                    <div className="text-[13px] font-semibold text-theme-text-secondary">Dark Mode</div>
+                    <div className="text-[11px] text-theme-text-muted mt-0.5">Switch to dark theme</div>
                   </div>
-                  <button
-                    onClick={handleDarkModeToggle}
-                    className={`w-12 h-7 rounded-full transition-all ${darkMode ? 'bg-violet-500' : 'bg-gray-300 dark:bg-gray-600'}`}
-                  >
-                    <motion.div
-                      animate={{ x: darkMode ? 22 : 2 }}
-                      className="w-5 h-5 rounded-full bg-white shadow-sm"
-                    />
+                  <button onClick={handleDarkModeToggle}
+                    className={`w-11 h-6 rounded-full transition-all ${darkMode ? 'bg-violet-600' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                    <motion.div animate={{ x: darkMode ? 22 : 2 }} className="w-5 h-5 rounded-full bg-white shadow-sm" />
                   </button>
                 </div>
-
-                <div className="flex items-center justify-between p-3 rounded-xl bg-theme-input">
-                  <div className="flex items-center gap-3">
-                    <Globe className="w-5 h-5 text-emerald-400" />
-                    <span className="text-sm text-theme-text-secondary">Language</span>
+                {/* Notifications */}
+                <div className="flex items-center justify-between py-3">
+                  <div>
+                    <div className="text-[13px] font-semibold text-theme-text-secondary">Notifications</div>
+                    <div className="text-[11px] text-theme-text-muted mt-0.5">Push notifications for goals & streaks</div>
                   </div>
-                  <select
-                    value={language}
-                    onChange={(e) => handleLanguageChange(e.target.value)}
-                    className="bg-theme-surface text-theme-text text-sm rounded-lg px-3 py-1.5 border border-theme-border focus:outline-none"
-                  >
+                  <button onClick={handleNotificationsToggle}
+                    className={`w-11 h-6 rounded-full transition-all ${notifications ? 'bg-violet-600' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                    <motion.div animate={{ x: notifications ? 22 : 2 }} className="w-5 h-5 rounded-full bg-white shadow-sm" />
+                  </button>
+                </div>
+                {/* Language */}
+                <div className="flex items-center justify-between py-3">
+                  <div>
+                    <div className="text-[13px] font-semibold text-theme-text-secondary">Language</div>
+                    <div className="text-[11px] text-theme-text-muted mt-0.5">Choose app language</div>
+                  </div>
+                  <select value={language} onChange={(e) => handleLanguageChange(e.target.value)}
+                    className="bg-theme-surface text-theme-text text-sm rounded-lg px-3 py-1.5 border border-theme-border focus:outline-none">
                     <option value="hindi">Hindi</option>
                     <option value="english">English</option>
                     <option value="hinglish">Hinglish</option>
                   </select>
                 </div>
-
-                <div className="flex items-center justify-between p-3 rounded-xl bg-theme-input">
-                  <div className="flex items-center gap-3">
-                    <Bell className="w-5 h-5 text-amber-400" />
-                    <span className="text-sm text-theme-text-secondary">Notifications</span>
-                  </div>
-                  <button
-                    onClick={handleNotificationsToggle}
-                    className={`w-12 h-7 rounded-full transition-all ${notifications ? 'bg-violet-500' : 'bg-gray-300 dark:bg-gray-600'}`}
-                  >
-                    <motion.div animate={{ x: notifications ? 22 : 2 }} className="w-5 h-5 rounded-full bg-white shadow-sm" />
-                  </button>
-                </div>
               </div>
-            </div>
+            </motion.div>
+          </div>
 
-            {/* Badges */}
-            <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
-                            <h3 className="text-lg font-bold text-theme-text mb-4 flex items-center gap-2">
-                              <Award className="w-5 h-5 text-amber-400" />
-                              Badges ({badges.filter((b) => b.unlocked).length}/{badges.length})
+          {/* Right Column */}
+          <div className="flex flex-col gap-4">
+            {/* XP Card — gradient */}
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
+              className="p-6 rounded-[22px] text-white relative overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, var(--color-accent), var(--color-accent2))' }}>
+              <div className="absolute -right-[30px] -top-[30px] w-[120px] h-[120px] rounded-full bg-white/[0.08]" />
+              <div className="text-[14px] font-bold opacity-[0.85] mb-2">{'\u26a1'} Experience Points</div>
+              <div className="font-['Space_Grotesk'] text-[36px] font-extrabold relative z-[1] mb-1">
+                {isPremium ? '\u221e Unlimited' : (user?.xp ?? 0).toLocaleString()}
+              </div>
+              <div className="text-[12px] opacity-70">Level {user?.level ?? 1} \u2022 Keep learning to earn more!</div>
+              {!isPremium && (
+                <div className="mt-3.5">
+                  <div className="flex justify-between text-[11px] font-semibold opacity-80 mb-1">
+                    <span>Progress to Level {(user?.level ?? 1) + 1}</span>
+                    <span>{Math.min(100, Math.round(((user?.xp ?? 0) % 500) / 5))}%</span>
+                  </div>
+                  <div className="h-2 rounded-lg bg-white/20 overflow-hidden">
+                    <div className="h-full rounded-lg bg-white/80" style={{ width: `${Math.min(100, Math.round(((user?.xp ?? 0) % 500) / 5))}%` }} />
+                  </div>
+                </div>
+              )}
+            </motion.div>
+
+            {/* Membership Card */}
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
+              className="p-6 rounded-[22px] relative overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, #fef3c7, #fde68a)', border: '1px solid rgba(245,158,11,0.15)' }}>
+              <div className="absolute -right-5 -bottom-5 w-[100px] h-[100px] rounded-full bg-amber-500/10" />
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold mb-2.5"
+                style={{ background: 'rgba(146,64,14,0.1)', color: '#92400e' }}>
+                <Crown className="w-3 h-3" /> {isPremium ? 'Active' : 'Upgrade'}
+              </span>
+              <h3 className="text-[18px] font-extrabold mb-1" style={{ color: '#78350f' }}>
+                {isPremium ? 'Pro Member' : 'Go Pro!'}
               </h3>
-              <div className="grid grid-cols-4 gap-2">
-                {badges.map((badge) => (
-                  <motion.div
-                    key={badge.id}
-                    whileHover={{ scale: 1.1 }}
-                    className={`text-center p-2 rounded-xl ${
-                      badge.unlocked ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-theme-input opacity-40'
-                    }`}
-                    title={badge.description}
-                  >
-                    <span className="text-xl">{badge.icon}</span>
-                    <p className="text-xs text-theme-text-secondary mt-1 truncate">{badge.name}</p>
-                  </motion.div>
+              <p className="text-[13px] leading-relaxed mb-3.5" style={{ color: '#a16207' }}>
+                {isPremium ? 'Unlimited AI features, no XP limits!' : 'Unlock unlimited AI Video Lessons, AI Chat & more.'}
+              </p>
+              <div className="flex flex-col gap-1.5 mb-3.5">
+                {['\u2728 Unlimited AI Video Lessons', '\ud83e\udde0 Unlimited AI Chat', '\ud83d\udd25 Priority Support'].map((feat) => (
+                  <div key={feat} className="flex items-center gap-2 text-[12px] font-semibold" style={{ color: '#92400e' }}>
+                    {feat}
+                  </div>
                 ))}
               </div>
-            </div>
-          </motion.div>
+              {!isPremium && (
+                <Link to="/membership">
+                  <motion.button whileHover={{ y: -1 }} whileTap={{ scale: 0.98 }}
+                    className="w-full py-3 rounded-xl font-bold text-white text-sm"
+                    style={{ background: '#92400e', boxShadow: '0 4px 12px rgba(146,64,14,0.25)' }}>
+                    Upgrade to Pro — \u20b9299/month
+                  </motion.button>
+                </Link>
+              )}
+            </motion.div>
+
+            {/* Badges Card */}
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}
+              className="p-6 rounded-[22px] bg-theme-card border border-theme-border shadow-sm">
+              <h3 className="text-[16px] font-extrabold text-theme-text mb-[18px] flex items-center gap-2">
+                <Award className="w-5 h-5 text-amber-400" />
+                Badges ({badges.filter((b) => b.unlocked).length}/{badges.length})
+              </h3>
+              {badges.length > 0 ? (
+                <div className="grid grid-cols-4 gap-2">
+                  {badges.map((badge) => (
+                    <motion.div key={badge.id} whileHover={{ scale: 1.1 }}
+                      className={`text-center p-2.5 rounded-xl ${
+                        badge.unlocked ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-theme-input opacity-40'
+                      }`} title={badge.description}>
+                      <span className="text-xl">{badge.icon}</span>
+                      <p className="text-[11px] text-theme-text-secondary mt-1 truncate font-semibold">{badge.name}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-theme-text-muted text-center py-4">Abhi koi badge nahi mila. Quizzes do aur badges unlock karo!</p>
+              )}
+            </motion.div>
+          </div>
         </div>
 
-        {/* Logout Button */}
-        <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => {
-            logout();
-            navigate('/login');
-          }}
-          className="w-full mt-8 py-4 rounded-2xl font-bold text-red-400 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all flex items-center justify-center gap-3"
-        >
-          <LogOut className="w-5 h-5" />
-          Logout
+        {/* Logout Button — matching mockup */}
+        <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+          whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}
+          onClick={() => { logout(); navigate('/login'); }}
+          className="w-full mt-4 py-3.5 rounded-[14px] font-bold text-rose-500 text-sm flex items-center justify-center gap-2 transition-all"
+          style={{ background: '#fce7f3', border: '1px solid rgba(244,63,94,0.15)' }}>
+          <LogOut className="w-4 h-4" /> Logout
         </motion.button>
       </div>
     </div>

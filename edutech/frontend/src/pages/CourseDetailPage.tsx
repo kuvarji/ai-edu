@@ -125,8 +125,8 @@ export default function CourseDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
+      <div className="max-w-5xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <Link to="/courses" className="inline-flex items-center gap-2 text-theme-text-secondary hover:text-theme-text mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back to Courses

@@ -89,8 +89,8 @@ export default function ParentDashboard() {
     : [];
 
   return (
-    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
+      <div className="max-w-7xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <h1 className="text-3xl font-black text-theme-text mb-1">Parent Dashboard</h1>
           <p className="text-theme-text-secondary">Apne bachche ki padhai ka pura overview</p>

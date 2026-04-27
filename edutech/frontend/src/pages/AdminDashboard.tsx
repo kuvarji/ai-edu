@@ -191,8 +191,8 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Toast Messages */}
         <AnimatePresence>
           {successMsg && (
@@ -221,7 +221,7 @@ export default function AdminDashboard() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => { setShowUploadSyllabus(true); setAddedChapters([]); setChapterForm({ course_id: '', title: '', content: '', video_url: '', order: 1 }); }}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-300 bg-theme-input border border-theme-border hover:bg-theme-card-hover transition-all"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-theme-text-secondary bg-theme-input border border-theme-border hover:bg-theme-card-hover transition-all"
             >
               <Upload className="w-4 h-4" /> Upload Syllabus
             </motion.button>
