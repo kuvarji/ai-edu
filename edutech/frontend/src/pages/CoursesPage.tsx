@@ -128,8 +128,8 @@ export default function CoursesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
-        <div className="max-w-[1100px] mx-auto relative z-10">
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 sm:px-6 lg:px-10 blob-bg">
+        <div className="max-w-[1400px] mx-auto relative z-10">
           <div className="mb-6">
             <div className="h-8 w-48 bg-[var(--color-surface)] animate-pulse rounded-lg mb-2" />
             <div className="h-5 w-72 bg-[var(--color-surface)] animate-pulse rounded-lg" />
@@ -144,7 +144,7 @@ export default function CoursesPage() {
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {[1,2,3,4,5,6].map(i => <CourseCardSkeleton key={i} />)}
           </div>
         </div>
@@ -153,8 +153,8 @@ export default function CoursesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
-      <div className="max-w-[1100px] mx-auto relative z-10">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 sm:px-6 lg:px-10 blob-bg">
+      <div className="max-w-[1400px] mx-auto relative z-10">
 
         {/* Page Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-col sm:flex-row justify-between sm:items-end gap-3">
@@ -170,7 +170,7 @@ export default function CoursesPage() {
 
         {/* Stats Row */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-6">
+          className="grid grid-cols-2 sm:grid-cols-4 gap-4 lg:gap-6 mb-8">
           {[
             { emoji: '\ud83d\udcd6', val: String(courses.length), label: 'Active Courses' },
             { emoji: '\u2705', val: String(totalChaptersDone), label: 'Chapters Done' },
@@ -188,7 +188,7 @@ export default function CoursesPage() {
 
         {/* Filter Tabs */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="flex flex-wrap gap-2 mb-5 items-center">
+          className="flex flex-wrap gap-2 mb-6 items-center">
           <div className="flex gap-1.5 p-1.5 rounded-[14px] bg-theme-card border border-theme-border">
             {[
               { key: 'all', label: 'All Subjects' },
@@ -220,7 +220,7 @@ export default function CoursesPage() {
 
         {/* Search */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-          className="relative mb-6">
+          className="relative mb-8">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="Search courses..."
@@ -234,7 +234,7 @@ export default function CoursesPage() {
             <p className="text-theme-text-secondary text-sm">No courses found. Try changing filters!</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {filtered.map((course, i) => {
               const pct = course.chapters > 0 ? Math.round((course.completedChapters / course.chapters) * 100) : 0;
               return (
