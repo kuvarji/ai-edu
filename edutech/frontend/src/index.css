@@ -309,8 +309,8 @@
   100% { transform: translateY(-70px) translateX(15px); opacity: 0; }
 }
 @keyframes ringPulse {
-  0%, 100% { transform: scale(0.88); opacity: 0.25; }
-  50% { transform: scale(1.12); opacity: 0.06; }
+  0%, 100% { transform: translate(-50%, -50%) scale(0.88); opacity: 0.25; }
+  50% { transform: translate(-50%, -50%) scale(1.12); opacity: 0.06; }
 }
 
 /* 3D character stage */
