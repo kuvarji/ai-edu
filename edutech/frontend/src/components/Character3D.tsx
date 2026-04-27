@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useStore } from '../store/useStore';
 
@@ -8,11 +8,12 @@ export default function Character3D() {
   const { user } = useStore();
   const avatar = user?.avatar || DEFAULT_EMOJI;
   const isBase64 = avatar.startsWith('data:') || avatar.startsWith('http');
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const particleStyles = useMemo(() => Array.from({ length: 8 }, (_, i) => ({
+    left: `${20 + Math.random() * 60}%`,
+    animationDelay: `${i * 0.4}s`,
+    animationDuration: `${2.5 + Math.random() * 2}s`,
+  })), []);
 
   return (
     <div className="char-3d-stage" aria-hidden="true">
@@ -25,15 +26,11 @@ export default function Character3D() {
       <div className="char-3d-glow" />
 
       {/* Particles */}
-      {mounted && Array.from({ length: 8 }).map((_, i) => (
+      {particleStyles.map((style, i) => (
         <div
           key={i}
           className="char-particle"
-          style={{
-            left: `${20 + Math.random() * 60}%`,
-            animationDelay: `${i * 0.4}s`,
-            animationDuration: `${2.5 + Math.random() * 2}s`,
-          }}
+          style={style}
         />
       ))}
 
