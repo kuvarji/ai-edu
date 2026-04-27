@@ -109,7 +109,7 @@ export default function CoursesPage() {
             <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
               <div className="max-w-7xl mx-auto relative z-10">
                 <div className="mb-8">
-            <div className="h-8 w-48 bg-gray-700/50             animate-pulse rounded-full mb-4" />
+            <div className="h-8 w-48 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full mb-4" />
                         <div className="h-10 w-56 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
                         <div className="h-5 w-72 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
           </div>
