@@ -386,10 +386,10 @@ export default function DashboardPage() {
                 <YAxis stroke="#4b5563" fontSize={12} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid rgba(0,0,0,0.08)',
+                    backgroundColor: 'var(--color-card)',
+                    border: '1px solid var(--color-border)',
                     borderRadius: '12px',
-                    color: '#1a1a2e',
+                    color: 'var(--color-text)',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                   }}
                   formatter={(value: number, name: string) => {

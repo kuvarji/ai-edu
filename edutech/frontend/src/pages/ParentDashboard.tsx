@@ -296,7 +296,7 @@ export default function ParentDashboard() {
               <BarChart data={[]}>
                 <XAxis dataKey="day" stroke="#4b5563" fontSize={12} />
                 <YAxis stroke="#4b5563" fontSize={12} />
-                <Tooltip contentStyle={{ backgroundColor: '#ffffff', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', color: '#1a1a2e' }} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--color-card)', border: '1px solid var(--color-border)', borderRadius: '12px', color: 'var(--color-text)' }} />
                 <Bar dataKey="hours" fill="#8b5cf6" radius={[6, 6, 0, 0]} name="Study Hours" />
                 <Bar dataKey="target" fill="#374151" radius={[6, 6, 0, 0]} name="Target" />
               </BarChart>
