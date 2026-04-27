@@ -218,8 +218,8 @@ export default function LandingPage() {
                   />
                 </motion.div>
 
-                {/* Floating badges around character (hidden on small screens) */}
-                <FloatingShape className="absolute -top-6 -left-6 landing-float-badge p-3 rounded-2xl shadow-lg z-20 hidden md:block" delay={0} duration={5}>
+                {/* Floating badges around character */}
+                <FloatingShape className="absolute -top-4 -left-4 md:-top-6 md:-left-6 landing-float-badge p-2 md:p-3 rounded-xl md:rounded-2xl shadow-lg z-20 scale-75 md:scale-100" delay={0} duration={5}>
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">{'\u{1F525}'}</span>
                     <div>
@@ -229,7 +229,7 @@ export default function LandingPage() {
                   </div>
                 </FloatingShape>
 
-                <FloatingShape className="absolute -top-2 -right-8 landing-float-badge p-3 rounded-2xl shadow-lg z-20 hidden md:block" delay={1.5} duration={6}>
+                <FloatingShape className="absolute -top-2 -right-4 md:-right-8 landing-float-badge p-2 md:p-3 rounded-xl md:rounded-2xl shadow-lg z-20 scale-75 md:scale-100" delay={1.5} duration={6}>
                   <div className="flex items-center gap-2">
                     <Trophy className="w-6 h-6 text-amber-500" />
                     <div>
@@ -239,7 +239,7 @@ export default function LandingPage() {
                   </div>
                 </FloatingShape>
 
-                <FloatingShape className="absolute -bottom-4 left-1/4 landing-float-badge p-3 rounded-2xl shadow-lg z-20 hidden md:block" delay={0.8} duration={7}>
+                <FloatingShape className="absolute -bottom-2 left-1/4 md:-bottom-4 landing-float-badge p-2 md:p-3 rounded-xl md:rounded-2xl shadow-lg z-20 scale-75 md:scale-100" delay={0.8} duration={7}>
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">{'\u{1F3AF}'}</span>
                     <div>
