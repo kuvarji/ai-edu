@@ -8,6 +8,7 @@ import {
 import { useNavigate, Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { authApi, gamificationApi, type Badge as ApiBadge } from '../services/api';
+import Avatar from '../components/Avatar';
 
 export default function ProfilePage() {
   const { user, darkMode, toggleDarkMode, setUser, logout } = useStore();
@@ -206,11 +207,11 @@ export default function ProfilePage() {
             <motion.div whileHover={{ scale: 1.05 }}
               className="w-[120px] h-[120px] rounded-[30px] overflow-hidden border-4 border-white dark:border-gray-700 shadow-xl cursor-pointer"
               onClick={() => fileInputRef.current?.click()}>
-              {user?.avatar && user.avatar.startsWith('data:') ? (
+              {user?.avatar && (user.avatar.startsWith('data:') || user.avatar.startsWith('http://') || user.avatar.startsWith('https://') || user.avatar.startsWith('blob:')) ? (
                 <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-5xl">
-                  {user?.avatar || '\ud83e\udd81'}
+                  <Avatar avatar={user?.avatar} fallback="\ud83e\udd81" className="text-5xl" />
                 </div>
               )}
             </motion.div>

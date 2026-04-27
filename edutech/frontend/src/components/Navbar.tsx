@@ -196,6 +196,21 @@ export default function Navbar() {
             className="md:hidden bg-theme-nav backdrop-blur-xl border-t border-theme-border transition-colors duration-300"
           >
             <div className="px-4 py-4 space-y-2">
+              {/* Mobile user info with avatar */}
+              {isLoggedIn && user && (
+                <div className="flex items-center gap-3 px-4 py-3 mb-2 rounded-xl bg-theme-card border border-theme-border">
+                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-indigo-200 dark:border-indigo-500/30 shadow-md flex-shrink-0 bg-gradient-to-br from-indigo-500 to-violet-500">
+                    <Avatar avatar={user.avatar} imgClassName="w-full h-full object-cover rounded-full" className="text-xl" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-theme-text truncate">{user.name || 'Student'}</p>
+                    <div className="flex items-center gap-2 text-xs text-theme-text-muted">
+                      <span className="flex items-center gap-1"><Zap className="w-3 h-3 text-amber-500" />{user.subscription === 'pro' || user.subscription === 'premium' ? '∞' : `${user.xp} XP`}</span>
+                      <span className="flex items-center gap-1"><Flame className="w-3 h-3 text-orange-500" />{user.streak}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
               {links.map((link) => {
                 const Icon = link.icon;
                 return (
@@ -210,6 +225,17 @@ export default function Navbar() {
                   </Link>
                 );
               })}
+              {isLoggedIn && (
+                <div className="pt-2 border-t border-theme-border">
+                  <button
+                    onClick={() => { logout(); setMobileOpen(false); }}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all w-full"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    {t.nav_logout}
+                  </button>
+                </div>
+              )}
               {!isLoggedIn && (
                 <div className="pt-2 border-t border-theme-border space-y-2">
                   <Link to="/login" onClick={() => setMobileOpen(false)}>
