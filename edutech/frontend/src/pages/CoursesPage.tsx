@@ -172,16 +172,22 @@ export default function CoursesPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
           className="grid grid-cols-2 sm:grid-cols-4 gap-4 lg:gap-6 mb-8">
           {[
-            { emoji: '\ud83d\udcd6', val: String(courses.length), label: 'Active Courses' },
-            { emoji: '\u2705', val: String(totalChaptersDone), label: 'Chapters Done' },
-            { emoji: '\u23f1', val: '0h', label: 'Study Time' },
-            { emoji: '\ud83c\udfc6', val: '0%', label: 'Avg Score' },
+            { emoji: '\ud83d\udcd6', val: String(courses.length), label: 'Active Courses', gradient: 'from-blue-500 to-cyan-400', glow: 'rgba(6,182,212,0.2)', iconBg: 'bg-blue-100 dark:bg-blue-900/30' },
+            { emoji: '\u2705', val: String(totalChaptersDone), label: 'Chapters Done', gradient: 'from-emerald-500 to-green-400', glow: 'rgba(16,185,129,0.2)', iconBg: 'bg-emerald-100 dark:bg-emerald-900/30' },
+            { emoji: '\u23f1', val: '0h', label: 'Study Time', gradient: 'from-violet-500 to-purple-400', glow: 'rgba(139,92,246,0.2)', iconBg: 'bg-violet-100 dark:bg-violet-900/30' },
+            { emoji: '\ud83c\udfc6', val: '0%', label: 'Avg Score', gradient: 'from-amber-500 to-orange-400', glow: 'rgba(245,158,11,0.2)', iconBg: 'bg-amber-100 dark:bg-amber-900/30' },
           ].map((s, i) => (
-            <motion.div key={i} whileHover={{ y: -3 }}
-              className="p-[18px] rounded-[18px] bg-theme-card border border-theme-border text-center hover:shadow-md transition-all cursor-default">
-              <span className="text-[28px] block mb-2">{s.emoji}</span>
-              <div className="font-['Space_Grotesk'] text-[26px] font-extrabold text-theme-text">{s.val}</div>
-              <div className="text-[11px] font-semibold text-theme-text-muted mt-0.5">{s.label}</div>
+            <motion.div key={i} whileHover={{ y: -4, scale: 1.02 }}
+              className="relative p-5 rounded-[20px] bg-theme-card border border-theme-border text-center hover:shadow-xl transition-all cursor-default overflow-hidden group">
+              {/* Gradient accent top bar */}
+              <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${s.gradient}`} />
+              {/* Background glow on hover */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(circle at 50% 30%, ${s.glow}, transparent 70%)` }} />
+              <div className={`relative z-[1] w-12 h-12 rounded-2xl ${s.iconBg} flex items-center justify-center mx-auto mb-3`}>
+                <span className="text-[26px]">{s.emoji}</span>
+              </div>
+              <div className={`relative z-[1] font-['Space_Grotesk'] text-[30px] font-extrabold bg-gradient-to-r ${s.gradient} bg-clip-text text-transparent`}>{s.val}</div>
+              <div className="relative z-[1] text-[11px] font-bold text-theme-text-muted mt-1 uppercase tracking-wider">{s.label}</div>
             </motion.div>
           ))}
         </motion.div>
