@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Star, Users, BookOpen, ArrowRight, Search, Filter, Sparkles, GraduationCap } from 'lucide-react';
+import { BookOpen, ArrowRight, Search, Sparkles, GraduationCap } from 'lucide-react';
 import { coursesApi, type Course } from '../services/api';
 import { useStore } from '../store/useStore';
 
@@ -12,6 +12,23 @@ const fadeUp = {
     transition: { delay: i * 0.08, duration: 0.5 },
   }),
 };
+
+const bannerGradients = [
+  'linear-gradient(135deg, #06b6d4, #67e8f9, #a5f3fc)',
+  'linear-gradient(135deg, #7c3aed, #a78bfa, #c4b5fd)',
+  'linear-gradient(135deg, #f43f5e, #fb7185, #fda4af)',
+  'linear-gradient(135deg, #10b981, #34d399, #6ee7b7)',
+  'linear-gradient(135deg, #f97316, #fb923c, #fdba74)',
+  'linear-gradient(135deg, #6366f1, #818cf8, #a5b4fc)',
+];
+const fillGradients = [
+  'linear-gradient(90deg, #06b6d4, #67e8f9)',
+  'linear-gradient(90deg, #7c3aed, #c4b5fd)',
+  'linear-gradient(90deg, #f43f5e, #fda4af)',
+  'linear-gradient(90deg, #10b981, #6ee7b7)',
+  'linear-gradient(90deg, #f97316, #fdba74)',
+  'linear-gradient(90deg, #6366f1, #a5b4fc)',
+];
 
 export default function CoursesPage() {
   const user = useStore((s) => s.user);
@@ -26,7 +43,6 @@ export default function CoursesPage() {
   const [courseProgress, setCourseProgress] = useState<Record<string, { completed: number; total: number }>>({});
   const [loading, setLoading] = useState(true);
 
-  // Sync showMyClass when user data loads asynchronously
   useEffect(() => {
     if (hasClassInfo) setShowMyClass(true);
   }, [hasClassInfo]);
@@ -71,63 +87,13 @@ export default function CoursesPage() {
   const courses = apiCourses.map((c) => {
     const prog = courseProgress[c.id];
     return {
-      id: c.id,
-      title: c.title,
-      subject: c.subject,
-      grade: `Class ${c.grade}`,
-      board: c.board,
-      chapters: prog?.total ?? 0,
-      completedChapters: prog?.completed ?? 0,
+      id: c.id, title: c.title, subject: c.subject,
+      grade: `Class ${c.grade}`, board: c.board,
+      chapters: prog?.total ?? 0, completedChapters: prog?.completed ?? 0,
       color: c.color || 'from-violet-500 to-purple-600',
-      icon: c.icon || '\ud83d\udcda',
-      description: c.description || '',
-      students: 0,
-      rating: 0,
+      icon: c.icon || '\ud83d\udcda', description: c.description || '',
     };
   });
-
-  // Skeleton components for loading state
-  const CourseCardSkeleton = () => (
-    <div className="p-6 rounded-2xl bg-theme-card border border-theme-border h-full">
-      <div className="w-full h-40 rounded-2xl bg-violet-100 dark:bg-gray-700/50 animate-pulse mb-5" />
-      <div className="h-6 w-3/4 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
-      <div className="h-4 w-full bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
-      <div className="flex items-center gap-4 mb-4">
-        <div className="h-4 w-20 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
-        <div className="h-4 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
-        <div className="h-4 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
-      </div>
-      <div className="mt-4 flex items-center justify-between">
-        <div className="h-3 w-12 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
-        <div className="h-4 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
-      </div>
-    </div>
-  );
-
-  if (loading) {
-    return (
-            <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
-              <div className="max-w-7xl mx-auto relative z-10">
-                <div className="mb-8">
-            <div className="h-8 w-48 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full mb-4" />
-                        <div className="h-10 w-56 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
-                        <div className="h-5 w-72 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                        <div className="flex-1 h-12 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
-                        <div className="flex gap-2">
-                          <div className="h-12 w-20 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
-                          <div className="h-12 w-28 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
-                          <div className="h-12 w-20 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => <CourseCardSkeleton key={i} />)}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   const filtered = courses.filter((c) => {
     const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase());
@@ -137,151 +103,189 @@ export default function CoursesPage() {
     return matchesSearch;
   });
 
-  return (
-        <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
-          <div className="max-w-7xl mx-auto relative z-10">
-            <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium mb-4">
-            <Sparkles className="w-4 h-4" />
-            Explore Courses
-          </span>
-          <h1 className="text-4xl font-black text-theme-text mb-2">Courses</h1>
-          <p className="text-theme-text-secondary">
-            {showMyClass && hasClassInfo
-              ? `Class ${userGrade}${userBoard ? ` — ${userBoard}` : ''} ke courses`
-              : 'Class 6-12 ke saare subjects ek jagah'}
-          </p>
-        </motion.div>
+  const totalChaptersDone = courses.reduce((s, c) => s + c.completedChapters, 0);
 
-        {/* Search & Filter */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="flex flex-col sm:flex-row gap-4 mb-8"
-        >
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-text-muted" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search courses..."
-              className="w-full pl-12 pr-4 py-3 rounded-xl bg-theme-card border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all"
-            />
+  /* Skeleton */
+  const CourseCardSkeleton = () => (
+    <div className="rounded-[22px] overflow-hidden bg-theme-card border border-theme-border">
+      <div className="h-[100px] bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
+      <div className="p-[18px_22px]">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="h-[22px] w-24 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-md" />
+          <div className="h-4 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded" />
+        </div>
+        <div className="flex items-center gap-2.5 mb-3">
+          <div className="flex-1 h-[7px] bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
+          <div className="h-4 w-8 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded" />
+        </div>
+        <div className="flex gap-2">
+          <div className="flex-1 h-10 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
+          <div className="flex-1 h-10 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
+        </div>
+      </div>
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
+        <div className="max-w-[1100px] mx-auto relative z-10">
+          <div className="mb-6">
+            <div className="h-8 w-48 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
+            <div className="h-5 w-72 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
           </div>
-          <div className="flex gap-2 flex-wrap">
-            {hasClassInfo && (
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowMyClass(!showMyClass)}
-                className={`px-4 py-3 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
-                  showMyClass
-                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20'
-                    : 'bg-theme-card text-theme-text-secondary border border-theme-border hover:bg-theme-input'
-                }`}
-              >
-                <GraduationCap className="w-4 h-4" />
-                {showMyClass ? `Class ${userGrade}` : 'My Class'}
-              </motion.button>
-            )}
-            {[
-              { key: 'all', label: 'All' },
-              { key: 'progress', label: 'In Progress' },
-              { key: 'new', label: 'New' },
-            ].map((f) => (
-              <motion.button
-                key={f.key}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setFilter(f.key)}
-                className={`px-4 py-3 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
-                  filter === f.key
-                    ? 'bg-violet-500/20 text-violet-400 border border-violet-500/20'
-                    : 'bg-theme-card text-theme-text-secondary border border-theme-border hover:bg-theme-input'
-                }`}
-              >
-                <Filter className="w-4 h-4" />
-                {f.label}
-              </motion.button>
+          {/* Stats row skeleton */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-6">
+            {[1,2,3,4].map(i => (
+              <div key={i} className="p-[18px] rounded-[18px] bg-theme-card border border-theme-border text-center">
+                <div className="h-7 w-7 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded mb-2" />
+                <div className="h-7 w-12 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded mb-1" />
+                <div className="h-3 w-20 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded" />
+              </div>
             ))}
           </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1,2,3,4,5,6].map(i => <CourseCardSkeleton key={i} />)}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
+      <div className="max-w-[1100px] mx-auto relative z-10">
+
+        {/* Page Header */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-col sm:flex-row justify-between sm:items-end gap-3">
+          <div>
+            <h1 className="font-['Space_Grotesk'] text-[28px] font-extrabold text-theme-text mb-1">{'\ud83d\udcda'} My Courses</h1>
+            <p className="text-sm text-theme-text-muted">
+              {showMyClass && hasClassInfo
+                ? `Class ${userGrade}${userBoard ? ` \u2022 ${userBoard}` : ''} \u2014 apne subjects padho AI ke saath!`
+                : 'Class 6-12 ke saare subjects ek jagah'}
+            </p>
+          </div>
         </motion.div>
 
-        {/* Course Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((course, i) => (
-            <motion.div
-              key={course.id}
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={i}
-              whileHover={{ y: -8, scale: 1.02 }}
-            >
-              <Link to={`/courses/${course.id}`}>
-                <div className="group p-6 rounded-2xl bg-theme-card border border-theme-border hover:border-theme-border transition-all cursor-pointer h-full">
-                  <div className={`w-full h-40 rounded-2xl bg-gradient-to-br ${course.color} flex items-center justify-center mb-5 shadow-lg group-hover:shadow-xl transition-shadow relative overflow-hidden`}>
-                    <div className="absolute inset-0 bg-black/10" />
-                    <span className="text-6xl relative z-10">{course.icon}</span>
-                    <div className="absolute top-3 right-3 px-2 py-1 rounded-lg bg-black/30 backdrop-blur-sm text-white text-xs font-medium">
-                      {course.grade}
-                    </div>
-                  </div>
-
-                  <h3 className="text-xl font-bold text-theme-text mb-1 group-hover:text-violet-500 transition-colors">
-                    {course.title}
-                  </h3>
-                  <p className="text-theme-text-muted text-sm mb-4">{course.description}</p>
-
-                  <div className="flex items-center gap-4 text-sm text-theme-text-secondary mb-4">
-                    <span className="flex items-center gap-1">
-                      <BookOpen className="w-4 h-4" />
-                      {course.chapters} Chapters
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Users className="w-4 h-4" />
-                      {course.students}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-amber-400" />
-                      {course.rating}
-                    </span>
-                  </div>
-
-                  {course.completedChapters > 0 && (
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-theme-text-secondary">Progress</span>
-                        <span className="text-violet-400 font-medium">
-                          {course.chapters > 0 ? Math.round((course.completedChapters / course.chapters) * 100) : 0}%
-                        </span>
-                      </div>
-                      <div className="w-full h-2 bg-violet-100 dark:bg-gray-800 rounded-full overflow-hidden">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${course.chapters > 0 ? (course.completedChapters / course.chapters) * 100 : 0}%` }}
-                          transition={{ duration: 0.8, delay: 0.3 + i * 0.1 }}
-                          className={`h-full rounded-full bg-gradient-to-r ${course.color}`}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="mt-4 flex items-center justify-between">
-                    <span className="text-xs text-theme-text-muted">{course.board}</span>
-                    <span className="flex items-center gap-1 text-violet-400 text-sm font-medium group-hover:gap-2 transition-all">
-                      Explore <ArrowRight className="w-4 h-4" />
-                    </span>
-                  </div>
-                </div>
-              </Link>
+        {/* Stats Row */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-6">
+          {[
+            { emoji: '\ud83d\udcd6', val: String(courses.length), label: 'Active Courses' },
+            { emoji: '\u2705', val: String(totalChaptersDone), label: 'Chapters Done' },
+            { emoji: '\u23f1', val: '0h', label: 'Study Time' },
+            { emoji: '\ud83c\udfc6', val: '0%', label: 'Avg Score' },
+          ].map((s, i) => (
+            <motion.div key={i} whileHover={{ y: -3 }}
+              className="p-[18px] rounded-[18px] bg-theme-card border border-theme-border text-center hover:shadow-md transition-all cursor-default">
+              <span className="text-[28px] block mb-2">{s.emoji}</span>
+              <div className="font-['Space_Grotesk'] text-[26px] font-extrabold text-theme-text">{s.val}</div>
+              <div className="text-[11px] font-semibold text-theme-text-muted mt-0.5">{s.label}</div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
+
+        {/* Filter Tabs */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          className="flex flex-wrap gap-2 mb-5 items-center">
+          <div className="flex gap-1.5 p-1.5 rounded-[14px] bg-theme-card border border-theme-border">
+            {[
+              { key: 'all', label: 'All Subjects' },
+              { key: 'progress', label: 'In Progress' },
+              { key: 'new', label: 'Not Started' },
+            ].map(f => (
+              <button key={f.key} onClick={() => setFilter(f.key)}
+                className={`px-[18px] py-2 rounded-[10px] text-[13px] font-bold transition-all ${
+                  filter === f.key
+                    ? 'bg-violet-600 text-white shadow-md shadow-violet-500/20'
+                    : 'text-theme-text-muted hover:text-theme-text-secondary hover:bg-violet-50 dark:hover:bg-violet-900/20'
+                }`}>
+                {f.label}
+              </button>
+            ))}
+          </div>
+          {hasClassInfo && (
+            <button onClick={() => setShowMyClass(!showMyClass)}
+              className={`px-3.5 py-2 rounded-[10px] text-[13px] font-bold flex items-center gap-1.5 transition-all border ${
+                showMyClass
+                  ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-700'
+                  : 'bg-theme-card text-theme-text-muted border-theme-border hover:bg-theme-input'
+              }`}>
+              <GraduationCap className="w-4 h-4" />
+              {showMyClass ? `Class ${userGrade}` : 'My Class'}
+            </button>
+          )}
+        </motion.div>
+
+        {/* Search */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+          className="relative mb-6">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
+          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search courses..."
+            className="w-full sm:w-80 pl-10 pr-4 py-2.5 rounded-xl bg-theme-card border border-theme-border text-sm text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-400 transition-all" />
+        </motion.div>
+
+        {/* Courses Grid */}
+        {filtered.length === 0 ? (
+          <div className="text-center py-16">
+            <Sparkles className="w-10 h-10 text-theme-text-muted mx-auto mb-3" />
+            <p className="text-theme-text-secondary text-sm">No courses found. Try changing filters!</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filtered.map((course, i) => {
+              const pct = course.chapters > 0 ? Math.round((course.completedChapters / course.chapters) * 100) : 0;
+              return (
+                <motion.div key={course.id} variants={fadeUp} initial="hidden" animate="visible" custom={i}
+                  whileHover={{ y: -6 }}
+                  className="rounded-[22px] overflow-hidden bg-theme-card border border-theme-border shadow-sm hover:shadow-lg transition-all cursor-pointer relative">
+                  {course.completedChapters === 0 && (
+                    <span className="absolute top-3 right-3 z-[2] px-2.5 py-1 rounded-lg text-[10px] font-bold text-violet-600 bg-white/90 dark:bg-violet-900/80 dark:text-violet-300 border border-violet-100 dark:border-violet-700" style={{ backdropFilter: 'blur(4px)' }}>
+                      NEW
+                    </span>
+                  )}
+                  <Link to={`/courses/${course.id}`}>
+                    {/* Banner */}
+                    <div className="h-[100px] relative overflow-hidden flex items-center justify-between px-[22px]"
+                      style={{ background: bannerGradients[i % bannerGradients.length] }}>
+                      <div className="relative z-[1]">
+                        <div className="text-lg font-extrabold text-white" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.15)' }}>{course.title}</div>
+                        <div className="text-[11px] text-white/85 font-semibold mt-0.5">{course.subject}</div>
+                      </div>
+                      <span className="text-[42px] relative z-[1]" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.1))' }}>{course.icon}</span>
+                      <div className="absolute right-[-20px] bottom-[-20px] w-[100px] h-[100px] rounded-full bg-white/10" />
+                      <div className="absolute right-10 top-[-30px] w-[70px] h-[70px] rounded-full bg-white/[0.08]" />
+                    </div>
+                    {/* Body */}
+                    <div className="p-[18px_22px]">
+                      <div className="flex items-center gap-2 mb-3 text-xs text-theme-text-muted font-semibold">
+                        <span className="px-2 py-0.5 rounded-md bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 font-bold text-[11px]">{course.chapters} Chapters</span>
+                        <span>{'\u2022'} {course.completedChapters} completed</span>
+                      </div>
+                      <div className="flex items-center gap-2.5 mb-3">
+                        <div className="flex-1 h-[7px] rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.04)' }}>
+                          <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.8, delay: 0.2 + i * 0.05 }}
+                            className="h-full rounded-full" style={{ background: fillGradients[i % fillGradients.length] }} />
+                        </div>
+                        <span className="text-xs font-extrabold text-theme-text min-w-[32px] text-right">{pct}%</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <button className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-violet-600 shadow-md shadow-violet-500/20 hover:bg-violet-700 transition-all flex items-center justify-center gap-1.5">
+                          <BookOpen className="w-3.5 h-3.5" /> Continue
+                        </button>
+                        <button className="flex-1 py-2.5 rounded-xl text-xs font-bold text-violet-600 bg-violet-100 dark:bg-violet-900/20 hover:bg-violet-200 dark:hover:bg-violet-900/30 transition-all flex items-center justify-center gap-1.5">
+                          Details <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
