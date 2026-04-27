@@ -198,8 +198,8 @@ export default function ProfilePage() {
         {/* Profile Header — matching mockup */}
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
           className="p-8 rounded-[24px] mb-6 relative overflow-hidden flex flex-col sm:flex-row items-center gap-7"
-          style={{ background: 'linear-gradient(135deg, var(--color-surface), #fce7f3, #dbeafe)', border: '1px solid rgba(124,58,237,0.06)' }}>
-          <div className="absolute -top-[60px] -right-[60px] w-[250px] h-[250px] rounded-full bg-violet-300/10 dark:bg-violet-400/5 blur-[40px]" />
+          style={{ background: 'var(--section-gradient)', border: '1px solid var(--section-gradient-border)' }}>
+          <div className="absolute -top-[60px] -right-[60px] w-[250px] h-[250px] rounded-full bg-indigo-300/10 dark:bg-indigo-400/5 blur-[40px]" />
 
           {/* Avatar Section */}
           <div className="relative z-[1] flex-shrink-0">
@@ -209,13 +209,13 @@ export default function ProfilePage() {
               {user?.avatar && user.avatar.startsWith('data:') ? (
                 <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-5xl">
+                <div className="w-full h-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-5xl">
                   {user?.avatar || '\ud83e\udd81'}
                 </div>
               )}
             </motion.div>
             <button onClick={() => fileInputRef.current?.click()} disabled={uploadingPhoto}
-              className="absolute -bottom-1 -right-1 w-9 h-9 rounded-xl bg-violet-600 text-white border-[3px] border-white dark:border-gray-800 flex items-center justify-center shadow-md disabled:opacity-50">
+              className="absolute -bottom-1 -right-1 w-9 h-9 rounded-xl bg-indigo-600 text-white border-[3px] border-white dark:border-gray-800 flex items-center justify-center shadow-md disabled:opacity-50">
               {uploadingPhoto ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Camera className="w-4 h-4" />}
             </button>
             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
@@ -231,14 +231,14 @@ export default function ProfilePage() {
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
               {isPremium && (
                 <span className="inline-flex items-center gap-1 px-3 py-[5px] rounded-lg text-[11px] font-bold"
-                  style={{ background: 'linear-gradient(135deg, #fef3c7, #fde68a)', color: '#92400e' }}>
+                  style={{ background: 'var(--membership-bg)', color: 'var(--membership-badge-text)' }}>
                   <Crown className="w-3 h-3" /> Pro Member
                 </span>
               )}
               <span className="inline-flex items-center gap-1 px-3 py-[5px] rounded-lg text-[11px] font-bold bg-amber-50 dark:bg-amber-900/20 text-orange-500">
                 <Flame className="w-3 h-3" /> {user?.streak ?? 0} Day Streak
               </span>
-              <span className="inline-flex items-center gap-1 px-3 py-[5px] rounded-lg text-[11px] font-bold bg-violet-100 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400">
+              <span className="inline-flex items-center gap-1 px-3 py-[5px] rounded-lg text-[11px] font-bold bg-indigo-100 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
                 <Star className="w-3 h-3" /> Level {user?.level ?? 1}
               </span>
               {user?.board && user?.grade && (
@@ -294,7 +294,7 @@ export default function ProfilePage() {
                 <div>
                   <label className="text-[12px] font-bold text-theme-text-muted mb-1.5 block">Full Name</label>
                   <input type="text" value={name} onChange={(e) => setName(e.target.value)} disabled={!editing}
-                    className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm disabled:opacity-60 focus:outline-none focus:border-violet-400 transition-all" />
+                    className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm disabled:opacity-60 focus:outline-none focus:border-indigo-400 transition-all" />
                 </div>
                 <div>
                   <label className="text-[12px] font-bold text-theme-text-muted mb-1.5 block">Email</label>
@@ -304,14 +304,14 @@ export default function ProfilePage() {
                 <div>
                   <label className="text-[12px] font-bold text-theme-text-muted mb-1.5 block">Phone Number</label>
                   <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 9876543210" disabled={!editing}
-                    className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm disabled:opacity-60 focus:outline-none focus:border-violet-400 transition-all" />
+                    className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm disabled:opacity-60 focus:outline-none focus:border-indigo-400 transition-all" />
                 </div>
                 {user?.role === 'student' && (
                   <div className="flex gap-3">
                     <div className="flex-1">
                       <label className="text-[12px] font-bold text-theme-text-muted mb-1.5 block">Class</label>
                       <select value={grade} onChange={(e) => setGrade(e.target.value)} disabled={!editing}
-                        className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm disabled:opacity-60 focus:outline-none focus:border-violet-400 transition-all appearance-none">
+                        className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm disabled:opacity-60 focus:outline-none focus:border-indigo-400 transition-all appearance-none">
                         <option value="">Select Class</option>
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((g) => (
                           <option key={g} value={String(g)}>Class {g}</option>
@@ -321,7 +321,7 @@ export default function ProfilePage() {
                     <div className="flex-1">
                       <label className="text-[12px] font-bold text-theme-text-muted mb-1.5 block">Board</label>
                       <select value={board} onChange={(e) => setBoard(e.target.value)} disabled={!editing}
-                        className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm disabled:opacity-60 focus:outline-none focus:border-violet-400 transition-all appearance-none">
+                        className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm disabled:opacity-60 focus:outline-none focus:border-indigo-400 transition-all appearance-none">
                         <option value="">Select Board</option>
                         <option value="CBSE">CBSE</option>
                         <option value="ICSE">ICSE</option>
@@ -334,7 +334,7 @@ export default function ProfilePage() {
                   <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                     whileHover={{ y: -1 }} whileTap={{ scale: 0.98 }}
                     onClick={handleSave} disabled={saving}
-                    className="w-full py-3.5 rounded-[14px] font-bold text-white bg-violet-600 shadow-lg shadow-violet-500/25 disabled:opacity-60 mt-2 text-sm">
+                    className="w-full py-3.5 rounded-[14px] font-bold text-white bg-indigo-600 shadow-lg shadow-indigo-500/25 disabled:opacity-60 mt-2 text-sm">
                     {saving ? 'Saving...' : '\ud83d\udcbe Save Changes'}
                   </motion.button>
                 )}
@@ -355,7 +355,7 @@ export default function ProfilePage() {
                     <div className="text-[11px] text-theme-text-muted mt-0.5">Switch to dark theme</div>
                   </div>
                   <button onClick={handleDarkModeToggle}
-                    className={`w-11 h-6 rounded-full transition-all ${darkMode ? 'bg-violet-600' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                    className={`w-11 h-6 rounded-full transition-all ${darkMode ? 'bg-indigo-600' : 'bg-[var(--toggle-off)]'}`}>
                     <motion.div animate={{ x: darkMode ? 22 : 2 }} className="w-5 h-5 rounded-full bg-white shadow-sm" />
                   </button>
                 </div>
@@ -366,7 +366,7 @@ export default function ProfilePage() {
                     <div className="text-[11px] text-theme-text-muted mt-0.5">Push notifications for goals & streaks</div>
                   </div>
                   <button onClick={handleNotificationsToggle}
-                    className={`w-11 h-6 rounded-full transition-all ${notifications ? 'bg-violet-600' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                    className={`w-11 h-6 rounded-full transition-all ${notifications ? 'bg-indigo-600' : 'bg-[var(--toggle-off)]'}`}>
                     <motion.div animate={{ x: notifications ? 22 : 2 }} className="w-5 h-5 rounded-full bg-white shadow-sm" />
                   </button>
                 </div>
@@ -415,21 +415,21 @@ export default function ProfilePage() {
             {/* Membership Card */}
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
               className="p-6 rounded-[22px] relative overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, #fef3c7, #fde68a)', border: '1px solid rgba(245,158,11,0.15)' }}>
+              style={{ background: 'var(--membership-bg)', border: '1px solid var(--membership-border)' }}>
               <div className="absolute -right-5 -bottom-5 w-[100px] h-[100px] rounded-full bg-amber-500/10" />
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold mb-2.5"
-                style={{ background: 'rgba(146,64,14,0.1)', color: '#92400e' }}>
+                style={{ background: 'var(--membership-badge-bg)', color: 'var(--membership-badge-text)' }}>
                 <Crown className="w-3 h-3" /> {isPremium ? 'Active' : 'Upgrade'}
               </span>
-              <h3 className="text-[18px] font-extrabold mb-1" style={{ color: '#78350f' }}>
+              <h3 className="text-[18px] font-extrabold mb-1" style={{ color: 'var(--membership-text)' }}>
                 {isPremium ? 'Pro Member' : 'Go Pro!'}
               </h3>
-              <p className="text-[13px] leading-relaxed mb-3.5" style={{ color: '#a16207' }}>
+              <p className="text-[13px] leading-relaxed mb-3.5" style={{ color: 'var(--membership-sub)' }}>
                 {isPremium ? 'Unlimited AI features, no XP limits!' : 'Unlock unlimited AI Video Lessons, AI Chat & more.'}
               </p>
               <div className="flex flex-col gap-1.5 mb-3.5">
                 {['\u2728 Unlimited AI Video Lessons', '\ud83e\udde0 Unlimited AI Chat', '\ud83d\udd25 Priority Support'].map((feat) => (
-                  <div key={feat} className="flex items-center gap-2 text-[12px] font-semibold" style={{ color: '#92400e' }}>
+                  <div key={feat} className="flex items-center gap-2 text-[12px] font-semibold" style={{ color: 'var(--membership-badge-text)' }}>
                     {feat}
                   </div>
                 ))}
@@ -438,7 +438,7 @@ export default function ProfilePage() {
                 <Link to="/membership">
                   <motion.button whileHover={{ y: -1 }} whileTap={{ scale: 0.98 }}
                     className="w-full py-3 rounded-xl font-bold text-white text-sm"
-                    style={{ background: '#92400e', boxShadow: '0 4px 12px rgba(146,64,14,0.25)' }}>
+                    style={{ background: 'var(--membership-badge-text)', boxShadow: '0 4px 12px rgba(146,64,14,0.25)' }}>
                     Upgrade to Pro — \u20b9299/month
                   </motion.button>
                 </Link>
@@ -476,7 +476,7 @@ export default function ProfilePage() {
           whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}
           onClick={() => { logout(); navigate('/login'); }}
           className="w-full mt-4 py-3.5 rounded-[14px] font-bold text-rose-500 text-sm flex items-center justify-center gap-2 transition-all"
-          style={{ background: '#fce7f3', border: '1px solid rgba(244,63,94,0.15)' }}>
+          style={{ background: 'var(--logout-bg)', border: '1px solid var(--logout-border)' }}>
           <LogOut className="w-4 h-4" /> Logout
         </motion.button>
       </div>

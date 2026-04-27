@@ -15,7 +15,7 @@ const fadeUp = {
 
 const bannerGradients = [
   'linear-gradient(135deg, #06b6d4, #67e8f9, #a5f3fc)',
-  'linear-gradient(135deg, #7c3aed, #a78bfa, #c4b5fd)',
+  'linear-gradient(135deg, #6366f1, #818cf8, #a5b4fc)',
   'linear-gradient(135deg, #f43f5e, #fb7185, #fda4af)',
   'linear-gradient(135deg, #10b981, #34d399, #6ee7b7)',
   'linear-gradient(135deg, #f97316, #fb923c, #fdba74)',
@@ -23,7 +23,7 @@ const bannerGradients = [
 ];
 const fillGradients = [
   'linear-gradient(90deg, #06b6d4, #67e8f9)',
-  'linear-gradient(90deg, #7c3aed, #c4b5fd)',
+  'linear-gradient(90deg, #6366f1, #a5b4fc)',
   'linear-gradient(90deg, #f43f5e, #fda4af)',
   'linear-gradient(90deg, #10b981, #6ee7b7)',
   'linear-gradient(90deg, #f97316, #fdba74)',
@@ -90,7 +90,7 @@ export default function CoursesPage() {
       id: c.id, title: c.title, subject: c.subject,
       grade: `Class ${c.grade}`, board: c.board,
       chapters: prog?.total ?? 0, completedChapters: prog?.completed ?? 0,
-      color: c.color || 'from-violet-500 to-purple-600',
+      color: c.color || 'from-indigo-500 to-violet-500',
       icon: c.icon || '\ud83d\udcda', description: c.description || '',
     };
   });
@@ -108,19 +108,19 @@ export default function CoursesPage() {
   /* Skeleton */
   const CourseCardSkeleton = () => (
     <div className="rounded-[22px] overflow-hidden bg-theme-card border border-theme-border">
-      <div className="h-[100px] bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
+      <div className="h-[100px] bg-[var(--color-surface)] animate-pulse" />
       <div className="p-[18px_22px]">
         <div className="flex items-center gap-2 mb-3">
-          <div className="h-[22px] w-24 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-md" />
-          <div className="h-4 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded" />
+          <div className="h-[22px] w-24 bg-[var(--color-surface)] animate-pulse rounded-md" />
+          <div className="h-4 w-16 bg-[var(--color-surface)] animate-pulse rounded" />
         </div>
         <div className="flex items-center gap-2.5 mb-3">
-          <div className="flex-1 h-[7px] bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
-          <div className="h-4 w-8 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded" />
+          <div className="flex-1 h-[7px] bg-[var(--color-surface)] animate-pulse rounded-full" />
+          <div className="h-4 w-8 bg-[var(--color-surface)] animate-pulse rounded" />
         </div>
         <div className="flex gap-2">
-          <div className="flex-1 h-10 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
-          <div className="flex-1 h-10 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
+          <div className="flex-1 h-10 bg-[var(--color-surface)] animate-pulse rounded-xl" />
+          <div className="flex-1 h-10 bg-[var(--color-surface)] animate-pulse rounded-xl" />
         </div>
       </div>
     </div>
@@ -131,16 +131,16 @@ export default function CoursesPage() {
       <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
         <div className="max-w-[1100px] mx-auto relative z-10">
           <div className="mb-6">
-            <div className="h-8 w-48 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
-            <div className="h-5 w-72 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+            <div className="h-8 w-48 bg-[var(--color-surface)] animate-pulse rounded-lg mb-2" />
+            <div className="h-5 w-72 bg-[var(--color-surface)] animate-pulse rounded-lg" />
           </div>
           {/* Stats row skeleton */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-6">
             {[1,2,3,4].map(i => (
               <div key={i} className="p-[18px] rounded-[18px] bg-theme-card border border-theme-border text-center">
-                <div className="h-7 w-7 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded mb-2" />
-                <div className="h-7 w-12 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded mb-1" />
-                <div className="h-3 w-20 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded" />
+                <div className="h-7 w-7 mx-auto bg-[var(--color-surface)] animate-pulse rounded mb-2" />
+                <div className="h-7 w-12 mx-auto bg-[var(--color-surface)] animate-pulse rounded mb-1" />
+                <div className="h-3 w-20 mx-auto bg-[var(--color-surface)] animate-pulse rounded" />
               </div>
             ))}
           </div>
@@ -198,8 +198,8 @@ export default function CoursesPage() {
               <button key={f.key} onClick={() => setFilter(f.key)}
                 className={`px-[18px] py-2 rounded-[10px] text-[13px] font-bold transition-all ${
                   filter === f.key
-                    ? 'bg-violet-600 text-white shadow-md shadow-violet-500/20'
-                    : 'text-theme-text-muted hover:text-theme-text-secondary hover:bg-violet-50 dark:hover:bg-violet-900/20'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20'
+                    : 'text-theme-text-muted hover:text-theme-text-secondary hover:bg-indigo-50 dark:hover:bg-indigo-900/20'
                 }`}>
                 {f.label}
               </button>
@@ -209,7 +209,7 @@ export default function CoursesPage() {
             <button onClick={() => setShowMyClass(!showMyClass)}
               className={`px-3.5 py-2 rounded-[10px] text-[13px] font-bold flex items-center gap-1.5 transition-all border ${
                 showMyClass
-                  ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-700'
+                  ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-700'
                   : 'bg-theme-card text-theme-text-muted border-theme-border hover:bg-theme-input'
               }`}>
               <GraduationCap className="w-4 h-4" />
@@ -224,7 +224,7 @@ export default function CoursesPage() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="Search courses..."
-            className="w-full sm:w-80 pl-10 pr-4 py-2.5 rounded-xl bg-theme-card border border-theme-border text-sm text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-400 transition-all" />
+            className="w-full sm:w-80 pl-10 pr-4 py-2.5 rounded-xl bg-theme-card border border-theme-border text-sm text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-indigo-400 transition-all" />
         </motion.div>
 
         {/* Courses Grid */}
@@ -242,7 +242,7 @@ export default function CoursesPage() {
                   whileHover={{ y: -6 }}
                   className="rounded-[22px] overflow-hidden bg-theme-card border border-theme-border shadow-sm hover:shadow-lg transition-all cursor-pointer relative">
                   {course.completedChapters === 0 && (
-                    <span className="absolute top-3 right-3 z-[2] px-2.5 py-1 rounded-lg text-[10px] font-bold text-violet-600 bg-white/90 dark:bg-violet-900/80 dark:text-violet-300 border border-violet-100 dark:border-violet-700" style={{ backdropFilter: 'blur(4px)' }}>
+                    <span className="absolute top-3 right-3 z-[2] px-2.5 py-1 rounded-lg text-[10px] font-bold text-indigo-600 bg-white/90 dark:bg-indigo-900/80 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-700" style={{ backdropFilter: 'blur(4px)' }}>
                       NEW
                     </span>
                   )}
@@ -261,21 +261,21 @@ export default function CoursesPage() {
                     {/* Body */}
                     <div className="p-[18px_22px]">
                       <div className="flex items-center gap-2 mb-3 text-xs text-theme-text-muted font-semibold">
-                        <span className="px-2 py-0.5 rounded-md bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 font-bold text-[11px]">{course.chapters} Chapters</span>
+                        <span className="px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-bold text-[11px]">{course.chapters} Chapters</span>
                         <span>{'\u2022'} {course.completedChapters} completed</span>
                       </div>
                       <div className="flex items-center gap-2.5 mb-3">
-                        <div className="flex-1 h-[7px] rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.04)' }}>
+                        <div className="flex-1 h-[7px] rounded-full overflow-hidden" style={{ background: 'var(--color-surface)' }}>
                           <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.8, delay: 0.2 + i * 0.05 }}
                             className="h-full rounded-full" style={{ background: fillGradients[i % fillGradients.length] }} />
                         </div>
                         <span className="text-xs font-extrabold text-theme-text min-w-[32px] text-right">{pct}%</span>
                       </div>
                       <div className="flex gap-2">
-                        <button className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-violet-600 shadow-md shadow-violet-500/20 hover:bg-violet-700 transition-all flex items-center justify-center gap-1.5">
+                        <button className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 shadow-md shadow-indigo-500/20 hover:bg-indigo-700 transition-all flex items-center justify-center gap-1.5">
                           <BookOpen className="w-3.5 h-3.5" /> Continue
                         </button>
-                        <button className="flex-1 py-2.5 rounded-xl text-xs font-bold text-violet-600 bg-violet-100 dark:bg-violet-900/20 hover:bg-violet-200 dark:hover:bg-violet-900/30 transition-all flex items-center justify-center gap-1.5">
+                        <button className="flex-1 py-2.5 rounded-xl text-xs font-bold text-indigo-600 bg-indigo-100 dark:bg-indigo-900/20 hover:bg-indigo-200 dark:hover:bg-indigo-900/30 transition-all flex items-center justify-center gap-1.5">
                           Details <ArrowRight className="w-3.5 h-3.5" />
                         </button>
                       </div>

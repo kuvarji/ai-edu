@@ -9,6 +9,7 @@ import { useStore } from '../store/useStore';
 import { dashboardApi, type Course, type GamificationStats, type WeeklyReport, type DailyGoal, type StudyTimeData } from '../services/api';
 import { useLanguage } from '../i18n/useLanguage';
 import Avatar from '../components/Avatar';
+import Character3D from '../components/Character3D';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -19,13 +20,13 @@ const fadeUp = {
 };
 
 const barGradients = [
-  'linear-gradient(180deg, #c4b5fd, #7c3aed)',
+  'linear-gradient(180deg, #a5b4fc, #6366f1)',
   'linear-gradient(180deg, #93c5fd, #3b82f6)',
   'linear-gradient(180deg, #a5f3fc, #06b6d4)',
-  'linear-gradient(180deg, #c4b5fd, #7c3aed)',
+  'linear-gradient(180deg, #a5b4fc, #6366f1)',
   'linear-gradient(180deg, #fda4af, #f43f5e)',
   'linear-gradient(180deg, #a5f3fc, #06b6d4)',
-  'linear-gradient(180deg, #c4b5fd, #6366f1)',
+  'linear-gradient(180deg, #a5b4fc, #6366f1)',
 ];
 
 const goalColors = ['gc-cyan', 'gc-rose', 'gc-yellow', 'gc-green'];
@@ -33,22 +34,22 @@ const goalStrokes = ['#06b6d4', '#f43f5e', '#f59e0b', '#10b981'];
 
 const courseBannerGradients = [
   'linear-gradient(135deg, #06b6d4, #67e8f9, #a5f3fc)',
-  'linear-gradient(135deg, #7c3aed, #a78bfa, #c4b5fd)',
+  'linear-gradient(135deg, #6366f1, #818cf8, #a5b4fc)',
   'linear-gradient(135deg, #f43f5e, #fb7185, #fda4af)',
   'linear-gradient(135deg, #10b981, #34d399, #6ee7b7)',
   'linear-gradient(135deg, #f97316, #fb923c, #fdba74)',
   'linear-gradient(135deg, #6366f1, #818cf8, #a5b4fc)',
 ];
-const courseArcStrokes = ['#06b6d4', '#7c3aed', '#f43f5e', '#10b981', '#f97316', '#6366f1'];
+const courseArcStrokes = ['#06b6d4', '#6366f1', '#f43f5e', '#10b981', '#f97316', '#6366f1'];
 
 function SkeletonPulse({ className = '', style }: { className?: string; style?: React.CSSProperties }) {
-  return <div className={`animate-pulse bg-violet-100 dark:bg-gray-700/50 rounded-lg ${className}`} style={style} />;
+  return <div className={`animate-pulse bg-[var(--color-surface)] rounded-lg ${className}`} style={style} />;
 }
 
 function HeroSkeleton() {
   return (
     <div className="hero-section mb-5">
-      <div className="p-8 rounded-3xl bg-violet-100/50 dark:bg-gray-700/30 animate-pulse" style={{ minHeight: 260 }}>
+      <div className="p-8 rounded-3xl bg-[var(--color-surface)] animate-pulse" style={{ minHeight: 260 }}>
         <SkeletonPulse className="w-32 h-6 rounded-full mb-4" />
         <SkeletonPulse className="w-64 h-10 mb-3" />
         <SkeletonPulse className="w-48 h-5 mb-5" />
@@ -249,7 +250,7 @@ export default function DashboardPage() {
     const prog = courseProgress[c.id];
     return {
       id: c.id, title: c.title, icon: c.icon || '\ud83d\udcda',
-      color: c.color || 'from-violet-500 to-purple-600',
+      color: c.color || 'from-indigo-500 to-violet-500',
       grade: `Grade ${c.grade}`, board: c.board,
       chapters: prog?.total ?? 0, completedChapters: prog?.completed ?? 0,
     };
@@ -276,49 +277,40 @@ export default function DashboardPage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="hero-section mb-5">
             {/* Hero Left */}
             <div className="p-8 rounded-3xl relative overflow-hidden flex flex-col justify-center"
-              style={{ background: 'linear-gradient(135deg, #ede9fe, #fce7f3, #dbeafe)' }}>
-              <div className="dark:hidden absolute top-[-40px] right-[-40px] w-[180px] h-[180px] rounded-full" style={{ background: 'rgba(167,139,250,0.15)', filter: 'blur(40px)' }} />
+              style={{ background: 'var(--hero-bg)' }}>
+              <div className="absolute top-[-40px] right-[-40px] w-[180px] h-[180px] rounded-full" style={{ background: 'rgba(99,102,241,0.12)', filter: 'blur(40px)' }} />
               <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide mb-4 w-fit"
-                style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.1)', color: '#7c3aed' }}>
+                style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.1)', color: '#6366f1' }}>
                 <Sparkles className="w-3.5 h-3.5" /> Welcome Back
               </span>
-              <h1 className="font-['Space_Grotesk'] text-3xl md:text-4xl font-bold leading-tight mb-2.5 text-[#1a1a2e] dark:text-white">
+              <h1 className="font-['Space_Grotesk'] text-3xl md:text-4xl font-bold leading-tight mb-2.5 text-[var(--hero-text)]">
                 {t.dashboard_welcome},<br /><span className="glow-name">{displayName}!</span> {'\ud83d\udc4b'}
               </h1>
-              <p className="text-sm text-[#4a4a6a] dark:text-[#b8b0d0] mb-5 leading-relaxed">{t.dashboard_title}</p>
+              <p className="text-sm text-[var(--hero-sub)] mb-5 leading-relaxed">{t.dashboard_title}</p>
               <div className="flex gap-2.5 relative z-10">
-                <Link to="/courses" className="px-6 py-3 rounded-[14px] bg-gradient-to-r from-violet-600 to-indigo-500 text-white text-sm font-bold shadow-lg shadow-violet-500/25 hover:-translate-y-0.5 transition-all">
+                <Link to="/courses" className="px-6 py-3 rounded-[14px] bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-sm font-bold shadow-lg shadow-violet-500/25 hover:-translate-y-0.5 transition-all">
                   Start Learning {'\u2192'}
                 </Link>
-                <Link to="/leaderboard" className="px-6 py-3 rounded-[14px] bg-white/70 dark:bg-white/10 border border-[rgba(0,0,0,0.06)] dark:border-violet-500/20 text-[#1a1a2e] dark:text-white text-sm font-bold shadow-sm hover:bg-white dark:hover:bg-white/15 transition-all">
+                <Link to="/leaderboard" className="px-6 py-3 rounded-[14px] bg-white/70 dark:bg-white/10 border border-[rgba(0,0,0,0.06)] dark:border-violet-500/20 text-[var(--hero-text)] text-sm font-bold shadow-sm hover:bg-white dark:hover:bg-white/15 transition-all">
                   Leaderboard
                 </Link>
               </div>
             </div>
-            {/* Hero Right - Avatar */}
+            {/* Hero Right - 3D Character */}
             <div className="rounded-3xl relative overflow-hidden flex items-center justify-center"
-              style={{ background: 'linear-gradient(160deg, #ede9fe, #e0f2fe, #fce7f3)', border: '1px solid rgba(124,58,237,0.06)' }}>
-              <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 50% 60%, rgba(167,139,250,0.15), transparent 70%)' }} />
-              <div className="absolute w-1.5 h-1.5 rounded-full top-[20%] left-[15%]" style={{ background: 'rgba(124,58,237,0.3)', animation: 'sparkleAnim 3s ease-in-out infinite' }} />
-              <div className="absolute w-2 h-2 rounded-full top-[30%] right-[20%]" style={{ background: 'rgba(6,182,212,0.3)', animation: 'sparkleAnim 3s ease-in-out infinite 0.5s' }} />
-              <div className="absolute w-1.5 h-1.5 rounded-full bottom-[25%] left-[25%]" style={{ background: 'rgba(244,63,94,0.3)', animation: 'sparkleAnim 3s ease-in-out infinite 1s' }} />
-              <div className="relative z-[2] w-40 h-44 rounded-3xl overflow-hidden flex items-center justify-center"
-                style={{ filter: 'drop-shadow(0 16px 30px rgba(124,58,237,0.15))', animation: 'charBreathe 4s ease-in-out infinite' }}>
-                <div className="w-full h-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-7xl">
-                  <Avatar avatar={user?.avatar} imgClassName="w-full h-full object-cover" />
-                </div>
-              </div>
+              style={{ background: 'var(--hero-avatar-bg)', border: '1px solid var(--hero-avatar-border)' }}>
+              <Character3D />
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[3] flex items-center gap-2 px-5 py-2.5 rounded-2xl"
-                style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(16px)', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
+                style={{ background: 'var(--hero-level-bg)', backdropFilter: 'blur(16px)', border: '1px solid var(--hero-level-border)', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
                 <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
-                  <div className="w-full h-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                  <div className="w-full h-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center">
                     <Avatar avatar={user?.avatar} imgClassName="w-full h-full object-cover" />
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-[#1a1a2e]">Level {level}</div>
-                  <div className="w-[110px] h-[5px] rounded-full mt-1 overflow-hidden" style={{ background: 'rgba(124,58,237,0.1)' }}>
-                    <div className="h-full rounded-full" style={{ width: `${xpProgress}%`, background: 'linear-gradient(90deg, #7c3aed, #06b6d4)' }} />
+                  <div className="text-xs font-bold text-[var(--hero-level-text)]">Level {level}</div>
+                  <div className="w-[110px] h-[5px] rounded-full mt-1 overflow-hidden" style={{ background: 'rgba(99,102,241,0.1)' }}>
+                    <div className="h-full rounded-full" style={{ width: `${xpProgress}%`, background: 'linear-gradient(90deg, #6366f1, #06b6d4)' }} />
                   </div>
                 </div>
               </div>
@@ -346,19 +338,19 @@ export default function DashboardPage() {
             <Link to="/store" className="char-showcase block">
               <div className="flex gap-3.5 flex-shrink-0 relative z-[1]">
                 {['\ud83e\uddd1\u200d\ud83c\udf93', '\ud83d\udc67', '\ud83e\uddd2'].map((emoji, i) => (
-                  <div key={i} className={`rounded-[18px] overflow-hidden border-[3px] border-white shadow-md hover:-translate-y-1.5 hover:scale-105 transition-all cursor-pointer flex items-center justify-center text-3xl bg-gradient-to-br ${i === 0 ? 'w-[110px] h-[130px] rounded-[22px] border-[4px] border-violet-600 shadow-violet-500/20 from-violet-100 to-purple-100' : 'w-[90px] h-[110px] from-pink-100 to-blue-100'}`}>
+                  <div key={i} className={`rounded-[18px] overflow-hidden border-[3px] border-white shadow-md hover:-translate-y-1.5 hover:scale-105 transition-all cursor-pointer flex items-center justify-center text-3xl bg-gradient-to-br ${i === 0 ? 'w-[110px] h-[130px] rounded-[22px] border-[4px] border-[var(--color-accent)] shadow-indigo-500/20 from-indigo-100 to-violet-100 dark:from-indigo-900/30 dark:to-violet-900/30' : 'w-[90px] h-[110px] from-pink-100 to-sky-100 dark:from-pink-900/20 dark:to-sky-900/20'}`}>
                     {emoji}
                   </div>
                 ))}
               </div>
               <div className="relative z-[1]">
-                <h3 className="text-xl font-extrabold text-[#1a1a2e] dark:text-white mb-1">
-                  Your <span className="text-violet-600">Characters</span>
+                <h3 className="text-xl font-extrabold text-[var(--hero-text)] mb-1">
+                  Your <span className="text-[var(--color-accent)]">Characters</span>
                 </h3>
-                <p className="text-sm text-[#4a4a6a] dark:text-[#b8b0d0] leading-relaxed mb-3.5">
+                <p className="text-sm text-[var(--hero-sub)] leading-relaxed mb-3.5">
                   Unlock & customize your AI study companion! Earn XP to get new characters.
                 </p>
-                <span className="inline-block px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 text-white text-sm font-bold shadow-md shadow-violet-500/20 hover:-translate-y-0.5 transition-all">
+                <span className="inline-block px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-sm font-bold shadow-md shadow-violet-500/20 hover:-translate-y-0.5 transition-all">
                   Visit Store {'\u2192'}
                 </span>
               </div>
@@ -397,7 +389,7 @@ export default function DashboardPage() {
                     <button key={d} onClick={() => setChartDays(d)}
                       className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
                         chartDays === d
-                          ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-700'
+                          ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-700'
                           : 'text-theme-text-muted border border-transparent hover:bg-theme-input'
                       }`}>
                       {d}D
@@ -523,7 +515,7 @@ export default function DashboardPage() {
                           <div className="text-[11px] text-theme-text-muted">Continue learning {'\u2192'}</div>
                         </div>
                       </div>
-                      <button className="w-full py-2 rounded-xl text-xs font-bold text-violet-600 bg-violet-50 dark:bg-violet-900/20 hover:bg-violet-100 dark:hover:bg-violet-900/30 transition-all flex items-center justify-center gap-1.5">
+                      <button className="w-full py-2 rounded-xl text-xs font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-all flex items-center justify-center gap-1.5">
                         <BookOpen className="w-3.5 h-3.5" /> Continue
                       </button>
                     </div>
@@ -569,7 +561,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-center gap-4 mt-3 text-[10px] text-theme-text-muted">
               <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded bg-emerald-500/20 border border-emerald-500/20" /><span>Studied</span></div>
               <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded bg-theme-input" /><span>Missed</span></div>
-              <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded bg-gradient-to-br from-violet-500 to-purple-600" /><span>Today</span></div>
+              <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded bg-gradient-to-br from-indigo-500 to-violet-500" /><span>Today</span></div>
             </div>
           </motion.div>
 

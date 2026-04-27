@@ -432,7 +432,7 @@ export default function ClassroomPage() {
               <motion.button key={tab.key} whileTap={{ scale: 0.95 }} onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all ${
                   activeTab === tab.key
-                    ? 'bg-violet-500/20 text-violet-400 border border-violet-500/20'
+                    ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/20'
                     : 'bg-theme-card text-theme-text-secondary border border-theme-border hover:bg-theme-input'
                 }`}>
                 <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -457,7 +457,7 @@ export default function ClassroomPage() {
                     {chapterTitle ? (
                       <div className="mb-4 sm:mb-6">
                         <p className="text-sm sm:text-base text-theme-text-secondary">{courseTitle}</p>
-                        <p className="text-base sm:text-lg font-semibold text-violet-400 mt-1">{chapterTitle}</p>
+                        <p className="text-base sm:text-lg font-semibold text-indigo-400 mt-1">{chapterTitle}</p>
                       </div>
                     ) : (
                       <p className="text-sm sm:text-base text-theme-text-secondary mb-4 sm:mb-6">Topic likho, character select karo — {selectedCharacter.name} padhayega!</p>
@@ -475,8 +475,8 @@ export default function ClassroomPage() {
                               onClick={() => setSelectedCharacter({ name: av.name, emoji: av.emoji || CHARACTER_EMOJIS[av.name.toLowerCase()] || '\ud83e\udd81' })}
                               className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl border transition-all ${
                                 selectedCharacter.name === av.name
-                                  ? 'bg-violet-500/20 border-violet-500/40 text-violet-400'
-                                  : 'bg-theme-input border-theme-border text-theme-text-secondary hover:border-violet-500/20'
+                                  ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-400'
+                                  : 'bg-theme-input border-theme-border text-theme-text-secondary hover:border-indigo-500/20'
                               }`}>
                               <span className="text-2xl">{av.emoji || CHARACTER_EMOJIS[av.name.toLowerCase()] || '\ud83e\udd81'}</span>
                               <span className="text-xs">{av.name}</span>
@@ -488,8 +488,8 @@ export default function ClassroomPage() {
                               onClick={() => setSelectedCharacter({ name: name.charAt(0).toUpperCase() + name.slice(1), emoji })}
                               className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl border transition-all ${
                                 selectedCharacter.name.toLowerCase() === name
-                                  ? 'bg-violet-500/20 border-violet-500/40 text-violet-400'
-                                  : 'bg-theme-input border-theme-border text-theme-text-secondary hover:border-violet-500/20'
+                                  ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-400'
+                                  : 'bg-theme-input border-theme-border text-theme-text-secondary hover:border-indigo-500/20'
                               }`}>
                               <span className="text-2xl">{emoji}</span>
                               <span className="text-xs capitalize">{name}</span>
@@ -502,21 +502,21 @@ export default function ClassroomPage() {
                     {/* Topic Input */}
                     <div className="flex gap-2 sm:gap-3">
                       {chapterTitle ? (
-                        <div className="flex-1 min-w-0 px-3 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-theme-input border border-violet-500/30 text-violet-300 text-sm sm:text-base cursor-not-allowed">
+                        <div className="flex-1 min-w-0 px-3 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-theme-input border border-indigo-500/30 text-indigo-300 text-sm sm:text-base cursor-not-allowed">
                           {topicInput}
                         </div>
                       ) : (
                         <input type="text" value={topicInput} onChange={(e) => setTopicInput(e.target.value)}
                           onKeyDown={(e) => e.key === 'Enter' && handleGenerateLesson()}
                           placeholder="Topic likho... (e.g. Microorganisms)"
-                          className="flex-1 min-w-0 px-3 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm sm:text-base placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
+                          className="flex-1 min-w-0 px-3 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm sm:text-base placeholder-theme-text-muted focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 transition-all" />
                       )}
                       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleGenerateLesson}
                         disabled={user?.subscription !== 'pro' && (user?.xp ?? 0) < 10}
                         className={`px-4 sm:px-6 py-3 sm:py-3.5 rounded-xl font-bold shadow-lg flex-shrink-0 ${
                           user?.subscription !== 'pro' && (user?.xp ?? 0) < 10
                                                     ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none'
-                                                    : 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-violet-500/25'
+                                                    : 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-indigo-500/25'
                                                 }`}>
                                                 <Sparkles className="w-5 h-5" />
                       </motion.button>
@@ -534,7 +534,7 @@ export default function ClassroomPage() {
                     <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: 'linear' }} className="text-6xl mb-4 inline-block">
                       {selectedCharacter.emoji}
                     </motion.div>
-                    <div className="flex items-center gap-2 justify-center text-violet-400">
+                    <div className="flex items-center gap-2 justify-center text-indigo-400">
                       <Loader2 className="w-5 h-5 animate-spin" />
                       <span className="font-medium">{selectedCharacter.name} lesson tayyar kar raha hai...</span>
                     </div>
@@ -549,7 +549,7 @@ export default function ClassroomPage() {
                   <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
                     {/* Character + Slide Content */}
                     <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-6 relative overflow-y-auto">
-                      <div className="absolute top-2 sm:top-4 right-2 sm:right-4 px-2 sm:px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-[10px] sm:text-xs font-bold">
+                      <div className="absolute top-2 sm:top-4 right-2 sm:right-4 px-2 sm:px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-400 text-[10px] sm:text-xs font-bold">
                         Slide {currentSlide + 1} / {lessonSlides.length}
                       </div>
 
@@ -560,22 +560,22 @@ export default function ClassroomPage() {
                           {isSpeaking && (
                             <motion.div animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1, repeat: Infinity }}
                               className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
-                              <div className="w-1.5 h-1.5 rounded-full bg-violet-400" />
-                              <div className="w-1.5 h-1.5 rounded-full bg-violet-400" />
-                              <div className="w-1.5 h-1.5 rounded-full bg-violet-400" />
+                              <div className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+                              <div className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+                              <div className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
                             </motion.div>
                           )}
                         </div>
                         <div className="text-center mt-1">
                           <span className="text-sm font-bold text-theme-text">{selectedCharacter.name}</span>
-                          {isSpeaking && <span className="text-xs text-violet-400 ml-2">Speaking...</span>}
+                          {isSpeaking && <span className="text-xs text-indigo-400 ml-2">Speaking...</span>}
                         </div>
                       </motion.div>
 
                       {/* Slide Content */}
                       <AnimatePresence mode="wait">
                         <motion.div key={currentSlide} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="w-full max-w-lg">
-                          <div className="p-3 sm:p-5 rounded-2xl bg-gradient-to-br from-violet-500/10 to-cyan-500/10 border border-violet-500/20">
+                          <div className="p-3 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-cyan-500/10 border border-indigo-500/20">
                             <div className="flex items-center gap-2 mb-2 sm:mb-3">
                               <span className="text-lg sm:text-xl">{lessonSlides[currentSlide]?.emoji}</span>
                               <h3 className="text-base sm:text-lg font-bold text-theme-text">{lessonSlides[currentSlide]?.title}</h3>
@@ -593,7 +593,7 @@ export default function ClassroomPage() {
                         <button key={idx} onClick={() => { cancelSpeech(); setIsSpeaking(false); setIsPlaying(false); setCurrentSlide(idx); }}
                           className={`w-full text-left p-2.5 rounded-xl mb-1.5 transition-all text-sm ${
                             idx === currentSlide
-                              ? 'bg-violet-500/20 border border-violet-500/30 text-theme-text'
+                              ? 'bg-indigo-500/20 border border-indigo-500/30 text-theme-text'
                               : idx < currentSlide
                                 ? 'bg-emerald-500/5 border border-emerald-500/10 text-theme-text-secondary'
                                 : 'bg-theme-input border border-theme-border text-theme-text-muted hover:bg-theme-card'
@@ -605,7 +605,7 @@ export default function ClassroomPage() {
                         </button>
                       ))}
                       <button onClick={() => { cancelSpeech(); setLessonSlides([]); setCurrentSlide(0); setIsPlaying(false); setIsSpeaking(false); }}
-                        className="w-full mt-3 p-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text-muted text-sm hover:text-violet-400 hover:border-violet-500/20 transition-all">
+                        className="w-full mt-3 p-2.5 rounded-xl bg-theme-input border border-theme-border text-theme-text-muted text-sm hover:text-violet-400 hover:border-indigo-500/20 transition-all">
                         {chapterTitle ? '🔄 Dobara Banao' : '+ Naya Topic'}
                       </button>
                     </div>
@@ -618,7 +618,7 @@ export default function ClassroomPage() {
                                             <SkipBack className="w-4 h-4 sm:w-5 sm:h-5" />
                     </motion.button>
                     <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={handlePlayPause}
-                      className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-violet-500/30">
+                      className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30">
                       {isPlaying ? <Pause className="w-5 h-5 sm:w-6 sm:h-6" /> : <Play className="w-5 h-5 sm:w-6 sm:h-6 ml-0.5" />}
                     </motion.button>
                     <motion.button whileTap={{ scale: 0.9 }} onClick={handleNextSlide} disabled={currentSlide === lessonSlides.length - 1}
@@ -628,11 +628,11 @@ export default function ClassroomPage() {
                     <div className="flex-1 max-w-[8rem] sm:max-w-xs mx-2 sm:mx-4">
                       <div className="w-full h-1.5 bg-violet-100 dark:bg-gray-800 rounded-full overflow-hidden">
                         <motion.div animate={{ width: `${((currentSlide + 1) / lessonSlides.length) * 100}%` }}
-                          className="h-full bg-gradient-to-r from-violet-500 to-purple-600 rounded-full" />
+                          className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full" />
                       </div>
                     </div>
                     <motion.button whileTap={{ scale: 0.9 }} onClick={() => speakSlide(currentSlide, false)}
-                      className="p-1.5 sm:p-2 rounded-xl text-theme-text-secondary hover:text-violet-400 transition-all" title="Speak this slide">
+                      className="p-1.5 sm:p-2 rounded-xl text-theme-text-secondary hover:text-indigo-400 transition-all" title="Speak this slide">
                       <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
                     </motion.button>
                     {/* Study time indicator */}
@@ -664,7 +664,7 @@ export default function ClassroomPage() {
                       )}
                       {!nextChapterId && courseId && (
                         <Link to={`/courses/${courseId}`}
-                          className="flex items-center gap-1 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-bold shadow-lg shadow-violet-500/25">
+                          className="flex items-center gap-1 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-sm font-bold shadow-lg shadow-indigo-500/25">
                           Back to Course <ChevronRight className="w-4 h-4" />
                         </Link>
                       )}
@@ -684,7 +684,7 @@ export default function ClassroomPage() {
                     className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
                       msg.role === 'bot'
-                        ? 'bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-500/20'
+                        ? 'bg-gradient-to-br from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/20'
                         : 'bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/20'
                     }`}>
                       {msg.role === 'bot' ? <Bot className="w-5 h-5 text-white" /> : <User className="w-5 h-5 text-white" />}
@@ -716,13 +716,13 @@ export default function ClassroomPage() {
                 <div className="flex gap-2 sm:gap-3">
                   <input type="text" value={message} onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSend()} placeholder="Apna sawal likho..."
-                    className="flex-1 min-w-0 px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm sm:text-base placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
+                    className="flex-1 min-w-0 px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm sm:text-base placeholder-theme-text-muted focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 transition-all" />
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleSend}
                     disabled={user?.subscription !== 'pro' && (user?.xp ?? 0) < 5}
                     className={`px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl shadow-lg flex-shrink-0 ${
                       user?.subscription !== 'pro' && (user?.xp ?? 0) < 5
                                             ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none'
-                                            : 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-violet-500/25'
+                                            : 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-indigo-500/25'
                                         }`}>
                                         <Send className="w-4 h-4 sm:w-5 sm:h-5" />
                   </motion.button>

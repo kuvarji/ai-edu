@@ -155,7 +155,7 @@ export default function MembershipPage() {
           }
         },
         prefill: orderData.prefill,
-        theme: { color: '#7c3aed' },
+        theme: { color: '#6366f1' },
         modal: {
           ondismiss: () => {
             setPurchasing(false);
@@ -178,24 +178,24 @@ export default function MembershipPage() {
         <div className="max-w-4xl mx-auto">
           {/* Header skeleton */}
           <div className="text-center mb-8 sm:mb-12">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-violet-100 dark:bg-gray-700/50 animate-pulse mb-4" />
-            <div className="h-10 w-52 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-3" />
-            <div className="h-5 w-80 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-[var(--color-surface)] animate-pulse mb-4" />
+            <div className="h-10 w-52 mx-auto bg-[var(--color-surface)] animate-pulse rounded-lg mb-3" />
+            <div className="h-5 w-80 mx-auto bg-[var(--color-surface)] animate-pulse rounded-lg" />
           </div>
           {/* Plan card skeleton */}
-          <div className="bg-theme-card border-2 border-violet-500/30 rounded-2xl overflow-hidden">
-            <div className="bg-violet-50 dark:bg-gray-700/30 animate-pulse p-6 h-36" />
+          <div className="bg-theme-card border-2 border-indigo-500/30 rounded-2xl overflow-hidden">
+            <div className="bg-[var(--color-surface)] animate-pulse p-6 h-36" />
             <div className="p-4 sm:p-6">
-              <div className="h-4 w-48 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+              <div className="h-4 w-48 bg-[var(--color-surface)] animate-pulse rounded-lg mb-4" />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                 {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                   <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl bg-theme-input/50 border border-theme-border">
-                    <div className="w-8 h-8 rounded-lg bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
-                    <div className="h-4 w-32 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+                    <div className="w-8 h-8 rounded-lg bg-[var(--color-surface)] animate-pulse" />
+                    <div className="h-4 w-32 bg-[var(--color-surface)] animate-pulse rounded-lg" />
                   </div>
                 ))}
               </div>
-              <div className="w-full h-14 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
+              <div className="w-full h-14 bg-[var(--color-surface)] animate-pulse rounded-xl" />
             </div>
           </div>
         </div>
@@ -259,10 +259,10 @@ export default function MembershipPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-theme-card border-2 border-violet-500/30 rounded-2xl overflow-hidden shadow-xl shadow-violet-500/10"
+            className="bg-theme-card border-2 border-indigo-500/30 rounded-2xl overflow-hidden shadow-xl shadow-indigo-500/10"
           >
             {/* Plan Header */}
-            <div className="bg-gradient-to-r from-violet-600 to-purple-600 p-4 sm:p-6 text-center relative overflow-hidden">
+            <div className="bg-gradient-to-r from-indigo-600 to-violet-600 p-4 sm:p-6 text-center relative overflow-hidden">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiLz48L3N2Zz4=')] opacity-50" />
               <div className="relative">
                 <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold mb-3">
@@ -288,8 +288,8 @@ export default function MembershipPage() {
                       whileHover={{ x: 4 }}
                       className="flex items-center gap-3 p-2.5 rounded-xl bg-theme-input/50 border border-theme-border"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-violet-500/20 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-4 h-4 text-violet-400" />
+                      <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-4 h-4 text-indigo-400" />
                       </div>
                       <span className="text-sm text-theme-text font-medium">{feature}</span>
                     </motion.div>
@@ -304,7 +304,7 @@ export default function MembershipPage() {
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handlePurchase(plan.id)}
                   disabled={purchasing}
-                  className="w-full py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-bold text-base sm:text-lg shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 text-white font-bold text-base sm:text-lg shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {purchasing ? (
                     <>
@@ -345,7 +345,7 @@ export default function MembershipPage() {
                 <span className="text-sm text-theme-text-secondary">{row.feature}</span>
                 <div className="flex gap-4 sm:gap-8">
                   <span className="text-xs sm:text-sm text-theme-text-muted w-24 sm:w-32 text-center">{row.free}</span>
-                  <span className="text-xs sm:text-sm text-violet-400 font-medium w-24 sm:w-32 text-center">{row.pro}</span>
+                  <span className="text-xs sm:text-sm text-indigo-400 font-medium w-24 sm:w-32 text-center">{row.pro}</span>
                 </div>
               </div>
             ))}

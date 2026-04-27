@@ -49,15 +49,15 @@ export default function LeaderboardPage() {
       <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
         <div className="max-w-[1100px] mx-auto relative z-10">
           {/* Podium skeleton */}
-          <div className="p-8 rounded-[24px] mb-6" style={{ background: 'linear-gradient(135deg, var(--color-surface), #fce7f3, #dbeafe)' }}>
-            <div className="h-7 w-60 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-7" />
+          <div className="p-8 rounded-[24px] mb-6" style={{ background: 'var(--section-gradient)' }}>
+            <div className="h-7 w-60 mx-auto bg-[var(--color-surface)] animate-pulse rounded-lg mb-7" />
             <div className="flex items-end justify-center gap-4">
               {[80, 100, 80].map((sz, i) => (
                 <div key={i} className="flex flex-col items-center">
-                  <div className="rounded-full bg-violet-100 dark:bg-gray-700/50 animate-pulse mb-2" style={{ width: sz, height: sz }} />
-                  <div className="h-4 w-20 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded mb-1" />
-                  <div className="h-3 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded mb-2" />
-                  <div className="rounded-[14px_14px_0_0] bg-violet-100 dark:bg-gray-700/50 animate-pulse" style={{ width: 120, height: [70, 100, 50][i] }} />
+                  <div className="rounded-full bg-[var(--color-surface)] animate-pulse mb-2" style={{ width: sz, height: sz }} />
+                  <div className="h-4 w-20 bg-[var(--color-surface)] animate-pulse rounded mb-1" />
+                  <div className="h-3 w-16 bg-[var(--color-surface)] animate-pulse rounded mb-2" />
+                  <div className="rounded-[14px_14px_0_0] bg-[var(--color-surface)] animate-pulse" style={{ width: 120, height: [70, 100, 50][i] }} />
                 </div>
               ))}
             </div>
@@ -66,22 +66,22 @@ export default function LeaderboardPage() {
           <div className="rounded-[22px] bg-theme-card border border-theme-border overflow-hidden">
             <div className="grid grid-cols-[60px_1fr_120px_120px_100px] px-6 py-3.5 bg-theme-surface">
               {['Rank','Student','XP','Streak','Level'].map(h => (
-                <div key={h} className="h-3 w-12 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded" />
+                <div key={h} className="h-3 w-12 bg-[var(--color-surface)] animate-pulse rounded" />
               ))}
             </div>
             {[1,2,3,4,5].map(i => (
               <div key={i} className="grid grid-cols-[60px_1fr_120px_120px_100px] px-6 py-3.5 items-center border-b border-theme-border last:border-b-0">
-                <div className="h-5 w-6 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded" />
+                <div className="h-5 w-6 bg-[var(--color-surface)] animate-pulse rounded" />
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
+                  <div className="w-10 h-10 rounded-xl bg-[var(--color-surface)] animate-pulse" />
                   <div>
-                    <div className="h-4 w-24 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded mb-1" />
-                    <div className="h-3 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded" />
+                    <div className="h-4 w-24 bg-[var(--color-surface)] animate-pulse rounded mb-1" />
+                    <div className="h-3 w-16 bg-[var(--color-surface)] animate-pulse rounded" />
                   </div>
                 </div>
-                <div className="h-4 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded" />
-                <div className="h-4 w-14 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded" />
-                <div className="h-6 w-14 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+                <div className="h-4 w-16 bg-[var(--color-surface)] animate-pulse rounded" />
+                <div className="h-4 w-14 bg-[var(--color-surface)] animate-pulse rounded" />
+                <div className="h-6 w-14 bg-[var(--color-surface)] animate-pulse rounded-lg" />
               </div>
             ))}
           </div>
@@ -102,7 +102,7 @@ export default function LeaderboardPage() {
   }
 
   const rankColor = (r: number) => r === 1 ? 'text-yellow-500' : r === 2 ? 'text-slate-400' : r === 3 ? 'text-orange-500' : 'text-theme-text-muted';
-  const levelBg = (l: number) => l >= 10 ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400' : l >= 5 ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400';
+  const levelBg = (l: number) => l >= 10 ? 'bg-violet-100 dark:bg-violet-900/30 text-indigo-600 dark:text-indigo-400' : l >= 5 ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400';
 
   return (
     <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
@@ -112,10 +112,10 @@ export default function LeaderboardPage() {
         {top3.length >= 3 && (
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
             className="p-8 rounded-[24px] mb-6 relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, var(--color-surface), #fce7f3, #dbeafe)', border: '1px solid rgba(124,58,237,0.06)' }}>
-            <div className="absolute -top-[60px] -right-[60px] w-[250px] h-[250px] rounded-full bg-violet-300/10 dark:bg-violet-400/5 blur-[40px]" />
+            style={{ background: 'var(--section-gradient)', border: '1px solid var(--section-gradient-border)' }}>
+            <div className="absolute -top-[60px] -right-[60px] w-[250px] h-[250px] rounded-full bg-indigo-300/10 dark:bg-indigo-400/5 blur-[40px]" />
             <h2 className="text-center font-['Space_Grotesk'] text-[26px] font-extrabold mb-7 relative z-[1]">
-              {'\ud83c\udfc6'} <span className="text-violet-600 dark:text-violet-400">Top Learners</span> of the Week
+              {'\ud83c\udfc6'} <span className="text-indigo-600 dark:text-indigo-400">Top Learners</span> of the Week
             </h2>
             <div className="flex items-end justify-center gap-4 relative z-[1]">
               {/* 2nd Place */}
@@ -167,14 +167,14 @@ export default function LeaderboardPage() {
               <button key={p} onClick={() => setPeriod(p)}
                 className={`px-[18px] py-2 rounded-[10px] text-[13px] font-bold transition-all ${
                   period === p
-                    ? 'bg-violet-600 text-white shadow-md shadow-violet-500/20'
-                    : 'text-theme-text-muted hover:text-theme-text-secondary hover:bg-violet-50 dark:hover:bg-violet-900/20'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20'
+                    : 'text-theme-text-muted hover:text-theme-text-secondary hover:bg-indigo-50 dark:hover:bg-indigo-900/20'
                 }`}>
                 {p === 'daily' ? 'Today' : p === 'weekly' ? 'This Week' : 'All Time'}
               </button>
             ))}
           </div>
-          <div className="px-5 py-2.5 rounded-[14px] bg-violet-100 dark:bg-violet-900/30 border border-violet-200 dark:border-violet-700 text-[13px] font-bold text-violet-600 dark:text-violet-400 flex items-center gap-2">
+          <div className="px-5 py-2.5 rounded-[14px] bg-indigo-100 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700 text-[13px] font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
             <TrendingUp className="w-4 h-4" /> Your Rank: <span className="font-['Space_Grotesk'] text-xl font-extrabold">#{leaderboardData.length > 0 ? leaderboardData.length : '—'}</span>
           </div>
         </motion.div>
@@ -189,7 +189,7 @@ export default function LeaderboardPage() {
           {/* Rows */}
           {leaderboardData.map((player, i) => (
             <motion.div key={player.rank} variants={fadeUp} initial="hidden" animate="visible" custom={i}
-              className={`grid grid-cols-[40px_1fr_auto] sm:grid-cols-[60px_1fr_120px_120px_100px] px-4 sm:px-6 py-3.5 items-center border-b border-theme-border last:border-b-0 hover:bg-violet-50/50 dark:hover:bg-violet-900/10 transition-colors ${
+              className={`grid grid-cols-[40px_1fr_auto] sm:grid-cols-[60px_1fr_120px_120px_100px] px-4 sm:px-6 py-3.5 items-center border-b border-theme-border last:border-b-0 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition-colors ${
                 i < 3 ? '' : ''
               }`}>
               {/* Rank */}
@@ -207,7 +207,7 @@ export default function LeaderboardPage() {
                 </div>
               </div>
               {/* XP */}
-              <span className="hidden sm:block font-['Space_Grotesk'] text-[15px] font-extrabold text-violet-600 dark:text-violet-400">
+              <span className="hidden sm:block font-['Space_Grotesk'] text-[15px] font-extrabold text-indigo-600 dark:text-indigo-400">
                 {player.xp.toLocaleString()}
               </span>
               {/* Streak */}
@@ -220,7 +220,7 @@ export default function LeaderboardPage() {
               </span>
               {/* Mobile: XP + Streak */}
               <div className="flex sm:hidden items-center gap-2 justify-end">
-                <span className="text-xs font-extrabold text-violet-600 dark:text-violet-400">{player.xp.toLocaleString()}</span>
+                <span className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400">{player.xp.toLocaleString()}</span>
                 <span className="text-xs text-orange-400">{'\ud83d\udd25'}{player.streak}</span>
               </div>
             </motion.div>

@@ -56,7 +56,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-theme-page transition-colors duration-300 flex items-center justify-center pt-16 px-4 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/3 w-80 h-80 bg-violet-600/15 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/4 left-1/3 w-80 h-80 bg-indigo-600/15 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-cyan-600/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
@@ -72,7 +72,7 @@ export default function LoginPage() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
-              className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/30"
+              className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30"
             >
               <GraduationCap className="w-8 h-8 text-white" />
             </motion.div>
@@ -100,7 +100,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="student@example.com"
-                  className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 transition-all"
                 />
               </div>
             </div>
@@ -114,7 +114,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter password"
-                  className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all"
+                  className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-theme-input border border-theme-border text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 transition-all"
                 />
                 <button
                   type="button"
@@ -128,10 +128,10 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 text-theme-text-secondary cursor-pointer">
-                <input type="checkbox" className="rounded border-gray-600 bg-theme-input text-violet-500 focus:ring-violet-500" />
+                <input type="checkbox" className="rounded border-gray-600 bg-theme-input text-indigo-500 focus:ring-indigo-500" />
                 Remember me
               </label>
-              <a href="#" className="text-violet-400 hover:text-violet-300 transition-colors">
+              <a href="#" className="text-indigo-400 hover:text-indigo-300 transition-colors">
                 Forgot password?
               </a>
             </div>
@@ -141,7 +141,7 @@ export default function LoginPage() {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all disabled:opacity-60"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogIn className="w-5 h-5" />}
               {loading ? t.loading : t.login_button}
@@ -151,7 +151,7 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-theme-text-muted text-sm">
                             {t.no_account}{' '}
-                            <Link to="/signup" className="text-violet-400 hover:text-violet-300 font-medium transition-colors">
+                            <Link to="/signup" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
                               {t.nav_signup}
                             </Link>
             </p>
@@ -201,7 +201,7 @@ export default function LoginPage() {
               }}
               className="mt-4 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-medium text-gray-300 bg-theme-input border border-theme-border hover:bg-theme-card-hover transition-all"
             >
-              <Sparkles className="w-5 h-5 text-violet-400" />
+              <Sparkles className="w-5 h-5 text-indigo-400" />
               Demo Login
             </motion.button>
           </div>

@@ -41,23 +41,23 @@ export default function CharacterStorePage() {
       <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
-            <div className="h-8 w-36 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full mb-4" />
-            <div className="h-10 w-52 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
-            <div className="h-5 w-64 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
-            <div className="h-10 w-44 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
+            <div className="h-8 w-36 mx-auto bg-[var(--color-surface)] animate-pulse rounded-full mb-4" />
+            <div className="h-10 w-52 mx-auto bg-[var(--color-surface)] animate-pulse rounded-lg mb-2" />
+            <div className="h-5 w-64 mx-auto bg-[var(--color-surface)] animate-pulse rounded-lg mb-4" />
+            <div className="h-10 w-44 mx-auto bg-[var(--color-surface)] animate-pulse rounded-full" />
           </div>
           <div className="flex justify-center flex-wrap gap-2 mb-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-9 w-20 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
+              <div key={i} className="h-9 w-20 bg-[var(--color-surface)] animate-pulse rounded-xl" />
             ))}
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
               <div key={i} className="p-5 rounded-2xl bg-theme-card border border-theme-border">
-                <div className="h-4 w-14 ml-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full mb-4" />
-                <div className="w-14 h-14 mx-auto rounded-full bg-violet-100 dark:bg-gray-700/50 animate-pulse mb-3" />
-                <div className="h-4 w-20 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
-                <div className="h-6 w-16 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
+                <div className="h-4 w-14 ml-auto bg-[var(--color-surface)] animate-pulse rounded-full mb-4" />
+                <div className="w-14 h-14 mx-auto rounded-full bg-[var(--color-surface)] animate-pulse mb-3" />
+                <div className="h-4 w-20 mx-auto bg-[var(--color-surface)] animate-pulse rounded-lg mb-2" />
+                <div className="h-6 w-16 mx-auto bg-[var(--color-surface)] animate-pulse rounded-full" />
               </div>
             ))}
           </div>
@@ -113,7 +113,7 @@ export default function CharacterStorePage() {
     <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
       <div className="max-w-6xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium mb-4">
             <ShoppingBag className="w-4 h-4" /> Avatar Store
           </span>
           <h1 className="text-4xl font-black text-theme-text mb-2">Character Store</h1>
@@ -133,7 +133,7 @@ export default function CharacterStorePage() {
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all ${
                 filter === f
-                  ? 'bg-violet-500/20 text-violet-400 border border-violet-500/20'
+                  ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/20'
                   : 'bg-theme-card text-theme-text-secondary border border-theme-border hover:bg-theme-input'
               }`}
             >
@@ -157,7 +157,7 @@ export default function CharacterStorePage() {
                 onClick={() => setSelected(avatar.id)}
                 className={`relative p-5 rounded-2xl border cursor-pointer transition-all ${
                   isSelected
-                    ? `bg-gradient-to-b from-violet-500/20 to-violet-500/5 border-violet-500/40 shadow-lg shadow-violet-500/10`
+                    ? `bg-gradient-to-b from-indigo-500/20 to-indigo-500/5 border-indigo-500/40 shadow-lg shadow-indigo-500/10`
                     : `bg-theme-card ${rarityBorder[avatar.rarity]} hover:border-white/20`
                 }`}
               >
@@ -188,7 +188,7 @@ export default function CharacterStorePage() {
                       whileTap={{ scale: 0.95 }}
                       onClick={(e) => { e.stopPropagation(); handleBuy(avatar.id); }}
                       disabled={buying}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-xs font-bold hover:bg-violet-500/30 transition-all disabled:opacity-60"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-400 text-xs font-bold hover:bg-indigo-500/30 transition-all disabled:opacity-60"
                     >
                       <Zap className="w-3 h-3" /> {buying ? '...' : `${avatar.cost} XP`}
                     </motion.button>
@@ -224,7 +224,7 @@ export default function CharacterStorePage() {
                 else handleBuy(selected!);
               }}
               disabled={buying}
-              className="px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25 disabled:opacity-60"
+              className="px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/25 disabled:opacity-60"
             >
               {buying ? 'Processing...' : avatars.find((a: typeof avatars[number]) => a.id === selected)?.unlocked ? 'Equip Avatar' : 'Unlock Now'}
             </motion.button>
