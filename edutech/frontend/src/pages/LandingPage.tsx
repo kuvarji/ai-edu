@@ -201,7 +201,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, scale: 0.8, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.4 }}
-              className="relative hidden lg:flex items-center justify-center"
+              className="relative flex items-center justify-center"
             >
               <div className="relative">
                 {/* Character Image with float animation */}
@@ -213,13 +213,13 @@ export default function LandingPage() {
                   <img
                     src="/hero-character.jpg"
                     alt="Smart Student Character"
-                    className="w-[420px] h-auto drop-shadow-2xl rounded-3xl"
+                    className="w-[250px] sm:w-[320px] lg:w-[420px] h-auto drop-shadow-2xl rounded-3xl"
                     style={{ filter: 'drop-shadow(0 20px 40px rgba(99, 102, 241, 0.2))' }}
                   />
                 </motion.div>
 
-                {/* Floating badges around character */}
-                <FloatingShape className="absolute -top-6 -left-6 landing-float-badge p-3 rounded-2xl shadow-lg z-20" delay={0} duration={5}>
+                {/* Floating badges around character (hidden on small screens) */}
+                <FloatingShape className="absolute -top-6 -left-6 landing-float-badge p-3 rounded-2xl shadow-lg z-20 hidden md:block" delay={0} duration={5}>
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">{'\u{1F525}'}</span>
                     <div>
@@ -229,7 +229,7 @@ export default function LandingPage() {
                   </div>
                 </FloatingShape>
 
-                <FloatingShape className="absolute -top-2 -right-8 landing-float-badge p-3 rounded-2xl shadow-lg z-20" delay={1.5} duration={6}>
+                <FloatingShape className="absolute -top-2 -right-8 landing-float-badge p-3 rounded-2xl shadow-lg z-20 hidden md:block" delay={1.5} duration={6}>
                   <div className="flex items-center gap-2">
                     <Trophy className="w-6 h-6 text-amber-500" />
                     <div>
@@ -239,7 +239,7 @@ export default function LandingPage() {
                   </div>
                 </FloatingShape>
 
-                <FloatingShape className="absolute -bottom-4 left-1/4 landing-float-badge p-3 rounded-2xl shadow-lg z-20" delay={0.8} duration={7}>
+                <FloatingShape className="absolute -bottom-4 left-1/4 landing-float-badge p-3 rounded-2xl shadow-lg z-20 hidden md:block" delay={0.8} duration={7}>
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">{'\u{1F3AF}'}</span>
                     <div>
