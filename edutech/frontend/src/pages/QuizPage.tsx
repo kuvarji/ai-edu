@@ -49,6 +49,8 @@ export default function QuizPage() {
   const question = quizQuestions[currentQ];
 
   const timerExpiredRef = useRef(false);
+  const selectedRef = useRef<number | null>(null);
+  selectedRef.current = selected;
 
   useEffect(() => {
     if (finished || answered) return;
@@ -68,7 +70,7 @@ export default function QuizPage() {
   useEffect(() => {
     if (timer === 0 && !answered && !finished && timerExpiredRef.current) {
       timerExpiredRef.current = false;
-      handleAnswer(null);
+      handleAnswer(selectedRef.current);
     }
   }, [timer, answered, finished]);
 
