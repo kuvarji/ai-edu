@@ -136,7 +136,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
       {/* Toast notifications */}
       <AnimatePresence>
         {successMsg && (
@@ -163,14 +163,14 @@ export default function ProfilePage() {
         )}
       </AnimatePresence>
 
-      <div className="max-w-4xl mx-auto">
-        {/* Profile Header */}
+            <div className="max-w-4xl mx-auto relative z-10">
+              {/* Profile Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           className="relative p-8 rounded-3xl bg-gradient-to-br from-violet-600/20 via-purple-600/10 to-cyan-600/20 border border-theme-border mb-8 overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/80 dark:from-gray-950/80 to-transparent" />
           <div className="relative flex flex-col sm:flex-row items-center gap-6">
             <div className="relative">
               <motion.div
@@ -186,7 +186,7 @@ export default function ProfilePage() {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingPhoto}
-                className="absolute -bottom-2 -right-2 p-2 rounded-xl bg-gray-900 border border-theme-border text-theme-text-secondary hover:text-white transition-colors disabled:opacity-50"
+                className="absolute -bottom-2 -right-2 p-2 rounded-xl bg-theme-card border border-theme-border text-theme-text-secondary hover:text-theme-text transition-colors disabled:opacity-50"
               >
                 {uploadingPhoto ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -248,7 +248,7 @@ export default function ProfilePage() {
               />
             </div>
             <div className="text-center sm:text-left flex-1">
-              <h1 className="text-3xl font-black text-white mb-1">{user?.name || 'Student'}</h1>
+              <h1 className="text-3xl font-black text-theme-text mb-1">{user?.name || 'Student'}</h1>
               <p className="text-theme-text-secondary mb-3">{user?.email || 'student@eduai.com'}</p>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
                 <span className="px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-xs font-bold capitalize">
@@ -266,7 +266,7 @@ export default function ProfilePage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setEditing(!editing)}
-              className="px-5 py-2.5 rounded-xl font-medium text-sm text-white bg-white/10 border border-theme-border hover:bg-white/20 transition-all flex items-center gap-2"
+              className="px-5 py-2.5 rounded-xl font-medium text-sm text-theme-text bg-theme-surface border border-theme-border hover:bg-theme-card-hover transition-all flex items-center gap-2"
             >
               <Edit3 className="w-4 h-4" />
               Edit Profile
@@ -288,7 +288,7 @@ export default function ProfilePage() {
                 className="p-4 rounded-2xl bg-theme-card border border-theme-border text-center"
               >
                 <Icon className={`w-6 h-6 mx-auto mb-2 ${stat.color}`} />
-                <p className="text-xl font-black text-white">{stat.value}</p>
+                <p className="text-xl font-black text-theme-text">{stat.value}</p>
                 <p className="text-xs text-theme-text-muted">{stat.label}</p>
               </motion.div>
             );
@@ -303,9 +303,9 @@ export default function ProfilePage() {
             transition={{ delay: 0.3 }}
             className="p-6 rounded-2xl bg-theme-card border border-theme-border"
           >
-            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <User className="w-5 h-5 text-violet-400" />
-              Personal Information
+                        <h3 className="text-lg font-bold text-theme-text mb-4 flex items-center gap-2">
+                          <User className="w-5 h-5 text-violet-400" />
+                          Personal Information
             </h3>
             <div className="space-y-4">
               <div>
@@ -315,7 +315,7 @@ export default function ProfilePage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   disabled={!editing}
-                  className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-white disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all"
                 />
               </div>
               <div>
@@ -326,7 +326,7 @@ export default function ProfilePage() {
                     type="email"
                     value={user?.email || 'student@eduai.com'}
                     disabled
-                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-white opacity-50"
+                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text opacity-50"
                   />
                 </div>
               </div>
@@ -340,8 +340,8 @@ export default function ProfilePage() {
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+91 9876543210"
                     disabled={!editing}
-                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-white disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all"
-                  />
+                                      className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all"
+                                    />
                 </div>
               </div>
               {/* Grade & Board - only for students */}
@@ -352,10 +352,10 @@ export default function ProfilePage() {
                     <div className="relative">
                       <BookOpen className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
                       <select
-                        value={grade}
-                        onChange={(e) => setGrade(e.target.value)}
-                        disabled={!editing}
-                        className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-white disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all appearance-none"
+                                                value={grade}
+                                                onChange={(e) => setGrade(e.target.value)}
+                                                disabled={!editing}
+                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all appearance-none"
                       >
                         <option value="">Select Class</option>
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((g) => (
@@ -369,10 +369,10 @@ export default function ProfilePage() {
                     <div className="relative">
                       <School className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
                       <select
-                        value={board}
-                        onChange={(e) => setBoard(e.target.value)}
-                        disabled={!editing}
-                        className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-white disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all appearance-none"
+                                                value={board}
+                                                onChange={(e) => setBoard(e.target.value)}
+                                                disabled={!editing}
+                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-theme-input border border-theme-border text-theme-text disabled:opacity-50 focus:outline-none focus:border-violet-500/50 transition-all appearance-none"
                       >
                         <option value="">Select Board</option>
                         <option value="CBSE">CBSE</option>
@@ -408,19 +408,19 @@ export default function ProfilePage() {
           >
             {/* Theme */}
             <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <Shield className="w-5 h-5 text-cyan-400" />
-                Settings
+                            <h3 className="text-lg font-bold text-theme-text mb-4 flex items-center gap-2">
+                              <Shield className="w-5 h-5 text-cyan-400" />
+                              Settings
               </h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 rounded-xl bg-theme-input">
                   <div className="flex items-center gap-3">
                     {darkMode ? <Moon className="w-5 h-5 text-violet-400" /> : <Sun className="w-5 h-5 text-amber-400" />}
-                    <span className="text-sm text-gray-300">Dark Mode</span>
+                    <span className="text-sm text-theme-text-secondary">Dark Mode</span>
                   </div>
                   <button
                     onClick={handleDarkModeToggle}
-                    className={`w-12 h-7 rounded-full transition-all ${darkMode ? 'bg-violet-500' : 'bg-gray-600'}`}
+                    className={`w-12 h-7 rounded-full transition-all ${darkMode ? 'bg-violet-500' : 'bg-gray-300 dark:bg-gray-600'}`}
                   >
                     <motion.div
                       animate={{ x: darkMode ? 22 : 2 }}
@@ -432,12 +432,12 @@ export default function ProfilePage() {
                 <div className="flex items-center justify-between p-3 rounded-xl bg-theme-input">
                   <div className="flex items-center gap-3">
                     <Globe className="w-5 h-5 text-emerald-400" />
-                    <span className="text-sm text-gray-300">Language</span>
+                    <span className="text-sm text-theme-text-secondary">Language</span>
                   </div>
                   <select
                     value={language}
                     onChange={(e) => handleLanguageChange(e.target.value)}
-                    className="bg-gray-800 text-white text-sm rounded-lg px-3 py-1.5 border border-theme-border focus:outline-none"
+                    className="bg-theme-surface text-theme-text text-sm rounded-lg px-3 py-1.5 border border-theme-border focus:outline-none"
                   >
                     <option value="hindi">Hindi</option>
                     <option value="english">English</option>
@@ -448,11 +448,11 @@ export default function ProfilePage() {
                 <div className="flex items-center justify-between p-3 rounded-xl bg-theme-input">
                   <div className="flex items-center gap-3">
                     <Bell className="w-5 h-5 text-amber-400" />
-                    <span className="text-sm text-gray-300">Notifications</span>
+                    <span className="text-sm text-theme-text-secondary">Notifications</span>
                   </div>
                   <button
                     onClick={handleNotificationsToggle}
-                    className={`w-12 h-7 rounded-full transition-all ${notifications ? 'bg-violet-500' : 'bg-gray-600'}`}
+                    className={`w-12 h-7 rounded-full transition-all ${notifications ? 'bg-violet-500' : 'bg-gray-300 dark:bg-gray-600'}`}
                   >
                     <motion.div animate={{ x: notifications ? 22 : 2 }} className="w-5 h-5 rounded-full bg-white shadow-sm" />
                   </button>
@@ -462,9 +462,9 @@ export default function ProfilePage() {
 
             {/* Badges */}
             <div className="p-6 rounded-2xl bg-theme-card border border-theme-border">
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <Award className="w-5 h-5 text-amber-400" />
-                Badges ({badges.filter((b) => b.unlocked).length}/{badges.length})
+                            <h3 className="text-lg font-bold text-theme-text mb-4 flex items-center gap-2">
+                              <Award className="w-5 h-5 text-amber-400" />
+                              Badges ({badges.filter((b) => b.unlocked).length}/{badges.length})
               </h3>
               <div className="grid grid-cols-4 gap-2">
                 {badges.map((badge) => (

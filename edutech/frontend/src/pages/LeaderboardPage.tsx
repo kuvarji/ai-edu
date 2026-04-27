@@ -37,13 +37,13 @@ export default function LeaderboardPage() {
   const rest = leaderboardData.slice(3);
 
   return (
-    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
-      <div className="max-w-4xl mx-auto">
+        <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4 blob-bg">
+          <div className="max-w-4xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm font-medium mb-4">
             <Trophy className="w-4 h-4" /> Rankings
           </span>
-          <h1 className="text-4xl font-black text-white mb-2">Leaderboard</h1>
+          <h1 className="text-4xl font-black text-theme-text mb-2">Leaderboard</h1>
           <p className="text-theme-text-secondary">Top students ki ranking dekho</p>
         </motion.div>
 
@@ -70,42 +70,42 @@ export default function LeaderboardPage() {
             {/* Top 3 podium skeleton */}
             <div className="flex items-end justify-center gap-4 mb-8">
               <div className="text-center w-36">
-                <div className="w-16 h-16 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-2" />
-                <div className="p-4 rounded-2xl bg-gray-800/50 border border-theme-border">
-                  <div className="w-10 h-10 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-2" />
-                  <div className="h-4 w-20 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                  <div className="h-3 w-16 mx-auto bg-gray-700/50 animate-pulse rounded-lg" />
+                <div className="w-16 h-16 mx-auto rounded-full bg-violet-100 dark:bg-gray-700/50 animate-pulse mb-2" />
+                <div className="p-4 rounded-2xl bg-theme-card border border-theme-border">
+                  <div className="w-10 h-10 mx-auto rounded-full bg-violet-100 dark:bg-gray-700/50 animate-pulse mb-2" />
+                  <div className="h-4 w-20 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-3 w-16 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                 </div>
               </div>
               <div className="text-center w-40">
-                <div className="w-20 h-20 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-2" />
+                <div className="w-20 h-20 mx-auto rounded-full bg-violet-100 dark:bg-gray-700/50 animate-pulse mb-2" />
                 <div className="p-5 rounded-2xl bg-amber-500/5 border border-amber-500/20">
-                  <div className="w-12 h-12 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-2" />
-                  <div className="h-5 w-24 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                  <div className="h-4 w-20 mx-auto bg-gray-700/50 animate-pulse rounded-lg" />
+                  <div className="w-12 h-12 mx-auto rounded-full bg-violet-100 dark:bg-gray-700/50 animate-pulse mb-2" />
+                  <div className="h-5 w-24 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-4 w-20 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                 </div>
               </div>
               <div className="text-center w-36">
-                <div className="w-16 h-16 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-2" />
-                <div className="p-4 rounded-2xl bg-gray-800/50 border border-theme-border">
-                  <div className="w-10 h-10 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-2" />
-                  <div className="h-4 w-20 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                  <div className="h-3 w-16 mx-auto bg-gray-700/50 animate-pulse rounded-lg" />
+                <div className="w-16 h-16 mx-auto rounded-full bg-violet-100 dark:bg-gray-700/50 animate-pulse mb-2" />
+                <div className="p-4 rounded-2xl bg-theme-card border border-theme-border">
+                  <div className="w-10 h-10 mx-auto rounded-full bg-violet-100 dark:bg-gray-700/50 animate-pulse mb-2" />
+                  <div className="h-4 w-20 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-3 w-16 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                 </div>
               </div>
             </div>
             {/* Rest of leaderboard skeleton */}
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-theme-card border border-theme-border">
-                <div className="w-8 h-5 bg-gray-700/50 animate-pulse rounded-lg" />
-                <div className="w-12 h-12 rounded-xl bg-gray-700/50 animate-pulse" />
+                <div className="w-8 h-5 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+                <div className="w-12 h-12 rounded-xl bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
                 <div className="flex-1">
-                  <div className="h-4 w-28 bg-gray-700/50 animate-pulse rounded-lg mb-1" />
-                  <div className="h-3 w-16 bg-gray-700/50 animate-pulse rounded-lg" />
+                  <div className="h-4 w-28 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-1" />
+                  <div className="h-3 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="h-4 w-12 bg-gray-700/50 animate-pulse rounded-lg" />
-                  <div className="h-4 w-16 bg-gray-700/50 animate-pulse rounded-lg" />
+                  <div className="h-4 w-12 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
+                  <div className="h-4 w-16 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                 </div>
               </div>
             ))}
@@ -114,8 +114,8 @@ export default function LeaderboardPage() {
 
         {!loading && leaderboardData.length === 0 && (
           <div className="text-center py-16">
-            <Trophy className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-            <p className="text-theme-text-secondary">Abhi koi leaderboard data nahi hai. Quizzes do aur XP kamao!</p>
+                        <Trophy className="w-12 h-12 text-theme-text-muted mx-auto mb-3" />
+                        <p className="text-theme-text-secondary">Abhi koi leaderboard data nahi hai. Quizzes do aur XP kamao!</p>
           </div>
         )}
 
@@ -130,11 +130,11 @@ export default function LeaderboardPage() {
             className="text-center w-36"
           >
             <div className="text-4xl mb-2 w-16 h-16 mx-auto flex items-center justify-center overflow-hidden rounded-full"><Avatar avatar={top3[1].avatar} imgClassName="w-full h-full object-cover rounded-full" /></div>
-            <div className="p-4 rounded-2xl bg-gray-800/50 border border-theme-border">
+            <div className="p-4 rounded-2xl bg-theme-card border border-theme-border">
               <div className="w-10 h-10 mx-auto rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white font-black text-lg mb-2 shadow-lg">
                 2
               </div>
-              <h3 className="font-bold text-white text-sm truncate">{top3[1].name}</h3>
+              <h3 className="font-bold text-theme-text text-sm truncate">{top3[1].name}</h3>
               <p className="text-xs text-amber-400 font-bold mt-1">{top3[1].xp.toLocaleString()} XP</p>
               <p className="text-xs text-theme-text-muted">Level {top3[1].level}</p>
             </div>
@@ -159,7 +159,7 @@ export default function LeaderboardPage() {
               <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-black text-xl mb-2 shadow-lg shadow-amber-500/30">
                 1
               </div>
-              <h3 className="font-bold text-white truncate">{top3[0].name}</h3>
+              <h3 className="font-bold text-theme-text truncate">{top3[0].name}</h3>
               <p className="text-sm text-amber-400 font-bold mt-1">{top3[0].xp.toLocaleString()} XP</p>
               <p className="text-xs text-theme-text-secondary">Level {top3[0].level}</p>
               <div className="flex items-center justify-center gap-1 mt-2">
@@ -178,11 +178,11 @@ export default function LeaderboardPage() {
             className="text-center w-36"
           >
             <div className="text-4xl mb-2 w-16 h-16 mx-auto flex items-center justify-center overflow-hidden rounded-full"><Avatar avatar={top3[2].avatar} imgClassName="w-full h-full object-cover rounded-full" /></div>
-            <div className="p-4 rounded-2xl bg-gray-800/50 border border-theme-border">
-              <div className="w-10 h-10 mx-auto rounded-full bg-gradient-to-br from-amber-700 to-amber-800 flex items-center justify-center text-white font-black text-lg mb-2 shadow-lg">
-                3
-              </div>
-              <h3 className="font-bold text-white text-sm truncate">{top3[2].name}</h3>
+            <div className="p-4 rounded-2xl             bg-theme-card border border-theme-border">
+                          <div className="w-10 h-10 mx-auto rounded-full bg-gradient-to-br from-amber-700 to-amber-800 flex items-center justify-center text-white font-black text-lg mb-2 shadow-lg">
+                            3
+                          </div>
+                          <h3 className="font-bold text-theme-text text-sm truncate">{top3[2].name}</h3>
               <p className="text-xs text-amber-400 font-bold mt-1">{top3[2].xp.toLocaleString()} XP</p>
               <p className="text-xs text-theme-text-muted">Level {top3[2].level}</p>
             </div>
@@ -205,7 +205,7 @@ export default function LeaderboardPage() {
                 <Avatar avatar={player.avatar} imgClassName="w-full h-full object-cover rounded-xl" />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-white text-sm">{player.name}</h4>
+                <h4 className="font-bold text-theme-text text-sm">{player.name}</h4>
                 <p className="text-xs text-theme-text-muted">Level {player.level}</p>
               </div>
               <div className="flex items-center gap-4 text-sm">
@@ -229,7 +229,7 @@ export default function LeaderboardPage() {
         >
           <div className="flex items-center justify-center gap-3 mb-2">
             <TrendingUp className="w-5 h-5 text-violet-400" />
-            <h3 className="text-lg font-bold text-white">Tumhari Position: #24</h3>
+            <h3 className="text-lg font-bold text-theme-text">Tumhari Position: #24</h3>
           </div>
           <p className="text-theme-text-secondary text-sm">Aur 150 XP kamao top 20 mein aane ke liye!</p>
         </motion.div>

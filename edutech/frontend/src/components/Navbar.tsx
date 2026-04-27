@@ -18,9 +18,11 @@ import {
   Shield,
   Users,
   Crown,
+  Search,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useLanguage } from '../i18n/useLanguage';
+import Avatar from './Avatar';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -64,6 +66,7 @@ export default function Navbar() {
       animate={{ y: 0 }}
       transition={{ type: 'spring', stiffness: 100, damping: 20 }}
       className="fixed top-0 left-0 right-0 z-50 bg-theme-nav backdrop-blur-xl border-b border-theme-nav-border transition-colors duration-300"
+      style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.04)' }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -74,8 +77,8 @@ export default function Navbar() {
             >
               <GraduationCap className="w-6 h-6 text-white" />
             </motion.div>
-            <span className="text-xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
-              EduAI
+            <span className="text-xl font-bold text-violet-600 dark:text-violet-400" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+              EduTech AI
             </span>
           </Link>
 
@@ -90,7 +93,7 @@ export default function Navbar() {
                     whileTap={{ scale: 0.95 }}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                       active
-                        ? 'bg-violet-500/20 text-violet-400 shadow-lg shadow-violet-500/10'
+                        ? 'bg-violet-100 dark:bg-violet-500/20 text-violet-700 dark:text-violet-400 shadow-sm'
                         : 'text-theme-text-secondary hover:text-theme-text hover:bg-theme-card-hover'
                     }`}
                   >
@@ -104,31 +107,49 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-3">
             {isLoggedIn && user ? (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                {/* Search */}
+                <div className="relative hidden lg:block">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    className="pl-9 pr-3 py-2 w-40 rounded-xl text-sm bg-theme-input border border-theme-border text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-violet-400/50 transition-all"
+                  />
+                </div>
+                {/* XP Badge */}
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-50 to-yellow-100 dark:from-yellow-500/10 dark:to-amber-500/10 border border-amber-200 dark:border-yellow-500/20"
                 >
-                  <Flame className="w-4 h-4 text-orange-400" />
-                  <span className="text-sm font-bold text-orange-400">{user.streak}</span>
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20"
-                >
-                  <Zap className="w-4 h-4 text-yellow-400" />
-                  <span className="text-sm font-bold text-yellow-400">
-                    {user.subscription === 'pro' || user.subscription === 'premium' ? '∞ Unlimited' : `${user.xp} XP`}
+                  <Zap className="w-4 h-4 text-amber-500" />
+                  <span className="text-sm font-bold text-amber-600 dark:text-yellow-400">
+                    {user.subscription === 'pro' || user.subscription === 'premium' ? '∞' : `${user.xp} XP`}
                   </span>
                 </motion.div>
+                {/* Streak */}
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20"
+                >
+                  <Flame className="w-4 h-4 text-orange-500" />
+                  <span className="text-sm font-bold text-orange-600 dark:text-orange-400">{user.streak}</span>
+                </motion.div>
+                {/* Avatar */}
+                <Link to="/profile">
+                  <motion.div whileHover={{ scale: 1.05 }} className="w-9 h-9 rounded-full overflow-hidden border-2 border-violet-200 dark:border-violet-500/30 shadow-md cursor-pointer">
+                    <Avatar avatar={user.avatar} imgClassName="w-full h-full object-cover rounded-full" />
+                  </motion.div>
+                </Link>
+                {/* Logout */}
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={logout}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-all"
+                  className="p-2 rounded-xl text-theme-text-muted hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all"
+                  title={t.nav_logout}
                 >
                   <LogOut className="w-4 h-4" />
-                  {t.nav_logout}
                 </motion.button>
               </div>
             ) : (
@@ -137,7 +158,7 @@ export default function Navbar() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-theme-text-secondary hover:text-theme-text hover:bg-theme-card-hover transition-all"
                   >
                     <LogIn className="w-4 h-4" />
                     {t.nav_login}
@@ -192,7 +213,7 @@ export default function Navbar() {
               {!isLoggedIn && (
                 <div className="pt-2 border-t border-theme-border space-y-2">
                   <Link to="/login" onClick={() => setMobileOpen(false)}>
-                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5">
+                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-theme-text-secondary hover:text-theme-text hover:bg-theme-card-hover">
                       <LogIn className="w-5 h-5" />
                       {t.nav_login}
                     </div>

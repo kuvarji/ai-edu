@@ -178,24 +178,24 @@ export default function MembershipPage() {
         <div className="max-w-4xl mx-auto">
           {/* Header skeleton */}
           <div className="text-center mb-8 sm:mb-12">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-gray-700/50 animate-pulse mb-4" />
-            <div className="h-10 w-52 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-3" />
-            <div className="h-5 w-80 mx-auto bg-gray-700/50 animate-pulse rounded-lg" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-violet-100 dark:bg-gray-700/50 animate-pulse mb-4" />
+            <div className="h-10 w-52 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-3" />
+            <div className="h-5 w-80 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
           </div>
           {/* Plan card skeleton */}
           <div className="bg-theme-card border-2 border-violet-500/30 rounded-2xl overflow-hidden">
-            <div className="bg-gray-700/30 animate-pulse p-6 h-36" />
+            <div className="bg-violet-50 dark:bg-gray-700/30 animate-pulse p-6 h-36" />
             <div className="p-4 sm:p-6">
-              <div className="h-4 w-48 bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+              <div className="h-4 w-48 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                 {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                   <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl bg-theme-input/50 border border-theme-border">
-                    <div className="w-8 h-8 rounded-lg bg-gray-700/50 animate-pulse" />
-                    <div className="h-4 w-32 bg-gray-700/50 animate-pulse rounded-lg" />
+                    <div className="w-8 h-8 rounded-lg bg-violet-100 dark:bg-gray-700/50 animate-pulse" />
+                    <div className="h-4 w-32 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg" />
                   </div>
                 ))}
               </div>
-              <div className="w-full h-14 bg-gray-700/50 animate-pulse rounded-xl" />
+              <div className="w-full h-14 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
             </div>
           </div>
         </div>
@@ -219,7 +219,7 @@ export default function MembershipPage() {
               <Crown className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
             </div>
           </motion.div>
-          <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2 sm:mb-3">
+          <h1 className="text-2xl sm:text-4xl font-bold text-theme-text mb-2 sm:mb-3">
             Pro Membership
           </h1>
           <p className="text-sm sm:text-lg text-theme-text-secondary max-w-xl mx-auto">
@@ -331,7 +331,7 @@ export default function MembershipPage() {
 
         {/* Free Plan Comparison */}
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mt-8 p-4 sm:p-6 rounded-2xl bg-theme-card border border-theme-border">
-          <h3 className="text-lg font-bold text-white mb-4 text-center">Free vs Pro</h3>
+          <h3 className="text-lg font-bold text-theme-text mb-4 text-center">Free vs Pro</h3>
           <div className="space-y-3">
             {[
               { feature: 'AI Chat Messages', free: '5 XP per message', pro: 'Unlimited' },

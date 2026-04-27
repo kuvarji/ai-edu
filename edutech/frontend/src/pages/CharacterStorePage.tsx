@@ -41,23 +41,23 @@ export default function CharacterStorePage() {
       <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-20 pb-12 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
-            <div className="h-8 w-36 mx-auto bg-gray-700/50 animate-pulse rounded-full mb-4" />
-            <div className="h-10 w-52 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-2" />
-            <div className="h-5 w-64 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-4" />
-            <div className="h-10 w-44 mx-auto bg-gray-700/50 animate-pulse rounded-full" />
+            <div className="h-8 w-36 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full mb-4" />
+            <div className="h-10 w-52 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
+            <div className="h-5 w-64 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-4" />
+            <div className="h-10 w-44 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
           </div>
           <div className="flex justify-center flex-wrap gap-2 mb-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-9 w-20 bg-gray-700/50 animate-pulse rounded-xl" />
+              <div key={i} className="h-9 w-20 bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-xl" />
             ))}
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
               <div key={i} className="p-5 rounded-2xl bg-theme-card border border-theme-border">
-                <div className="h-4 w-14 ml-auto bg-gray-700/50 animate-pulse rounded-full mb-4" />
-                <div className="w-14 h-14 mx-auto rounded-full bg-gray-700/50 animate-pulse mb-3" />
-                <div className="h-4 w-20 mx-auto bg-gray-700/50 animate-pulse rounded-lg mb-2" />
-                <div className="h-6 w-16 mx-auto bg-gray-700/50 animate-pulse rounded-full" />
+                <div className="h-4 w-14 ml-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full mb-4" />
+                <div className="w-14 h-14 mx-auto rounded-full bg-violet-100 dark:bg-gray-700/50 animate-pulse mb-3" />
+                <div className="h-4 w-20 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-lg mb-2" />
+                <div className="h-6 w-16 mx-auto bg-violet-100 dark:bg-gray-700/50 animate-pulse rounded-full" />
               </div>
             ))}
           </div>
@@ -116,7 +116,7 @@ export default function CharacterStorePage() {
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium mb-4">
             <ShoppingBag className="w-4 h-4" /> Avatar Store
           </span>
-          <h1 className="text-4xl font-black text-white mb-2">Character Store</h1>
+          <h1 className="text-4xl font-black text-theme-text mb-2">Character Store</h1>
           <p className="text-theme-text-secondary">XP se apna favourite avatar unlock karo!</p>
           <div className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-full bg-yellow-500/10 border border-yellow-500/20">
             <Zap className="w-5 h-5 text-yellow-400" />
@@ -176,7 +176,7 @@ export default function CharacterStorePage() {
                   >
                     {avatar.emoji}
                   </motion.span>
-                  <h3 className="font-bold text-white text-sm mb-1">{avatar.name}</h3>
+                  <h3 className="font-bold text-theme-text text-sm mb-1">{avatar.name}</h3>
 
                   {avatar.unlocked ? (
                     <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">
@@ -212,7 +212,7 @@ export default function CharacterStorePage() {
           >
             <span className="text-6xl">{avatars.find((a) => a.id === selected)?.emoji}</span>
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-white">{avatars.find((a) => a.id === selected)?.name}</h3>
+              <h3 className="text-xl font-bold text-theme-text">{avatars.find((a) => a.id === selected)?.name}</h3>
               <p className="text-theme-text-secondary text-sm capitalize">Rarity: {avatars.find((a) => a.id === selected)?.rarity}</p>
             </div>
             <motion.button

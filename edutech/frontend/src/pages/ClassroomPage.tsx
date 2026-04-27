@@ -393,16 +393,16 @@ export default function ClassroomPage() {
   };
 
   return (
-    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-16 sm:pt-20 pb-4 px-2 sm:px-4">
+    <div className="min-h-screen bg-theme-page transition-colors duration-300 pt-16 sm:pt-20 pb-4 px-2 sm:px-4 blob-bg">
       <div className="max-w-7xl mx-auto h-[calc(100vh-5rem)] sm:h-[calc(100vh-6rem)] flex flex-col">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-2 sm:mb-4 gap-2">
           <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-            <Link to={`/courses/${courseId}`} className="p-2 rounded-xl text-theme-text-secondary hover:text-white hover:bg-theme-input transition-all flex-shrink-0">
+            <Link to={`/courses/${courseId}`} className="p-2 rounded-xl text-theme-text-secondary hover:text-theme-text hover:bg-theme-input transition-all flex-shrink-0">
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div className="min-w-0">
-              <h1 className="text-base sm:text-xl font-bold text-white truncate">{courseTitle || 'AI Video Classroom'}</h1>
+              <h1 className="text-base sm:text-xl font-bold text-theme-text truncate">{courseTitle || 'AI Video Classroom'}</h1>
               <p className="text-xs sm:text-sm text-theme-text-muted truncate">{chapterTitle || `Chapter ${chapterId}`} — AI Character Teaching</p>
             </div>
           </div>
@@ -453,7 +453,7 @@ export default function ClassroomPage() {
                 <div className="flex-1 flex items-center justify-center p-6">
                   <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-xl text-center">
                     <div className="text-5xl sm:text-6xl mb-3 sm:mb-4">{selectedCharacter.emoji}</div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">AI Video Lesson</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold text-theme-text mb-2">AI Video Lesson</h3>
                     {chapterTitle ? (
                       <div className="mb-4 sm:mb-6">
                         <p className="text-sm sm:text-base text-theme-text-secondary">{courseTitle}</p>
@@ -509,16 +509,16 @@ export default function ClassroomPage() {
                         <input type="text" value={topicInput} onChange={(e) => setTopicInput(e.target.value)}
                           onKeyDown={(e) => e.key === 'Enter' && handleGenerateLesson()}
                           placeholder="Topic likho... (e.g. Microorganisms)"
-                          className="flex-1 min-w-0 px-3 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-white text-sm sm:text-base placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
+                          className="flex-1 min-w-0 px-3 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm sm:text-base placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
                       )}
                       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleGenerateLesson}
                         disabled={user?.subscription !== 'pro' && (user?.xp ?? 0) < 10}
                         className={`px-4 sm:px-6 py-3 sm:py-3.5 rounded-xl font-bold shadow-lg flex-shrink-0 ${
                           user?.subscription !== 'pro' && (user?.xp ?? 0) < 10
-                            ? 'bg-gray-600 text-gray-400 cursor-not-allowed shadow-none'
-                            : 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-violet-500/25'
-                        }`}>
-                        <Sparkles className="w-5 h-5" />
+                                                    ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none'
+                                                    : 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-violet-500/25'
+                                                }`}>
+                                                <Sparkles className="w-5 h-5" />
                       </motion.button>
                     </div>
                     <p className="text-xs text-amber-400/70 mt-2">⚡ 10 XP per lesson</p>
@@ -567,7 +567,7 @@ export default function ClassroomPage() {
                           )}
                         </div>
                         <div className="text-center mt-1">
-                          <span className="text-sm font-bold text-white">{selectedCharacter.name}</span>
+                          <span className="text-sm font-bold text-theme-text">{selectedCharacter.name}</span>
                           {isSpeaking && <span className="text-xs text-violet-400 ml-2">Speaking...</span>}
                         </div>
                       </motion.div>
@@ -578,9 +578,9 @@ export default function ClassroomPage() {
                           <div className="p-3 sm:p-5 rounded-2xl bg-gradient-to-br from-violet-500/10 to-cyan-500/10 border border-violet-500/20">
                             <div className="flex items-center gap-2 mb-2 sm:mb-3">
                               <span className="text-lg sm:text-xl">{lessonSlides[currentSlide]?.emoji}</span>
-                              <h3 className="text-base sm:text-lg font-bold text-white">{lessonSlides[currentSlide]?.title}</h3>
+                              <h3 className="text-base sm:text-lg font-bold text-theme-text">{lessonSlides[currentSlide]?.title}</h3>
                             </div>
-                            <p className="text-gray-200 leading-relaxed text-xs sm:text-sm whitespace-pre-line">{lessonSlides[currentSlide]?.text}</p>
+                            <p className="text-theme-text-secondary leading-relaxed text-xs sm:text-sm whitespace-pre-line">{lessonSlides[currentSlide]?.text}</p>
                           </div>
                         </motion.div>
                       </AnimatePresence>
@@ -593,7 +593,7 @@ export default function ClassroomPage() {
                         <button key={idx} onClick={() => { cancelSpeech(); setIsSpeaking(false); setIsPlaying(false); setCurrentSlide(idx); }}
                           className={`w-full text-left p-2.5 rounded-xl mb-1.5 transition-all text-sm ${
                             idx === currentSlide
-                              ? 'bg-violet-500/20 border border-violet-500/30 text-white'
+                              ? 'bg-violet-500/20 border border-violet-500/30 text-theme-text'
                               : idx < currentSlide
                                 ? 'bg-emerald-500/5 border border-emerald-500/10 text-theme-text-secondary'
                                 : 'bg-theme-input border border-theme-border text-theme-text-muted hover:bg-theme-card'
@@ -614,19 +614,19 @@ export default function ClassroomPage() {
                   {/* Playback Controls */}
                   <div className="p-2 sm:p-4 border-t border-theme-border flex items-center justify-center gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
                     <motion.button whileTap={{ scale: 0.9 }} onClick={handlePrevSlide} disabled={currentSlide === 0}
-                      className="p-1.5 sm:p-2 rounded-xl text-theme-text-secondary hover:text-white disabled:opacity-30 transition-all">
-                      <SkipBack className="w-4 h-4 sm:w-5 sm:h-5" />
+                                            className="p-1.5 sm:p-2 rounded-xl text-theme-text-secondary hover:text-theme-text disabled:opacity-30 transition-all">
+                                            <SkipBack className="w-4 h-4 sm:w-5 sm:h-5" />
                     </motion.button>
                     <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={handlePlayPause}
                       className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-violet-500/30">
                       {isPlaying ? <Pause className="w-5 h-5 sm:w-6 sm:h-6" /> : <Play className="w-5 h-5 sm:w-6 sm:h-6 ml-0.5" />}
                     </motion.button>
                     <motion.button whileTap={{ scale: 0.9 }} onClick={handleNextSlide} disabled={currentSlide === lessonSlides.length - 1}
-                      className="p-1.5 sm:p-2 rounded-xl text-theme-text-secondary hover:text-white disabled:opacity-30 transition-all">
-                      <SkipForward className="w-4 h-4 sm:w-5 sm:h-5" />
+                                            className="p-1.5 sm:p-2 rounded-xl text-theme-text-secondary hover:text-theme-text disabled:opacity-30 transition-all">
+                                            <SkipForward className="w-4 h-4 sm:w-5 sm:h-5" />
                     </motion.button>
                     <div className="flex-1 max-w-[8rem] sm:max-w-xs mx-2 sm:mx-4">
-                      <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                      <div className="w-full h-1.5 bg-violet-100 dark:bg-gray-800 rounded-full overflow-hidden">
                         <motion.div animate={{ width: `${((currentSlide + 1) / lessonSlides.length) * 100}%` }}
                           className="h-full bg-gradient-to-r from-violet-500 to-purple-600 rounded-full" />
                       </div>
@@ -691,8 +691,8 @@ export default function ClassroomPage() {
                     </div>
                     <div className={`max-w-[85%] sm:max-w-lg p-3 sm:p-4 rounded-2xl ${
                       msg.role === 'bot'
-                        ? 'bg-theme-input border border-theme-border text-gray-200'
-                        : 'bg-violet-500/20 border border-violet-500/20 text-white'
+                                                ? 'bg-theme-input border border-theme-border text-theme-text-secondary'
+                                                : 'bg-violet-500/20 border border-violet-500/20 text-theme-text'
                     }`}>
                       <p className="text-sm leading-relaxed whitespace-pre-line">{msg.text}</p>
                       {msg.role === 'bot' && (
@@ -716,18 +716,18 @@ export default function ClassroomPage() {
                 <div className="flex gap-2 sm:gap-3">
                   <input type="text" value={message} onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSend()} placeholder="Apna sawal likho..."
-                    className="flex-1 min-w-0 px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-white text-sm sm:text-base placeholder-gray-600 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
+                    className="flex-1 min-w-0 px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl bg-theme-input border border-theme-border text-theme-text text-sm sm:text-base placeholder-theme-text-muted focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all" />
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleSend}
                     disabled={user?.subscription !== 'pro' && (user?.xp ?? 0) < 5}
                     className={`px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl shadow-lg flex-shrink-0 ${
                       user?.subscription !== 'pro' && (user?.xp ?? 0) < 5
-                        ? 'bg-gray-600 text-gray-400 cursor-not-allowed shadow-none'
-                        : 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-violet-500/25'
-                    }`}>
-                    <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+                                            ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none'
+                                            : 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-violet-500/25'
+                                        }`}>
+                                        <Send className="w-4 h-4 sm:w-5 sm:h-5" />
                   </motion.button>
                 </div>
-                <div className="flex items-center justify-between mt-2 text-xs text-gray-600">
+                <div className="flex items-center justify-between mt-2 text-xs text-theme-text-muted">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-3 h-3" />
                     Powered by Gemini AI - Hindi &amp; English supported
@@ -743,22 +743,22 @@ export default function ClassroomPage() {
             <div className="p-6 space-y-4 overflow-y-auto h-full">
               <div className="flex items-center gap-2 mb-2">
                 <BookOpen className="w-5 h-5 text-violet-400" />
-                <h3 className="text-lg font-bold text-white">Chapter Notes</h3>
+                <h3 className="text-lg font-bold text-theme-text">Chapter Notes</h3>
               </div>
               {lessonSlides.length > 0 ? (
                 lessonSlides.map((slide, i) => (
                   <motion.div key={i} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
                     className="p-5 rounded-xl bg-theme-input border border-theme-border">
                     <h4 className="font-bold text-violet-400 mb-2">{slide.emoji} {slide.title}</h4>
-                    <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">{slide.text}</p>
+                    <p className="text-theme-text-secondary text-sm whitespace-pre-line leading-relaxed">{slide.text}</p>
                   </motion.div>
                 ))
               ) : (
                 <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
                   className="p-5 rounded-xl bg-theme-input border border-theme-border">
                   <h4 className="font-bold text-violet-400 mb-2">AI Generated Notes</h4>
-                  <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
-                    Pehle &quot;AI Video&quot; tab mein ek lesson generate karo — phir notes yahan dikhenge.
+                                    <p className="text-theme-text-secondary text-sm whitespace-pre-line leading-relaxed">
+                                      Pehle &quot;AI Video&quot; tab mein ek lesson generate karo — phir notes yahan dikhenge.
                   </p>
                 </motion.div>
               )}
