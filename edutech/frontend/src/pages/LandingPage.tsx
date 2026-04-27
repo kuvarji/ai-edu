@@ -196,73 +196,30 @@ export default function LandingPage() {
               </motion.div>
             </div>
 
-            {/* Right - 3D Hero Visual */}
+            {/* Right - Hero Character */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
-              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+              initial={{ opacity: 0, scale: 0.8, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.4 }}
               className="relative hidden lg:flex items-center justify-center"
-              style={{ perspective: '1200px' }}
             >
-              <div className="relative w-full max-w-lg">
-                {/* Main 3D card */}
+              <div className="relative">
+                {/* Character Image with float animation */}
                 <motion.div
-                  animate={{ rotateY: [0, 3, -3, 0], rotateX: [0, -2, 2, 0] }}
-                  transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-                  className="landing-hero-card p-8 rounded-3xl"
-                  style={{ transformStyle: 'preserve-3d' }}
+                  animate={{ y: [0, -15, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                  className="relative z-10"
                 >
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    {[
-                      { emoji: '\u{1F4D0}', label: 'Maths', progress: 75, color: '#6366f1' },
-                      { emoji: '\u{1F52C}', label: 'Science', progress: 60, color: '#10b981' },
-                      { emoji: '\u{1F4DA}', label: 'English', progress: 90, color: '#f59e0b' },
-                      { emoji: '\u{1F30D}', label: 'SST', progress: 45, color: '#06b6d4' },
-                    ].map((item, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 1 + i * 0.15 }}
-                        whileHover={{ y: -4, scale: 1.03 }}
-                        className="landing-subject-card p-4 rounded-2xl text-center cursor-pointer"
-                      >
-                        <span className="text-3xl mb-2 block">{item.emoji}</span>
-                        <p className="text-sm font-semibold text-[var(--color-text)] mb-2">{item.label}</p>
-                        <div className="w-full h-2 rounded-full bg-[var(--color-surface)] overflow-hidden">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: `${item.progress}%` }}
-                            transition={{ delay: 1.5 + i * 0.15, duration: 0.8 }}
-                            className="h-full rounded-full"
-                            style={{ background: item.color }}
-                          />
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  <div className="landing-xp-bar p-3 rounded-xl flex items-center gap-3">
-                    <span className="text-xl">{'\u26A1'}</span>
-                    <div className="flex-1">
-                      <div className="flex justify-between text-xs font-semibold mb-1">
-                        <span className="text-[var(--color-text)]">Level 12</span>
-                        <span className="text-[var(--color-text-muted)]">2,450 XP</span>
-                      </div>
-                      <div className="w-full h-2 rounded-full bg-[var(--color-surface)] overflow-hidden">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: '68%' }}
-                          transition={{ delay: 2, duration: 1 }}
-                          className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  <img
+                    src="/hero-character.jpg"
+                    alt="Smart Student Character"
+                    className="w-[420px] h-auto drop-shadow-2xl rounded-3xl"
+                    style={{ filter: 'drop-shadow(0 20px 40px rgba(99, 102, 241, 0.2))' }}
+                  />
                 </motion.div>
 
-                {/* Floating 3D badges */}
-                <FloatingShape className="absolute -top-8 -left-8 landing-float-badge p-3 rounded-2xl shadow-lg" delay={0} duration={5}>
+                {/* Floating badges around character */}
+                <FloatingShape className="absolute -top-6 -left-6 landing-float-badge p-3 rounded-2xl shadow-lg z-20" delay={0} duration={5}>
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">{'\u{1F525}'}</span>
                     <div>
@@ -272,7 +229,7 @@ export default function LandingPage() {
                   </div>
                 </FloatingShape>
 
-                <FloatingShape className="absolute -top-4 -right-6 landing-float-badge p-3 rounded-2xl shadow-lg" delay={1.5} duration={6}>
+                <FloatingShape className="absolute -top-2 -right-8 landing-float-badge p-3 rounded-2xl shadow-lg z-20" delay={1.5} duration={6}>
                   <div className="flex items-center gap-2">
                     <Trophy className="w-6 h-6 text-amber-500" />
                     <div>
@@ -282,7 +239,7 @@ export default function LandingPage() {
                   </div>
                 </FloatingShape>
 
-                <FloatingShape className="absolute -bottom-6 left-1/4 landing-float-badge p-3 rounded-2xl shadow-lg" delay={0.8} duration={7}>
+                <FloatingShape className="absolute -bottom-4 left-1/4 landing-float-badge p-3 rounded-2xl shadow-lg z-20" delay={0.8} duration={7}>
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">{'\u{1F3AF}'}</span>
                     <div>
@@ -292,8 +249,8 @@ export default function LandingPage() {
                   </div>
                 </FloatingShape>
 
-                {/* Orbiting ring */}
-                <div className="landing-orbit-ring" />
+                {/* Glow behind character */}
+                <div className="absolute inset-0 -z-10 rounded-full blur-3xl opacity-30 bg-gradient-to-br from-indigo-400 via-cyan-400 to-purple-400 scale-75" />
               </div>
             </motion.div>
           </div>
