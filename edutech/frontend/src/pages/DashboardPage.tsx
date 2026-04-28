@@ -450,7 +450,7 @@ export default function DashboardPage() {
                           <span className="absolute text-base">{i === 0 ? '\ud83d\udcd6' : i === 1 ? '\ud83e\udde0' : i === 2 ? '\ud83c\udfaf' : '\u2b50'}</span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-xs font-bold text-theme-text truncate">{goal.label}</div>
+                          <div className="text-[11px] font-bold text-theme-text leading-tight">{goal.label}</div>
                           <div className="text-[10px] font-semibold text-theme-text-muted">{goal.current}/{goal.target}</div>
                         </div>
                         <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold flex-shrink-0 ${
