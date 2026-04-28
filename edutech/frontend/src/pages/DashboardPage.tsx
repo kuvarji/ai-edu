@@ -283,7 +283,7 @@ export default function DashboardPage() {
                 style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.1)', color: '#6366f1' }}>
                 <Sparkles className="w-3.5 h-3.5" /> Welcome Back
               </span>
-              <h1 className="font-['Space_Grotesk'] text-3xl md:text-4xl font-bold leading-tight mb-2.5 text-[var(--hero-text)]">
+              <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-2.5 text-[var(--hero-text)]">
                 {t.dashboard_welcome},<br /><span className="glow-name">{displayName}!</span> {'\ud83d\udc4b'}
               </h1>
               <p className="text-sm text-[var(--hero-sub)] mb-5 leading-relaxed">{t.dashboard_title}</p>
@@ -325,7 +325,7 @@ export default function DashboardPage() {
               <motion.div key={i} variants={fadeUp} initial="hidden" animate="visible" custom={i}
                 className={`bento-card p-5 rounded-[20px] bg-theme-card border border-theme-border ${stat.bentoClass}`}>
                 <span className="text-[28px] block mb-2.5">{stat.emoji}</span>
-                <div className="font-['Space_Grotesk'] text-[30px] font-bold text-theme-text leading-none mb-0.5">{stat.value}</div>
+                <div className="text-[30px] font-bold text-theme-text leading-none mb-0.5">{stat.value}</div>
                 <div className="text-xs font-semibold text-theme-text-muted">{stat.sublabel}</div>
               </motion.div>
             ))}
@@ -425,7 +425,7 @@ export default function DashboardPage() {
                       <circle cx={60} cy={60} r={ringR} stroke="url(#ringGrad)" strokeDasharray={ringCirc} strokeDashoffset={ringOffset} className="ring-fill" />
                     </svg>
                     <div className="absolute text-center">
-                      <div className="font-['Space_Grotesk'] text-[28px] font-extrabold text-theme-text leading-none">{overallPct}%</div>
+                      <div className="text-[28px] font-extrabold text-theme-text leading-none">{overallPct}%</div>
                       <div className="text-[10px] font-semibold text-theme-text-muted mt-0.5">Goal</div>
                     </div>
                   </div>
@@ -573,7 +573,7 @@ export default function DashboardPage() {
             <div className="absolute left-[-20px] bottom-[-20px] w-[100px] h-[100px] rounded-full bg-white/[0.05]" />
             <div className="relative z-[1]">
               <div className="text-sm font-bold opacity-85 mb-2">{'\u26a1'} XP Progress</div>
-              <div className="font-['Space_Grotesk'] text-4xl font-extrabold mb-1">
+              <div className="text-4xl font-extrabold mb-1">
                 {isPremium ? '\u221e Unlimited' : xp.toLocaleString()}
               </div>
               <div className="text-xs opacity-70 mb-4">
@@ -589,15 +589,15 @@ export default function DashboardPage() {
               </div>
               <div className="mt-4 flex gap-5">
                 <div className="text-center">
-                  <div className="font-['Space_Grotesk'] text-xl font-extrabold">{streak}</div>
+                  <div className="text-xl font-extrabold">{streak}</div>
                   <div className="text-[10px] opacity-70 font-semibold">Day Streak</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-['Space_Grotesk'] text-xl font-extrabold">{level}</div>
+                  <div className="text-xl font-extrabold">{level}</div>
                   <div className="text-[10px] opacity-70 font-semibold">Current Level</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-['Space_Grotesk'] text-xl font-extrabold">{apiCourses.length}</div>
+                  <div className="text-xl font-extrabold">{apiCourses.length}</div>
                   <div className="text-[10px] opacity-70 font-semibold">Courses</div>
                 </div>
               </div>

@@ -159,8 +159,8 @@ export default function CoursesPage() {
         {/* Page Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-col sm:flex-row justify-between sm:items-end gap-3">
           <div>
-            <h1 className="font-['Plus_Jakarta_Sans'] text-[28px] font-extrabold text-theme-text mb-1 tracking-tight">{'\ud83d\udcda'} My Courses</h1>
-            <p className="text-sm text-theme-text-muted font-['Plus_Jakarta_Sans']">
+            <h1 className="text-[28px] font-extrabold text-theme-text mb-1 tracking-tight">{'\ud83d\udcda'} My Courses</h1>
+            <p className="text-sm text-theme-text-muted">
               {showMyClass && hasClassInfo
                 ? `Class ${userGrade}${userBoard ? ` \u2022 ${userBoard}` : ''} \u2014 apne subjects padho AI ke saath!`
                 : 'Class 6-12 ke saare subjects ek jagah'}
@@ -186,8 +186,8 @@ export default function CoursesPage() {
               <div className={`relative z-[1] w-12 h-12 rounded-2xl ${s.iconBg} flex items-center justify-center mx-auto mb-3`}>
                 <span className="text-[26px]">{s.emoji}</span>
               </div>
-                            <div className={`relative z-[1] font-['Plus_Jakarta_Sans'] text-[32px] font-extrabold bg-gradient-to-r ${s.gradient} bg-clip-text text-transparent leading-none`}>{s.val}</div>
-                            <div className="relative z-[1] text-[11px] font-semibold text-theme-text-muted mt-1.5 uppercase tracking-widest font-['Plus_Jakarta_Sans']">{s.label}</div>
+                            <div className={`relative z-[1] text-[32px] font-extrabold bg-gradient-to-r ${s.gradient} bg-clip-text text-transparent leading-none`}>{s.val}</div>
+                            <div className="relative z-[1] text-[11px] font-semibold text-theme-text-muted mt-1.5 uppercase tracking-widest">{s.label}</div>
             </motion.div>
           ))}
         </motion.div>
@@ -202,7 +202,7 @@ export default function CoursesPage() {
               { key: 'new', label: 'Not Started' },
             ].map(f => (
               <button key={f.key} onClick={() => setFilter(f.key)}
-                className={`px-[18px] py-2 rounded-[10px] text-[13px] font-bold font-['Plus_Jakarta_Sans'] transition-all ${
+                className={`px-[18px] py-2 rounded-[10px] text-[13px] font-bold transition-all ${
                   filter === f.key
                     ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20'
                     : 'text-theme-text-muted hover:text-theme-text-secondary hover:bg-indigo-50 dark:hover:bg-indigo-900/20'
@@ -213,7 +213,7 @@ export default function CoursesPage() {
           </div>
           {hasClassInfo && (
             <button onClick={() => setShowMyClass(!showMyClass)}
-              className={`px-3.5 py-2 rounded-[10px] text-[13px] font-bold font-['Plus_Jakarta_Sans'] flex items-center gap-1.5 transition-all border ${
+              className={`px-3.5 py-2 rounded-[10px] text-[13px] font-bold flex items-center gap-1.5 transition-all border ${
                 showMyClass
                   ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-700'
                   : 'bg-theme-card text-theme-text-muted border-theme-border hover:bg-theme-input'
@@ -230,7 +230,7 @@ export default function CoursesPage() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="Search courses..."
-            className="w-full sm:w-80 pl-10 pr-4 py-2.5 rounded-xl bg-theme-card border border-theme-border text-sm text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-indigo-400 transition-all font-['Plus_Jakarta_Sans']" />
+            className="w-full sm:w-80 pl-10 pr-4 py-2.5 rounded-xl bg-theme-card border border-theme-border text-sm text-theme-text placeholder-theme-text-muted focus:outline-none focus:border-indigo-400 transition-all" />
         </motion.div>
 
         {/* Courses Grid */}
@@ -257,8 +257,8 @@ export default function CoursesPage() {
                     <div className="h-[100px] relative overflow-hidden flex items-center justify-between px-[22px]"
                       style={{ background: bannerGradients[i % bannerGradients.length] }}>
                       <div className="relative z-[1]">
-                        <div className="text-lg font-extrabold text-white font-['Plus_Jakarta_Sans'] tracking-tight" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.15)' }}>{course.title}</div>
-                        <div className="text-[11px] text-white/85 font-semibold mt-0.5 font-['Plus_Jakarta_Sans']">{course.subject}</div>
+                        <div className="text-lg font-extrabold text-white tracking-tight" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.15)' }}>{course.title}</div>
+                        <div className="text-[11px] text-white/85 font-semibold mt-0.5">{course.subject}</div>
                       </div>
                       <span className="text-[42px] relative z-[1]" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.1))' }}>{course.icon}</span>
                       <div className="absolute right-[-20px] bottom-[-20px] w-[100px] h-[100px] rounded-full bg-white/10" />
@@ -267,7 +267,7 @@ export default function CoursesPage() {
                     {/* Body */}
                     <div className="p-[18px_22px]">
                       <div className="flex items-center gap-2 mb-3 text-xs text-theme-text-muted font-semibold">
-                        <span className="px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-bold text-[11px] font-['Plus_Jakarta_Sans']">{course.chapters} Chapters</span>
+                        <span className="px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-bold text-[11px]">{course.chapters} Chapters</span>
                         <span>{'\u2022'} {course.completedChapters} completed</span>
                       </div>
                       <div className="flex items-center gap-2.5 mb-3">
@@ -275,13 +275,13 @@ export default function CoursesPage() {
                           <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.8, delay: 0.2 + i * 0.05 }}
                             className="h-full rounded-full" style={{ background: fillGradients[i % fillGradients.length] }} />
                         </div>
-                        <span className="text-xs font-extrabold text-theme-text min-w-[32px] text-right font-['Plus_Jakarta_Sans']">{pct}%</span>
+                        <span className="text-xs font-extrabold text-theme-text min-w-[32px] text-right">{pct}%</span>
                       </div>
                       <div className="flex gap-2">
-                        <button className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 shadow-md shadow-indigo-500/20 hover:bg-indigo-700 transition-all flex items-center justify-center gap-1.5 font-['Plus_Jakarta_Sans']">
+                        <button className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 shadow-md shadow-indigo-500/20 hover:bg-indigo-700 transition-all flex items-center justify-center gap-1.5">
                           <BookOpen className="w-3.5 h-3.5" /> Continue
                         </button>
-                        <button className="flex-1 py-2.5 rounded-xl text-xs font-bold text-indigo-600 bg-indigo-100 dark:bg-indigo-900/20 hover:bg-indigo-200 dark:hover:bg-indigo-900/30 transition-all flex items-center justify-center gap-1.5 font-['Plus_Jakarta_Sans']">
+                        <button className="flex-1 py-2.5 rounded-xl text-xs font-bold text-indigo-600 bg-indigo-100 dark:bg-indigo-900/20 hover:bg-indigo-200 dark:hover:bg-indigo-900/30 transition-all flex items-center justify-center gap-1.5">
                           Details <ArrowRight className="w-3.5 h-3.5" />
                         </button>
                       </div>

@@ -262,7 +262,7 @@ export default function QuizPage() {
           <div className="absolute right-[60px] -bottom-[30px] w-[120px] h-[120px] rounded-full bg-white/[0.05]" />
           <div className="flex justify-between items-center mb-2 relative z-[1]">
             <div>
-              <h1 className="font-['Space_Grotesk'] text-[24px] font-extrabold">{'\ud83e\udde0'} Mathematics Quiz</h1>
+              <h1 className="text-[24px] font-extrabold">{'\ud83e\udde0'} Mathematics Quiz</h1>
               <p className="text-[13px] opacity-85 mt-1">Question {currentQ + 1} of {quizQuestions.length}</p>
             </div>
             <div className="px-3.5 py-1.5 rounded-[10px] bg-white/15 backdrop-blur-sm text-xs font-bold flex items-center gap-1.5">
@@ -307,7 +307,7 @@ export default function QuizPage() {
               className="h-full rounded-lg"
               style={{ background: timerLow ? 'linear-gradient(90deg, #f43f5e, #fb7185)' : 'linear-gradient(90deg, #10b981, #06b6d4)' }} />
           </div>
-          <span className={`font-['Space_Grotesk'] text-base font-extrabold ${timerLow ? 'text-rose-500' : 'text-theme-text'}`}>
+          <span className={`text-base font-extrabold ${timerLow ? 'text-rose-500' : 'text-theme-text'}`}>
             {timer}s
           </span>
         </div>

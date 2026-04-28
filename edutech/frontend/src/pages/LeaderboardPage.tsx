@@ -114,7 +114,7 @@ export default function LeaderboardPage() {
             className="p-8 rounded-[24px] mb-6 relative overflow-hidden"
             style={{ background: 'var(--section-gradient)', border: '1px solid var(--section-gradient-border)' }}>
             <div className="absolute -top-[60px] -right-[60px] w-[250px] h-[250px] rounded-full bg-indigo-300/10 dark:bg-indigo-400/5 blur-[40px]" />
-            <h2 className="text-center font-['Space_Grotesk'] text-[26px] font-extrabold mb-7 relative z-[1]">
+            <h2 className="text-center text-[26px] font-extrabold mb-7 relative z-[1]">
               {'\ud83c\udfc6'} <span className="text-indigo-600 dark:text-indigo-400">Top Learners</span> of the Week
             </h2>
             <div className="flex items-end justify-center gap-4 relative z-[1]">
@@ -126,7 +126,7 @@ export default function LeaderboardPage() {
                 </div>
                 <span className="text-sm font-bold text-theme-text mb-0.5 truncate max-w-[100px]">{top3[1].name}</span>
                 <span className="text-xs font-extrabold text-slate-500 mb-2">{top3[1].xp.toLocaleString()} XP</span>
-                <div className="w-[120px] h-[70px] rounded-t-[14px] flex items-center justify-center font-['Space_Grotesk'] text-[28px] font-extrabold text-white"
+                <div className="w-[120px] h-[70px] rounded-t-[14px] flex items-center justify-center text-[28px] font-extrabold text-white"
                   style={{ background: 'linear-gradient(180deg, #94a3b8, #64748b)' }}>2</div>
               </motion.div>
 
@@ -140,7 +140,7 @@ export default function LeaderboardPage() {
                 </div>
                 <span className="text-sm font-bold text-theme-text mb-0.5 truncate max-w-[120px]">{top3[0].name}</span>
                 <span className="text-xs font-extrabold text-yellow-500 mb-2">{top3[0].xp.toLocaleString()} XP</span>
-                <div className="w-[120px] h-[100px] rounded-t-[14px] flex items-center justify-center font-['Space_Grotesk'] text-[28px] font-extrabold text-white"
+                <div className="w-[120px] h-[100px] rounded-t-[14px] flex items-center justify-center text-[28px] font-extrabold text-white"
                   style={{ background: 'linear-gradient(180deg, #fbbf24, #f59e0b)', boxShadow: '0 -4px 20px rgba(245,158,11,0.2)' }}>1</div>
               </motion.div>
 
@@ -152,7 +152,7 @@ export default function LeaderboardPage() {
                 </div>
                 <span className="text-sm font-bold text-theme-text mb-0.5 truncate max-w-[100px]">{top3[2].name}</span>
                 <span className="text-xs font-extrabold text-orange-500 mb-2">{top3[2].xp.toLocaleString()} XP</span>
-                <div className="w-[120px] h-[50px] rounded-t-[14px] flex items-center justify-center font-['Space_Grotesk'] text-[28px] font-extrabold text-white"
+                <div className="w-[120px] h-[50px] rounded-t-[14px] flex items-center justify-center text-[28px] font-extrabold text-white"
                   style={{ background: 'linear-gradient(180deg, #fb923c, #f97316)' }}>3</div>
               </motion.div>
             </div>
@@ -175,7 +175,7 @@ export default function LeaderboardPage() {
             ))}
           </div>
           <div className="px-5 py-2.5 rounded-[14px] bg-indigo-100 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700 text-[13px] font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4" /> Your Rank: <span className="font-['Space_Grotesk'] text-xl font-extrabold">#{leaderboardData.length > 0 ? leaderboardData.length : '—'}</span>
+            <TrendingUp className="w-4 h-4" /> Your Rank: <span className="text-xl font-extrabold">#{leaderboardData.length > 0 ? leaderboardData.length : '—'}</span>
           </div>
         </motion.div>
 
@@ -193,7 +193,7 @@ export default function LeaderboardPage() {
                 i < 3 ? '' : ''
               }`}>
               {/* Rank */}
-              <span className={`font-['Space_Grotesk'] text-base font-extrabold ${rankColor(player.rank)}`}>
+              <span className={`text-base font-extrabold ${rankColor(player.rank)}`}>
                 {player.rank}
               </span>
               {/* User */}
@@ -207,7 +207,7 @@ export default function LeaderboardPage() {
                 </div>
               </div>
               {/* XP */}
-              <span className="hidden sm:block font-['Space_Grotesk'] text-[15px] font-extrabold text-indigo-600 dark:text-indigo-400">
+              <span className="hidden sm:block text-[15px] font-extrabold text-indigo-600 dark:text-indigo-400">
                 {player.xp.toLocaleString()}
               </span>
               {/* Streak */}

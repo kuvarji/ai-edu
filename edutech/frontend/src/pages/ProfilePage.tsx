@@ -224,7 +224,7 @@ export default function ProfilePage() {
 
           {/* Profile Info */}
           <div className="relative z-[1] flex-1 text-center sm:text-left">
-            <h1 className="font-['Space_Grotesk'] text-[26px] font-extrabold text-theme-text mb-1">{user?.name || 'Student'}</h1>
+            <h1 className="text-[26px] font-extrabold text-theme-text mb-1">{user?.name || 'Student'}</h1>
             <p className="text-[13px] text-theme-text-secondary mb-3">
               {user?.email || 'student@eduai.com'}
               {user?.phone ? ` \u2022 ${user.phone}` : ''}
@@ -253,19 +253,19 @@ export default function ProfilePage() {
           {/* Stats */}
           <div className="relative z-[1] flex gap-5 sm:gap-6 flex-shrink-0">
             <div className="text-center">
-              <div className="font-['Space_Grotesk'] text-[24px] font-extrabold text-theme-text">
+              <div className="text-[24px] font-extrabold text-theme-text">
                 {isPremium ? '\u221e' : (user?.xp ?? 0).toLocaleString()}
               </div>
               <div className="text-[11px] font-semibold text-theme-text-muted">Total XP</div>
             </div>
             <div className="text-center">
-              <div className="font-['Space_Grotesk'] text-[24px] font-extrabold text-theme-text">
+              <div className="text-[24px] font-extrabold text-theme-text">
                 {user?.level ?? 1}
               </div>
               <div className="text-[11px] font-semibold text-theme-text-muted">Level</div>
             </div>
             <div className="text-center">
-              <div className="font-['Space_Grotesk'] text-[24px] font-extrabold text-theme-text">
+              <div className="text-[24px] font-extrabold text-theme-text">
                 {user?.streak ?? 0}
               </div>
               <div className="text-[11px] font-semibold text-theme-text-muted">Streak</div>
@@ -396,7 +396,7 @@ export default function ProfilePage() {
               style={{ background: 'linear-gradient(135deg, var(--color-accent), var(--color-accent2))' }}>
               <div className="absolute -right-[30px] -top-[30px] w-[120px] h-[120px] rounded-full bg-white/[0.08]" />
               <div className="text-[14px] font-bold opacity-[0.85] mb-2">{'\u26a1'} Experience Points</div>
-              <div className="font-['Space_Grotesk'] text-[36px] font-extrabold relative z-[1] mb-1">
+              <div className="text-[36px] font-extrabold relative z-[1] mb-1">
                 {isPremium ? '\u221e Unlimited' : (user?.xp ?? 0).toLocaleString()}
               </div>
               <div className="text-[12px] opacity-70">Level {user?.level ?? 1} \u2022 Keep learning to earn more!</div>
