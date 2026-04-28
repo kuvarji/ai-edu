@@ -77,7 +77,7 @@ export default function Navbar() {
             >
               <GraduationCap className="w-6 h-6 text-white" />
             </motion.div>
-            <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+            <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
               EduTech AI
             </span>
           </Link>
